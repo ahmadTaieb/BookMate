@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="IRepository\" />
-    <Folder Include="Repository\" />
+    <ProjectReference Include="..\BookMate.DataAccess\BookMate.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
