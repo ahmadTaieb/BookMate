@@ -16,4 +16,8 @@
     <Folder Include="Repository\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookMate.Entities\BookMate.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
