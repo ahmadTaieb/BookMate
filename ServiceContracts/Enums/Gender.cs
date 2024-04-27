@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace BookMate.DataAccess.Enums
+namespace ServiceContracts.Enums
 {
     public enum  Gender
     {
