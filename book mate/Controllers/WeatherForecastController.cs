@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using ServiceContracts;
+using ServiceContracts.DTO;
+
 
 namespace book_mate.Controllers
 {
@@ -12,10 +15,13 @@ namespace book_mate.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IConfiguration _configuration;
+        private readonly IUserService _userService;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,IConfiguration configuration,IUserService userService)
         {
             _logger = logger;
+            _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -29,5 +35,30 @@ namespace book_mate.Controllers
             })
             .ToArray();
         }
+        
+        //[HttpPost("Register")]
+        //public async Task<IActionResult> Register(RegisterDTO user)
+        //{
+        //    if (await _userService.RegisterA(user))
+        //    {
+        //        return Ok("Successfuly done");
+        //    }
+        //    return BadRequest("Something went worng");
+        //}
+
+        //[HttpPost("Login")]
+        //public async Task<IActionResult> Login(LoginDTO user)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    if (await _userService.Login(user))
+        //    {
+        //        var tokenString = _userService.GenerateTokenString(user);
+        //        return Ok(tokenString);
+        //    }
+        //    return BadRequest();
+        //}
     }
 }

@@ -13,6 +13,7 @@ namespace BookMate.DataAccess.Data
     public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
     {
         
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         
     }
 }

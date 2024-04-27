@@ -1,26 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
-
+﻿
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookMate.Entities
+namespace ServiceContracts.DTO
 {
-    public class ApplicationUser : IdentityUser
+    public class RegisterDTO
     {
-        [Required]
         public string Name { get; set; }
         //[Required]
-        //public string Password { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public string? gender { get; set; }
         public int? Age { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public DateTime? RegisteredAt { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
-
-
     }
 }

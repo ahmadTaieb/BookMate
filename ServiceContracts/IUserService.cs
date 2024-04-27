@@ -1,0 +1,19 @@
+﻿
+using ServiceContracts.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ServiceContracts
+{
+    public interface IUserService
+    {
+        Task<AuthModel> RegisterAsync(RegisterDTO model);
+        Task<AuthModel> GetTokenAsync(TokenRequest model);
+        Task<string> AddRoleAsync(string userId , string role);
+        Task<AuthModel> RefreshTokenAsync(string token);
+        Task<bool> RevokeTokenAsync(string token);
+    }
+}
