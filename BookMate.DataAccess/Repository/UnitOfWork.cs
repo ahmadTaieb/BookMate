@@ -21,5 +21,14 @@ namespace BookMate.DataAccess.Repository
 
         }
 
+        public void saveAsync()
+        {
+            _db.SaveChangesAsync();
+        }
+
+        public void save()
+        {
+           _db.SaveChanges();
+        }
     }
 }

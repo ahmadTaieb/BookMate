@@ -22,6 +22,21 @@ namespace BookMate.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+                {
+                    b.Property<string>("applicationUserChildrenId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("applicationUserParentsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("applicationUserChildrenId", "applicationUserParentsId");
+
+                    b.HasIndex("applicationUserParentsId");
+
+                    b.ToTable("ApplicationUserApplicationUser");
+                });
+
             modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -234,6 +249,21 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("applicationUserChildrenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMate.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("applicationUserParentsId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>

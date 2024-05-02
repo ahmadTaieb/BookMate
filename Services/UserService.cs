@@ -10,6 +10,11 @@ using ServiceContracts.DTO;
 using ServiceContracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using BookMate.DataAccess.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Reflection.Metadata.Ecma335;
+using BookMate.DataAccess.IRepository;
 
 namespace Services
 {
@@ -17,14 +22,15 @@ namespace Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private IUnitOfWork _unitOfWork;
         //private readonly JWT _jwt;
         private IConfiguration _configuration;
 
-        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,IConfiguration configuration)
+        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,IConfiguration configuration,IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            
+            _unitOfWork = unitOfWork;
             _configuration = configuration;
         }
 
@@ -40,7 +46,7 @@ namespace Services
                 Email = model.Email,
                 UserName = model.Email,
                 gender = model.gender,
-                Age = model.Age,
+                //Age = model.Age,
                 DateOfBirth = model.DateOfBirth,
                 
             };
@@ -57,7 +63,7 @@ namespace Services
                 return new AuthModel { Message = errors };
             }
 
-            await _userManager.AddToRoleAsync(user, "User");
+            //await _userManager.AddToRoleAsync(user, "User");
 
             var jwtSecurityToken = await CreateJwtToken(user);
 
@@ -243,6 +249,34 @@ namespace Services
             };
         }
 
-        
+        public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(string id, ApplicationUserUpdateRequest user)
+        {
+            //ApplicationUser matchingUser =await _unitOfWork.ApplicationUser.Get(user.Id);
+            //if (matchingUser == null)
+            //    return null;
+
+            //matchingUser.Name = user.Name ?? matchingUser.Name;
+            //matchingUser.Email = user.Email ?? matchingUser.Email;
+            //matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
+            //matchingUser.gender=user.gender ?? matchingUser.gender;
+            //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
+            
+            ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id,user);
+            await _userManager.UpdateAsync(matchingUser);
+            return user;
+        }
+
+        public async Task<ApplicationUser> DeleteUserAsync(ApplicationUser user)
+        {
+            
+            await _unitOfWork.ApplicationUser.Delete(user);
+
+            return user;
+        }
+
+        public Task<List<ApplicationUser>> GetAllUsersAsync()
+        {
+            return _unitOfWork.ApplicationUser.GetAll();
+        }
     }
 }

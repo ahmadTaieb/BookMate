@@ -1,4 +1,5 @@
 ﻿using BookMate.Entities;
+using ServiceContracts.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace BookMate.DataAccess.IRepository
 {
     public interface IApplicationUserRepository
     {
-        public void Add(ApplicationUser user);
+        Task<ApplicationUser> Add(ApplicationUser user);
+        Task<ApplicationUser> Update(string id,ApplicationUserUpdateRequest user);
+        Task<bool> Delete(ApplicationUser user);
+        Task<ApplicationUser> Get(string id);
+        Task<List<ApplicationUser>> GetAll();
     }
 }

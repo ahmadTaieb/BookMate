@@ -1,4 +1,5 @@
-﻿using BookMate.Entities;
+﻿using book_mate.Entities;
+using BookMate.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,8 @@ namespace BookMate.DataAccess.Data
     {
         
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        //public DbSet<ApplicationUserApplicationUser> Friends { get; set; }
         
+
     }
 }

@@ -16,10 +16,13 @@ namespace BookMate.Entities
         //[Required]
         //public string Password { get; set; }
         public string? gender { get; set; }
-        public int? Age { get; set; }
+        //public int? Age { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public DateTime? RegisteredAt { get; set; }
         public List<RefreshToken>? RefreshTokens { get; set; }
+        //public List<ApplicationUser>? applicationUserChildren { get; set; }
+        //public List<ApplicationUser>? applicationUserParents { get; set; }
+
 
 
     }
