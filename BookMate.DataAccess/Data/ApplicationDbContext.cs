@@ -15,7 +15,6 @@ namespace BookMate.DataAccess.Data
     {
         
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<Club> Clubs { get; set; }
         //public DbSet<ApplicationUserApplicationUser> Friends { get; set; }
         
 
