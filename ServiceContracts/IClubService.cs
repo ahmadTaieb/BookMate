@@ -1,0 +1,22 @@
+﻿using BookMate.Entities;
+using ServiceContracts.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ServiceContracts
+{
+    public interface IClubService
+    {
+        Task<Club> GetClub(string id);
+        Task<bool> DeleteAsync(string id);
+        Task<Club> UpdateAsync(string id, ClubAddRequest club);
+        Task<List<Club>> GetAdminClubsAsync();
+        Task<List<Club>> GetAllClubsAsync();
+        Task<Club> AddClubAsync(string adminId, ClubAddRequest club);
+
+
+    }
+}
