@@ -9,6 +9,7 @@ namespace BookMate.DataAccess.IRepository
     public interface IUnitOfWork
     {
         IApplicationUserRepository ApplicationUser { get; }
+        IClubRepository Club { get; }
 
         public void saveAsync();
         public void save();
