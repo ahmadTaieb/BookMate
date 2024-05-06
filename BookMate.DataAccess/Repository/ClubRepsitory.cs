@@ -3,11 +3,6 @@ using BookMate.DataAccess.IRepository;
 using BookMate.Entities;
 using Microsoft.EntityFrameworkCore;
 using ServiceContracts.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookMate.DataAccess.Repository
 {
@@ -21,7 +16,7 @@ namespace BookMate.DataAccess.Repository
         }
         public async Task<Club> AddClub(Club club)
         {
-             _db.Clubs.Add(club);
+            _db.Clubs.Add(club);
             return club;
         }
 
@@ -34,7 +29,7 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<Club> Get(string id)
         {
-            var club =await _db.Clubs.FirstOrDefaultAsync(i => i.Id.ToString() == id);
+            var club = await _db.Clubs.Include(i => i.ApplicationUser).FirstOrDefaultAsync(i => i.Id.ToString() == id);
             return club;
         }
 
@@ -47,8 +42,8 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<List<Club>> GetAdminClubs(string adminId)
         {
-            var admin = await _db.ApplicationUsers.FirstOrDefaultAsync(i => i.Id.ToString() == adminId);
-            var clubs = await _db?.Clubs.Where(i => i.ApplicationUserId == adminId).ToListAsync();
+            var admin =  _db.ApplicationUsers.FirstOrDefaultAsync(i => i.Id.ToString() == adminId);
+            var clubs =  _db?.Clubs.Where(i => i.ApplicationUserId == adminId).ToList();
             return clubs;
 
         }
@@ -58,9 +53,9 @@ namespace BookMate.DataAccess.Repository
             return await _db.Clubs.ToListAsync();
         }
 
-        public async Task<Club> UpdateClub(string id,ClubAddRequest? club)
+        public async Task<Club> UpdateClub(string id, ClubAddRequest? club)
         {
-            Club? matchingClub =await _db.Clubs.FirstOrDefaultAsync(i => i.Id.ToString() == id);
+            Club? matchingClub = await _db.Clubs.FirstOrDefaultAsync(i => i.Id.ToString() == id);
 
             if (matchingClub == null)
             {
@@ -71,7 +66,7 @@ namespace BookMate.DataAccess.Repository
             matchingClub.ApplicationUserId = club.ApplicationUserId ?? club.ApplicationUserId;
             matchingClub.ImageUrl = club.ImageUrl ?? matchingClub.ImageUrl;
             matchingClub.Hidden = club.Hidden ?? matchingClub.Hidden;
-            if(club.ApplicationUser != null)
+            if (club.ApplicationUser != null)
             {
                 matchingClub.ApplicationUser = club.ApplicationUser;
             }

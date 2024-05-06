@@ -39,71 +39,9 @@ namespace book_mate.Controllers
             return Ok("Hello...");
         }
 
-        [HttpPost("updateUser")]
-        public async Task<IActionResult> updateUser([FromQuery]ApplicationUserUpdateRequest userAddRequest)
-        {
-             
-            if (userAddRequest == null) 
-            {
-                return Ok();
-            }
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-
-            await _userService.UpdateUserAsync(user.Id,userAddRequest);
-            _unitOfWork.saveAsync();
-
-            return Ok();
-        }
-        [HttpGet("deleteUser")]
-        public async Task<IActionResult> deleteUser()
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-
-            _userService.DeleteUserAsync(user);
-            _unitOfWork.saveAsync();
-            return Ok();
-        }
-
-        [HttpGet("getAllUsers")]
-        [AllowAnonymous]
-        public async Task<List<ApplicationUser>> getAll()
-        {
-            return await _userService.GetAllUsersAsync();
-        }
         
-        [HttpPost("CreateClub")]
-        public async Task<IActionResult> createClub([FromQuery]Club club)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-            var adminId = user.Id;
-            Club c = new Club()
-            {
-                Name = club.Name,
-                Description = club.Description,
-                ImageUrl = club.ImageUrl,
-                Hidden = club.Hidden,
-                ApplicationUserId = adminId,
-                ApplicationUser = user,
-            };
-            _db.Add(c);
-            _db.SaveChanges();
-            
-
-            return new JsonResult(c.ApplicationUser);
-        }
-        [HttpGet("AdminClubs")]
-        public async Task<IActionResult> getAdminClubs()
-        {
-
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-            var clubs = _db.ApplicationUsers.Include(i => i.Clubs);
-
-            return new JsonResult(clubs);
-        }
+        
+        
 
     }
 }

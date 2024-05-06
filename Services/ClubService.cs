@@ -31,9 +31,9 @@ namespace Services
             _configuration = configuration;
         }
 
-        public Task<Club> GetClub(string id) 
+        public async Task<Club> GetClub(string id) 
         {
-            return _unitOfWork.Club.Get(id);
+            return await _unitOfWork.Club.Get(id);
         }
         
 
@@ -58,11 +58,11 @@ namespace Services
             return await _unitOfWork.Club.GetAll();
         }
 
-        public async Task<List<Club>> GetAdminClubsAsync()
+        public async Task<List<Club>> GetAdminClubsAsync(string id)
         {
-            var user = _userManager.FindByEmailAsync(ClaimTypes.Email); // will give the user's userId
+            /*var user = _userManager.FindByEmailAsync(ClaimTypes.Email);*/ // will give the user's userId
             
-            var clubs = await _unitOfWork.Club.GetAdminClubs(user.Id.ToString());
+            var clubs = await _unitOfWork.Club.GetAdminClubs(id);
             return clubs;
 
         }

@@ -11,7 +11,7 @@ namespace ServiceContracts.DTO
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public bool? Hidden { get; set; }
+        public bool? Hidden { get; set; } = false;
         public string? ImageUrl {  get; set; }
         public string? ApplicationUserId { get; set; }
         public ApplicationUser? ApplicationUser { get; set; }

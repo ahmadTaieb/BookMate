@@ -13,7 +13,7 @@ namespace ServiceContracts
         Task<Club> GetClub(string id);
         Task<bool> DeleteAsync(string id);
         Task<Club> UpdateAsync(string id, ClubAddRequest club);
-        Task<List<Club>> GetAdminClubsAsync();
+        Task<List<Club>> GetAdminClubsAsync(string id);
         Task<List<Club>> GetAllClubsAsync();
         Task<Club> AddClubAsync(string adminId, ClubAddRequest club);
 
