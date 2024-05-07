@@ -1,4 +1,6 @@
 using BookMate.DataAccess.Data;
+using BookMate.DataAccess.IRepository;
+using BookMate.DataAccess.Repository;
 using BookMate.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +15,12 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IClubService, ClubService>();
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

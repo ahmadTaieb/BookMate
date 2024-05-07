@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class DeletePassword : Migration
+    public partial class adds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,8 +31,7 @@ namespace BookMate.DataAccess.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    gender = table.Column<int>(type: "int", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
+                    gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -162,6 +161,28 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Clubs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Hidden = table.Column<bool>(type: "bit", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clubs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clubs_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshToken",
                 columns: table => new
                 {
@@ -222,6 +243,11 @@ namespace BookMate.DataAccess.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clubs_ApplicationUserId",
+                table: "Clubs",
+                column: "ApplicationUserId");
         }
 
         /// <inheritdoc />
@@ -241,6 +267,9 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Clubs");
 
             migrationBuilder.DropTable(
                 name: "RefreshToken");

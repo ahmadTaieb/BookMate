@@ -1,4 +1,5 @@
 ﻿
+using BookMate.Entities;
 using ServiceContracts.DTO;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,9 @@ namespace ServiceContracts
         Task<string> AddRoleAsync(string userId , string role);
         Task<AuthModel> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
+        Task<ApplicationUserUpdateRequest> UpdateUserAsync(string id, ApplicationUserUpdateRequest user);
+        Task<ApplicationUser> DeleteUserAsync(ApplicationUser user);
+        Task<List<ApplicationUser>> GetAllUsersAsync();
+        
     }
 }

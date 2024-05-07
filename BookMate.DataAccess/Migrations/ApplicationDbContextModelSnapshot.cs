@@ -30,9 +30,6 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -101,56 +98,6 @@ namespace BookMate.DataAccess.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("BookMate.Entities.Book", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Author")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<double?>("AverageRating")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfPage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PdfUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PublishedYear")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RatingsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReadingCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<string>("VoiceUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -323,6 +270,17 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.Club", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("Clubs")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -372,6 +330,11 @@ namespace BookMate.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Clubs");
                 });
 #pragma warning restore 612, 618
         }

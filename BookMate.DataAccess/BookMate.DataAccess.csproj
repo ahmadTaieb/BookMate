@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookMate.Entities\BookMate.Entities.csproj" />
+    <ProjectReference Include="..\ServiceContracts\ServiceContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
