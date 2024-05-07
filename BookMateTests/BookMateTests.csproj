@@ -22,4 +22,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookMate.DataAccess\BookMate.DataAccess.csproj" />
+    <ProjectReference Include="..\BookMate.Entities\BookMate.Entities.csproj" />
+    <ProjectReference Include="..\ServiceContracts\ServiceContracts.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
 </Project>

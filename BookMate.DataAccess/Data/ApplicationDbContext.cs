@@ -1,4 +1,5 @@
-﻿using BookMate.Entities;
+﻿
+using BookMate.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +14,8 @@ namespace BookMate.DataAccess.Data
     public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
     {
         
+
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        
+        public DbSet<Book>Books { get; set; }
     }
 }

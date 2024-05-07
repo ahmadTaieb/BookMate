@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace book_mate.Entities
+namespace BookMate.Entities
 {
     public class Book
     {
@@ -9,25 +9,28 @@ namespace book_mate.Entities
         public Guid Id { get; set; }
 
         [Required]
+        [StringLength(40)]
         public string Title { get; set; }
 
+        [StringLength(40)]
         public string? Author  { get; set; }
-
-
-        [Required]
-        public string Categories { get; set; }
-    
-
+        
+        public string? Category { get; set; }
         public string? ImageUrl {  get; set; }
 
+        public string? PdfUrl { get; set; }
+
+        public string? VoiceUrl { get; set; }
+
         public string? Description { get; set; }
+        public int? NumberOfPage { get; set; }
+        public int? PublishedYear { get; set; }
 
-        public int Number_Of_Page { get; set; }
-        public int Published_Year { get; set; }
+        public double? AverageRating { get; set; }
 
-        public double Average_Rating { get; set; }
+        public int? RatingsCount { get; set; }
 
-        public int Ratings_Count { get; set; }
+        public int? ReadingCount { get; set; }
 
 
     }

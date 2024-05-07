@@ -26,6 +26,9 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Upload\Books\Images\" />
+    <Folder Include="Upload\Books\Voices\" />
+    <Folder Include="Upload\Books\Pdfs\" />
   </ItemGroup>
 
 </Project>

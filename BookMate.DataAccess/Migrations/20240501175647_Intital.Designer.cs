@@ -4,6 +4,7 @@ using BookMate.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240501175647_Intital")]
+    partial class Intital
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,7 +119,8 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<double?>("AverageRating")
                         .HasColumnType("float");
 
-                    b.Property<string>("Category")
+                    b.Property<string>("Categories")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -135,9 +139,6 @@ namespace BookMate.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("RatingsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReadingCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
