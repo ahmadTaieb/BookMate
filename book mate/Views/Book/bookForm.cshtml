@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Home page";
+}
+<div class="col-4">
+
+    <form method="post" enctype="multipart/form-data" asp-controller="Book" asp-acrion="Index">
+        <div class="mb-3">
+
+            <input type="file" name="file" class="form-control"/>
+        </div>
+
+        <div class="mb-3">
+
+            <input type="submit" value="upload file" class="btn btn-primary" />
+        </div>
+    <span class="text-success">
+
+    </span>
+
+    </form>
+
+
+
+
+</div>
+

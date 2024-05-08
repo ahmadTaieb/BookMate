@@ -1,7 +1,7 @@
 ﻿using BookMate.DataAccess.Data;
 using BookMate.DataAccess.IRepository;
 using BookMate.Entities;
-using Microsoft.AspNet.Identity;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
