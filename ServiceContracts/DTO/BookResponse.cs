@@ -14,7 +14,7 @@ namespace ServiceContracts.DTO
         public Guid Id { get; set; }
         public string? Title { get; set; }
         public string? Author { get; set; }
-        public string? Category { get; set; }
+        public List<string> Categories { get; set; }
         public string? ImageUrl { get; set; }
 
         public string? PdfUrl { get; set; }
@@ -37,7 +37,7 @@ namespace ServiceContracts.DTO
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
-                Category = book.Category,
+                Categories = book.Categories.Select(c => c.categoryName).ToList(),
                 ImageUrl = book.ImageUrl,
                 PdfUrl = book.PdfUrl,
                 VoiceUrl = book.VoiceUrl,

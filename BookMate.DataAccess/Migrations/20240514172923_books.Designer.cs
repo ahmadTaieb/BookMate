@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240504175130_ahmad")]
-    partial class ahmad
+    [Migration("20240514172923_books")]
+    partial class books
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,15 +25,27 @@ namespace BookMate.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BookCategory", b =>
+                {
+                    b.Property<int>("CategoriescategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("booksId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CategoriescategoryID", "booksId");
+
+                    b.HasIndex("booksId");
+
+                    b.ToTable("BookCategory");
+                });
+
             modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -119,9 +131,6 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<double?>("AverageRating")
                         .HasColumnType("float");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -154,6 +163,52 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Category", b =>
+                {
+                    b.Property<int>("categoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("categoryID"));
+
+                    b.Property<string>("categoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("categoryID");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Club", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Clubs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -289,6 +344,21 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BookCategory", b =>
+                {
+                    b.HasOne("BookMate.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriescategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMate.Entities.Book", null)
+                        .WithMany()
+                        .HasForeignKey("booksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
                 {
                     b.OwnsMany("BookMate.Entities.RefreshToken", "RefreshTokens", b1 =>
@@ -324,6 +394,15 @@ namespace BookMate.DataAccess.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Club", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("Clubs")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -375,6 +454,11 @@ namespace BookMate.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Clubs");
                 });
 #pragma warning restore 612, 618
         }

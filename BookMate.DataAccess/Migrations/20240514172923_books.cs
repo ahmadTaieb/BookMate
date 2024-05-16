@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class adds : Migration
+    public partial class books : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,6 +52,41 @@ namespace BookMate.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Author = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PdfUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VoiceUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NumberOfPage = table.Column<int>(type: "int", nullable: true),
+                    PublishedYear = table.Column<int>(type: "int", nullable: true),
+                    AverageRating = table.Column<double>(type: "float", nullable: true),
+                    RatingsCount = table.Column<int>(type: "int", nullable: true),
+                    ReadingCount = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    categoryID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    categoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.categoryID);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,7 +204,7 @@ namespace BookMate.DataAccess.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Hidden = table.Column<bool>(type: "bit", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -178,8 +213,7 @@ namespace BookMate.DataAccess.Migrations
                         name: "FK_Clubs_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -202,6 +236,30 @@ namespace BookMate.DataAccess.Migrations
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookCategory",
+                columns: table => new
+                {
+                    CategoriescategoryID = table.Column<int>(type: "int", nullable: false),
+                    booksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookCategory", x => new { x.CategoriescategoryID, x.booksId });
+                    table.ForeignKey(
+                        name: "FK_BookCategory_Books_booksId",
+                        column: x => x.booksId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookCategory_Categories_CategoriescategoryID",
+                        column: x => x.CategoriescategoryID,
+                        principalTable: "Categories",
+                        principalColumn: "categoryID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -245,6 +303,11 @@ namespace BookMate.DataAccess.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookCategory_booksId",
+                table: "BookCategory",
+                column: "booksId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Clubs_ApplicationUserId",
                 table: "Clubs",
                 column: "ApplicationUserId");
@@ -269,6 +332,9 @@ namespace BookMate.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "BookCategory");
+
+            migrationBuilder.DropTable(
                 name: "Clubs");
 
             migrationBuilder.DropTable(
@@ -276,6 +342,12 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

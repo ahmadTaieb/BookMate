@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using ServiceContracts.DTO;
 using NuGet.Protocol;
 using BookMate.Entities;
+using Azure.Core;
+using NuGet.Protocol.Plugins;
 namespace book_mate.Controllers
 {
     [Route("api/[controller]")]
@@ -22,65 +24,80 @@ namespace book_mate.Controllers
         private readonly IBooksService _booksService;
         private ApplicationDbContext applicationDbContext;
 
-        public BookController(IBooksService booksService) {
+        public BookController(IBooksService booksService) { 
 
             _booksService = booksService;
 
         }
 
 
-        [HttpGet]
-        [Route("/GetAllBooks")]
-        public IActionResult Index()
-        {
-
-            List<BookResponse> Books=_booksService.GetAllBooks();
-
-            return Ok(Books);
-        }
-
-
-
-        [HttpGet]
-        [Route("/GetBookByTitle")]
-        public IActionResult GetBookByTitle(string title) {
-            
-            BookResponse? response =_booksService.GetBookByBookTitle(title);
-
-            return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("/GetBooksByCategory")]
         
-        public IActionResult GetBooksByCategory(string? category)
+        
+
+
+
+        
+        [HttpGet]
+        [Route("/Books")]
+        public IActionResult GetBookByTitle([FromQuery] string title = null, [FromQuery] Guid id = default(Guid) )
         {
-
-            if(category == null)
+            if (!string.IsNullOrEmpty(title))
             {
-                return BadRequest("Category is null");
+                // If title is provided, return the book with that title
+                BookResponse? response = _booksService.GetBookByBookTitle(title);
+                if (response != null)
+                {
+                    return Ok(response);
+                }
+            } 
+
+            if (id != Guid.Empty)
+            {
+                // If id is provided, return the book with that id
+                BookResponse? response = _booksService.GetBookByBookId(id);
+                if (response != null)
+                {
+                    return Ok(response);
+                }
             }
 
-            List<BookResponse> Books=_booksService.GetBooksByCategory(category);
+           
 
-            if(Books.Count == 0)
-            {
-                return Ok("This category is Empty");
 
-            }
+            List<BookResponse> Books = _booksService.GetAllBooks();
 
             return Ok(Books);
 
 
-
         }
+
+
+        [HttpGet("/Books/categories")]
+        public async Task<ActionResult<List<BookResponse>>> GetBooksByCategory([FromQuery] List<string> categoriesName )
+        {
+            if (categoriesName == null || categoriesName.Count == 0)
+            {
+                return BadRequest("Category IDs must be provided.");
+            }
+
+           
+            var books = await _booksService.GetBooksByCategory(categoriesName);
+            if (books.Count == 0)
+            {
+                return NotFound("No books found for the specified categories.");
+            }
+            return Ok(books);
+        }
+
+
+
 
 
 
 
         [HttpPost]
         [Route("/addBook")]
-        public async Task<IActionResult> addBook([FromForm] BookAddRequestWithFiles? model)
+        public async Task<IActionResult> addBook([FromForm] BookAddRequest? model)
         {
 
             if(model == null)
@@ -97,7 +114,7 @@ namespace book_mate.Controllers
             {
                 Title = model.Title,
                 Author = model.Author,
-                Category = model.Category,
+                CategoryIds = model.CategoryIds,
                 Description = model.Description,
                 ImageUrl = imageUrl,
                 PdfUrl = pdfUrl,
@@ -117,6 +134,31 @@ namespace book_mate.Controllers
 
 
 
+        [HttpPost]
+        [Route("editBook")]
+        public async Task<IActionResult> EditBook([FromQuery] Guid id, [FromForm] BookAddRequest editedBook)
+        {
+            string? imageUrl = await GetImageUrl(file: editedBook.ImageFile);
+            string? pdfUrl = await GetPdfUrl(file: editedBook.PdfFile);
+            string? voiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
+
+            BookAddRequest request = new BookAddRequest()
+            {
+                Title = editedBook.Title,
+                Author = editedBook.Author,
+                CategoryIds = editedBook.CategoryIds,
+                Description = editedBook.Description,
+                ImageUrl = imageUrl,
+                PdfUrl = pdfUrl,
+                VoiceUrl = voiceUrl,
+                PublishedYear = editedBook.PublishedYear,
+                NumberOfPage = editedBook.NumberOfPage
+            };
+
+            await _booksService.EditBookAsync(id, request); // Await the EditBookAsync method call
+
+            return Ok("Book edited successfully");
+        }
 
 
 

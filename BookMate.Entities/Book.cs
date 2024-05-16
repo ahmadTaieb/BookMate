@@ -15,8 +15,9 @@ namespace BookMate.Entities
         [StringLength(40)]
         public string? Author  { get; set; }
         
-        public string? Category { get; set; }
+        public ICollection<Category>? Categories { get; set; }
         public string? ImageUrl {  get; set; }
+     
 
         public string? PdfUrl { get; set; }
 

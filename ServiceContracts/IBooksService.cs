@@ -13,8 +13,10 @@ namespace ServiceContracts
         BookResponse AddBook(BookAddRequest? bookAddRequest);
         List<BookResponse> GetAllBooks();
         BookResponse? GetBookByBookTitle(string? title);
-        List<BookResponse> GetBooksByCategory(String? Category);
+        //List<BookResponse> GetBooksByCategory(String? Category);
+        Task<List<BookResponse>> GetBooksByCategory(List<string>categoriesName);
+        BookResponse? GetBookByBookId(Guid? Id);
 
-
+        Task EditBookAsync(Guid bookId, BookAddRequest editedBook);
     }
 }

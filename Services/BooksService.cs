@@ -10,6 +10,9 @@ using BookMate.DataAccess;
 using Microsoft.IdentityModel.Tokens;
 using BookMate.DataAccess.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Humanizer;
+using BookMate.DataAccess.Migrations;
 
 namespace Services
 {
@@ -29,16 +32,35 @@ namespace Services
 
         }
 
-       
 
+     
         public List<BookResponse> GetAllBooks()
         {
 
-            return _db.Books.Select(book=>book.ToBookResponse()).ToList();
+            return _db.Books
+                .Include(book => book.Categories)
+                .Select(book => book.ToBookResponse())
+                .ToList();
         }
+        public async Task<List<BookResponse>> GetBooksByCategory(List<string>? categoriesName)
+        {
+            // Validate input
+            if (categoriesName == null || !categoriesName.Any())
+            {
+                return new List<BookResponse>();
+            }
 
+            // Query the books that have all the specified categories
+            var books = await _db.Books
+                                 .Include(book => book.Categories)
+                                 .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
+                                 .ToListAsync();
 
+            // Map the books to BookResponse objects
+            var bookResponses = books.Select(book => book.ToBookResponse()).ToList();
 
+            return bookResponses;
+        }
         public BookResponse? GetBookByBookId(Guid? Id)
         {
             if(Id== null) 
@@ -52,8 +74,6 @@ namespace Services
             return book_response.ToBookResponse();
 
         }
-
-
         public BookResponse? GetBookByBookTitle(string? title)
         {
             if (title == null)
@@ -67,11 +87,6 @@ namespace Services
             return book_response.ToBookResponse();
 
         }
-
-
-
-        
-
 
 
         public BookResponse AddBook(BookAddRequest? bookAddRequest)
@@ -96,7 +111,8 @@ namespace Services
                 throw new ArgumentException("Given Book Title already exists");
             }
 
-            Book book = bookAddRequest.ToBook();
+
+            Book book = bookAddRequest.ToBook(_db.Categories);
             book.Id=Guid.NewGuid();
             book.AverageRating = 0;
             book.RatingsCount = 0;
@@ -107,20 +123,55 @@ namespace Services
 
             return book.ToBookResponse();
         }
-
-        public List<BookResponse> GetBooksByCategory(string? Category)
+        public async Task EditBookAsync(Guid bookId, BookAddRequest editedBook)
         {
+            // Find the book you want to edit
+            var book = await _db.Books.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == bookId);
 
-            if (Category == null)
-                return new List<BookResponse>();
+            if (book != null)
+            {
+                // Update book properties
+                book.Title = editedBook.Title;
+                book.Author = editedBook.Author;
+                book.ImageUrl = editedBook.ImageUrl;
+                book.PdfUrl = editedBook.PdfUrl;
+                book.VoiceUrl = editedBook.VoiceUrl;
+                book.Description = editedBook.Description;
+                book.NumberOfPage = editedBook.NumberOfPage;
+                book.PublishedYear = editedBook.PublishedYear;
 
-            List<BookResponse> books = _db.Books.Where(temp => temp.Category == Category).Select(temp=>temp.ToBookResponse()).ToList();
-            if (books.Count ==0 ) {
-                return new List<BookResponse>();
-            }
-            
+                book.Categories = _db.Categories.Where(c => editedBook.CategoryIds.Contains(c.categoryID)).ToList();
 
-            return books;
+
+                 try
+        {
+            // Ensure that the book entity is marked as modified
+            _db.Entry(book).State = EntityState.Modified;
+
+            // Save changes to the database
+            await _db.SaveChangesAsync();
         }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrency conflicts
+            // Log or handle the exception as needed
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            // Handle other database update errors
+            // Log or handle the exception as needed
+            throw;
+        }
+              
+            }
+            else
+            {
+                // Handle case where the book with the specified ID is not found
+                throw new InvalidOperationException($"Book with ID '{bookId}' not found.");
+            }
+        }
+
+       
     }
 }
