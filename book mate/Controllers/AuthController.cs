@@ -4,6 +4,7 @@ using BookMate.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
@@ -27,7 +28,7 @@ namespace book_mate.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO model)
+        public async Task<IActionResult> RegisterAsync([FromQuery] RegisterDTO model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,15 +36,15 @@ namespace book_mate.Controllers
             var result = await _userService.RegisterAsync(model);
 
             if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
+                return BadRequest(new JsonResult(result.Message));
 
-            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+            //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(result);
+            return Ok("successfully!!");
         }
 
-        [HttpPost("token")]
-        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequest model)
+        [HttpPost("login")]
+        public async Task<IActionResult> GetTokenAsync([FromQuery] TokenRequest model)
         {
             var result = await _userService.GetTokenAsync(model);
 
@@ -85,7 +86,7 @@ namespace book_mate.Controllers
             return Ok(result);
         }
 
-        [HttpPost("revokeToken")]
+        [HttpPost("logout")]
         public async Task<IActionResult> RevokeToken([FromBody] string? t)
         {
             var token = t ?? Request.Cookies["refreshToken"];
