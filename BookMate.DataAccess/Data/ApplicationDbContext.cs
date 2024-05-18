@@ -33,6 +33,11 @@ namespace BookMate.DataAccess.Data
             builder.Entity<Category>().HasData(new Category()
             { categoryID = 2, categoryName = "action" });
 
+            //builder.Entity<ApplicationUser>()
+            //    .HasMany(c => c.Clubs)
+            //    .WithOne(u => u.ApplicationUser)
+            //    .HasForeignKey(i => i.ApplicationUserId);
+
         }
 
 

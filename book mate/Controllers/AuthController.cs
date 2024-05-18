@@ -31,7 +31,7 @@ namespace book_mate.Controllers
         public async Task<IActionResult> RegisterAsync([FromQuery] RegisterDTO model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new JsonResult(ModelState));
 
             var result = await _userService.RegisterAsync(model);
 
@@ -40,7 +40,7 @@ namespace book_mate.Controllers
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok("successfully!!");
+            return Ok(new JsonResult(result));
         }
 
         [HttpPost("login")]
@@ -49,12 +49,12 @@ namespace book_mate.Controllers
             var result = await _userService.GetTokenAsync(model);
 
             if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
+                return BadRequest(new JsonResult(result.Message));
 
             if (!string.IsNullOrEmpty(result.RefreshToken))
                 SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(result);
+            return Ok(new JsonResult(result));
         }
 
         [HttpPost("addRole")]
@@ -85,19 +85,19 @@ namespace book_mate.Controllers
 
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> RevokeToken([FromBody] string? t)
         {
             var token = t ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest("Token is required!");
+                return BadRequest(new JsonResult("Token is required!"));
 
             var result = await _userService.RevokeTokenAsync(token);
 
             if (!result)
-                return BadRequest("Token is invalid!");
+                return BadRequest(new JsonResult("Token is invalid!"));
 
             return Ok();
         }
@@ -115,7 +115,7 @@ namespace book_mate.Controllers
 
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
-
+        [Authorize]
         [HttpPost("updateUser")]
         public async Task<IActionResult> updateUser([FromQuery] ApplicationUserUpdateRequest userAddRequest)
         {
@@ -132,6 +132,7 @@ namespace book_mate.Controllers
 
             return Ok();
         }
+        [Authorize]
         [HttpGet("deleteUser")]
         public async Task<IActionResult> deleteUser()
         {
