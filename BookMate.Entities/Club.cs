@@ -22,6 +22,7 @@ namespace BookMate.Entities
         [JsonIgnore]
         public ApplicationUser? ApplicationUser {  get; set; }
 
+        public ICollection<ApplicationUserClub> ApplicationUsersMember { get; set; }
         
     }
 }
