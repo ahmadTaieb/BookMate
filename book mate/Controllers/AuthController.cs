@@ -43,6 +43,8 @@ namespace book_mate.Controllers
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
+            await _libraryService.CreateLibrary(result.Id);
+
             return Ok("successfully!!");
         }
 
