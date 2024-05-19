@@ -89,7 +89,7 @@ namespace Services
         }
 
 
-        public BookResponse AddBook(BookAddRequest? bookAddRequest)
+        public async Task AddBook(BookAddRequest? bookAddRequest)
         {
          
 
@@ -113,17 +113,20 @@ namespace Services
 
 
             Book book = bookAddRequest.ToBook(_db.Categories);
+            book.ImageUrl = await GetImageUrl(file: bookAddRequest.ImageFile);
+            book.PdfUrl=await GetPdfUrl(file: bookAddRequest.PdfFile);
+            book.VoiceUrl=await GetVoiceUrl(file: bookAddRequest.VoiceFile);
             book.Id=Guid.NewGuid();
             book.AverageRating = 0;
             book.RatingsCount = 0;
-
+            book.ReadingCount = 0;
             _db.Books.Add(book);
             _db.SaveChanges();
 
 
-            return book.ToBookResponse();
+            
         }
-        public async Task EditBookAsync(Guid bookId, BookAddRequest editedBook)
+        public async Task EditBookAsync(Guid? bookId, BookAddRequest? editedBook)
         {
             // Find the book you want to edit
             var book = await _db.Books.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == bookId);
@@ -133,9 +136,9 @@ namespace Services
                 // Update book properties
                 book.Title = editedBook.Title;
                 book.Author = editedBook.Author;
-                book.ImageUrl = editedBook.ImageUrl;
-                book.PdfUrl = editedBook.PdfUrl;
-                book.VoiceUrl = editedBook.VoiceUrl;
+                book.ImageUrl = await GetImageUrl(file: editedBook.ImageFile);
+                book.PdfUrl = await GetPdfUrl(file : editedBook.PdfFile); 
+                book.VoiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
                 book.Description = editedBook.Description;
                 book.NumberOfPage = editedBook.NumberOfPage;
                 book.PublishedYear = editedBook.PublishedYear;
@@ -172,6 +175,148 @@ namespace Services
             }
         }
 
-       
+
+
+
+        public async Task IncrementReadingCount(Guid bookId)
+        {
+            if (bookId == Guid.Empty) throw new ArgumentException("Invalid book ID", nameof(bookId));
+
+            var book = await _db.Books.FindAsync(bookId);
+            if (book == null)
+            {
+                throw new KeyNotFoundException("Book not found");
+            }
+
+            if (book.ReadingCount.HasValue)
+            {
+                book.ReadingCount++;
+            }
+            else
+            {
+                book.ReadingCount = 1;
+            }
+
+            try
+            {
+                _db.Entry(book).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Console.WriteLine("Concurrency exception: " + ex.Message);
+                throw new InvalidOperationException("A concurrency error occurred while updating the book.");
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine("Database update exception: " + ex.Message);
+                throw new InvalidOperationException("An error occurred while updating the book.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An unexpected exception occurred: " + ex.Message);
+                throw new InvalidOperationException("An unexpected error occurred while updating the book.");
+            }
+
+           
+        }
+
+
+        private async Task<string?> GetImageUrl(IFormFile? file)
+        {
+
+            if (file == null)
+            {
+                return null;
+            }
+
+            string filename = "";
+            try
+            {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\");
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\", filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return filename;
+        }
+
+        private async Task<string?> GetPdfUrl(IFormFile? file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+            string filename = "";
+            try
+            {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\");
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\", filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return filename;
+        }
+
+        private async Task<string?> GetVoiceUrl(IFormFile? file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+            string filename = "";
+            try
+            {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\");
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\", filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return filename;
+        }
+
+
     }
 }

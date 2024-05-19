@@ -33,22 +33,22 @@ namespace ServiceContracts.DTO
 
         
 
-        public string? ImageUrl { get; set; }
+        private string? ImageUrl { get; set; }
 
-        public string? PdfUrl { get; set; }
+        private string? PdfUrl { get; set; }
 
-        public string? VoiceUrl { get; set; }
-
-
+        private string? VoiceUrl { get; set; }
 
 
 
-        public Book ToBook(IEnumerable<Category> allCategories)
+
+
+        public Book ToBook(IEnumerable<Category>? allCategories)
         {
 
 
 
-
+            
             // Create a new Book instance
             var book = new Book()
             {
@@ -61,13 +61,30 @@ namespace ServiceContracts.DTO
                 Description = Description,
                 NumberOfPage = NumberOfPage,
                 PublishedYear = PublishedYear,
-
-                Categories = allCategories.Where(c => this.CategoryIds.Contains(c.categoryID)).ToList()
+               
             };
 
-            // Initialize Categories collection
-           
+            if (CategoryIds != null)
+            {
+
+
+                book.Categories = allCategories.Where(c => this.CategoryIds.Contains(c.categoryID)).ToList();
+
+
+            }
+            else
+            {
+                book.Categories= new List<Category>();  
+            }
+
+        
+
             return book;
         }
+
+        
+
+
+
     }
 }

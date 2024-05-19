@@ -14,7 +14,7 @@ namespace ServiceContracts.DTO
         public Guid Id { get; set; }
         public string? Title { get; set; }
         public string? Author { get; set; }
-        public List<string> Categories { get; set; }
+        public List<string>? Categories { get; set; }
         public string? ImageUrl { get; set; }
 
         public string? PdfUrl { get; set; }
@@ -25,6 +25,8 @@ namespace ServiceContracts.DTO
         public int? PublishedYear { get; set; }
         public double? AverageRating { get; set; }
         public int? RatingsCount { get; set; }
+
+        public int? ReadingCount { get; set; }
     }
 
     public static class BookExtension
@@ -46,6 +48,7 @@ namespace ServiceContracts.DTO
                 PublishedYear = book.PublishedYear,
                 AverageRating = book.AverageRating,
                 RatingsCount = book.RatingsCount,
+                ReadingCount = book.ReadingCount,
 
             };
 

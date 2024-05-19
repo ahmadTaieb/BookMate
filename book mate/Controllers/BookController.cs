@@ -104,30 +104,20 @@ namespace book_mate.Controllers
             {
                 return BadRequest("The Title filed is required");
             }
-            
-            string? imageUrl = await GetImageUrl(file: model.ImageFile);
-            string? pdfUrl = await GetPdfUrl(file: model.PdfFile);
-            string? voiceUrl = await GetVoiceUrl(file: model.VoiceFile);
 
 
-            BookAddRequest request = new BookAddRequest()
+
+
+            try
             {
-                Title = model.Title,
-                Author = model.Author,
-                CategoryIds = model.CategoryIds,
-                Description = model.Description,
-                ImageUrl = imageUrl,
-                PdfUrl = pdfUrl,
-                VoiceUrl = voiceUrl,
-                PublishedYear = model.PublishedYear,
-                NumberOfPage = model.NumberOfPage,
+                await _booksService.AddBook(model);
 
-            };
-
-            BookResponse response = _booksService.AddBook(request);
-
-            return new JsonResult("The book has been added successfully");
-
+                return Ok("The book has been added successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while adding the book");
+            }
 
         }
 
@@ -136,140 +126,69 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("editBook")]
-        public async Task<IActionResult> EditBook([FromQuery] Guid id, [FromForm] BookAddRequest editedBook)
+        public async Task<IActionResult> EditBook([FromQuery] Guid? id, [FromForm] BookAddRequest editedBook)
         {
-            string? imageUrl = await GetImageUrl(file: editedBook.ImageFile);
-            string? pdfUrl = await GetPdfUrl(file: editedBook.PdfFile);
-            string? voiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
-
-            BookAddRequest request = new BookAddRequest()
+            
+            if(editedBook == null)
             {
-                Title = editedBook.Title,
-                Author = editedBook.Author,
-                CategoryIds = editedBook.CategoryIds,
-                Description = editedBook.Description,
-                ImageUrl = imageUrl,
-                PdfUrl = pdfUrl,
-                VoiceUrl = voiceUrl,
-                PublishedYear = editedBook.PublishedYear,
-                NumberOfPage = editedBook.NumberOfPage
-            };
 
-            await _booksService.EditBookAsync(id, request); // Await the EditBookAsync method call
+                return BadRequest("Edited Book is null");
+            }
 
-            return Ok("Book edited successfully");
+            if(id ==null)
+            {
+                return BadRequest("Book id is null");
+            }
+            try
+            {
+                await _booksService.EditBookAsync(id, editedBook); // Await the EditBookAsync method call
+
+                return Ok("Book edited successfully");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while editing the book");
+            }
         }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private async Task<string> GetImageUrl(IFormFile? file)
+        [HttpPost("increment-reading-count/{bookId}")]
+        public async Task<ActionResult<BookResponse>> IncrementReadingCount(Guid bookId)
         {
-
-            if(file==null)
-            {
-                return null;
-            }
-
-            string filename = "";
             try
             {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                filename = DateTime.Now.Ticks.ToString() + extension;
-
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\");
-
-                if (!Directory.Exists(filepath))
-                {
-                    Directory.CreateDirectory(filepath);
-                }
+                await _booksService.IncrementReadingCount(bookId);
+                return Ok("done");
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Book not found");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine("Invalid operation exception: " + ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
            
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\", filename);
-                using (var stream = new FileStream(exactpath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                return StatusCode(500, "An unexpected exception occurred: " + ex.Message);
             }
-            catch (Exception ex)
-            {
-            }
-            return filename;
         }
 
-        private async Task<string> GetPdfUrl(IFormFile? file)
-        {
-            if (file == null)
-            {
-                return null;
-            }
-            string filename = "";
-            try
-            {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                filename = DateTime.Now.Ticks.ToString() + extension;
 
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\");
 
-                if (!Directory.Exists(filepath))
-                {
-                    Directory.CreateDirectory(filepath);
-                }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\", filename);
-                using (var stream = new FileStream(exactpath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            return filename;
-        }
 
-        private async Task<string> GetVoiceUrl(IFormFile? file)
-        {
-            if (file == null)
-            {
-                return null;
-            }
-            string filename = "";
-            try
-            {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                filename = DateTime.Now.Ticks.ToString() + extension;
 
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\");
 
-                if (!Directory.Exists(filepath))
-                {
-                    Directory.CreateDirectory(filepath);
-                }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\", filename);
-                using (var stream = new FileStream(exactpath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            return filename;
-        }
+
+
+
+
 
 
 
