@@ -26,6 +26,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<IBooksService,BooksService >();
+builder.Services.AddScoped<ILibraryService, LibraryService>();
 
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

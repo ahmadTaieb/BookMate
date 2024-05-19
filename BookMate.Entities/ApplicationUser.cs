@@ -11,6 +11,8 @@ namespace BookMate.Entities
 {
     public class ApplicationUser : IdentityUser
     {
+
+       
         [Required]
         public string Name { get; set; }
         //[Required]
@@ -24,7 +26,7 @@ namespace BookMate.Entities
         //public List<ApplicationUser>? applicationUserParents { get; set; }
         public ICollection<Club>? Clubs { get; set; }
 
-        public Library UserLibrary { get; set; }   
+        public Library? UserLibrary { get; set; }
 
     }
 }

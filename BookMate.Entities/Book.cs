@@ -34,5 +34,7 @@ namespace BookMate.Entities
         public int? ReadingCount { get; set; }
 
 
+        public List<BookLibrary>? BookLibrary { get; set; } = new List<BookLibrary>();
+
     }
 }

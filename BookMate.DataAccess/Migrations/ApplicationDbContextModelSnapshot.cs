@@ -17,7 +17,7 @@ namespace BookMate.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -172,7 +172,8 @@ namespace BookMate.DataAccess.Migrations
 
                     b.Property<string>("categoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("categoryID");
 
@@ -218,6 +219,26 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Clubs");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Library", b =>
+                {
+                    b.Property<int>("LibraryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibraryId"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LibraryId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Librarys");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -414,6 +435,17 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.Library", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "user")
+                        .WithOne("UserLibrary")
+                        .HasForeignKey("BookMate.Entities.Library", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -468,6 +500,8 @@ namespace BookMate.DataAccess.Migrations
             modelBuilder.Entity("BookMate.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Clubs");
+
+                    b.Navigation("UserLibrary");
                 });
 #pragma warning restore 612, 618
         }

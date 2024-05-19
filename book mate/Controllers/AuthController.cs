@@ -19,12 +19,15 @@ namespace book_mate.Controllers
         private IUserService _userService;
         private IUnitOfWork _unitOfWork;
         private ApplicationDbContext _db;
-        public AuthController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db)
+
+        private ILibraryService _libraryService;
+        public AuthController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db, ILibraryService libraryService)
         {
             _userManager = userManager;
             _userService = userService;
             _unitOfWork = unitOfWork;
             _db = db;
+            _libraryService = libraryService;
         }
 
         [HttpPost("register")]
@@ -39,6 +42,9 @@ namespace book_mate.Controllers
                 return BadRequest(new JsonResult(result.Message));
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+            
+            await _libraryService.CreateLibrary(result.Id);
 
             return Ok("successfully!!");
         }

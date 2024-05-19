@@ -79,6 +79,7 @@ namespace Services
                 Roles = new List<string> { "User" },
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = user.UserName,
+                Id=user.Id,
                 RefreshToken = refreshToken.Token,
                 RefreshTokenExpiration = refreshToken.ExpiresOn
             };
