@@ -83,7 +83,20 @@ namespace Services
             }
             return false;
         }
+        public async Task<ApplicationUserClub> AddMember(string userId,Guid clubId)
+        {
+            if (_unitOfWork.Club.Get(clubId.ToString()) == null)
+            {
+                return null;
+            }
+            var a =await _unitOfWork.Club.AddMember(userId, clubId);
+            _unitOfWork.saveAsync();
+            return a;
+        }
 
-
+        public async Task<List<ApplicationUserClub>> GetMembers(Guid clubId)
+        {
+            return await _unitOfWork.Club.GetMembers(clubId.ToString());
+        }
     }
 }

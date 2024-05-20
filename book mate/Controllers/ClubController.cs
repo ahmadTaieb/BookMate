@@ -71,5 +71,21 @@ namespace book_mate.Controllers
             return new JsonResult(await _clubService.UpdateAsync(clubId, club));
         }
 
+        [HttpPost("AddMember")]
+        public async Task<IActionResult> AddMember([FromQuery]string clubId)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            await _clubService.AddMember( user.Id,new Guid(clubId));
+
+            return new JsonResult(new { status = 200, message = "member added successfully" });
+        }
+
+        [HttpPost("GetMembers")]
+        public async Task<IActionResult> GetMembers([FromQuery]string clubId)
+        {
+            return new JsonResult(_clubService.GetMembers(new Guid(clubId)));
+        }
     }
 }
