@@ -26,6 +26,7 @@ namespace BookMate.DataAccess.Data
         public DbSet<Library> Librarys { get; set; }
 
         public DbSet<BookLibrary> BookLibraries { get; set; }
+        public DbSet<ApplicationUserClub> applicationUserClubs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -40,6 +41,24 @@ namespace BookMate.DataAccess.Data
             //    .HasMany(c => c.Clubs)
             //    .WithOne(u => u.ApplicationUser)
             //    .HasForeignKey(i => i.ApplicationUserId);
+
+            
+
+            builder.Entity<ApplicationUserClub>()
+                .HasKey(c => new { c.ApplicationUserId, c.ClubId });
+
+            builder.Entity<ApplicationUserClub>()
+                .HasOne(c => c.ApplicationUser)
+                .WithMany(c => c.ClubsMember)
+                .IsRequired()
+                .HasForeignKey(c => c.ApplicationUserId);
+
+            builder.Entity<ApplicationUserClub>()
+                .HasOne(c => c.Club)
+                .WithMany(c => c.ApplicationUsersMember)
+                .IsRequired()
+                .HasForeignKey(c => c.ClubId);
+
 
         }
 

@@ -33,33 +33,54 @@ namespace book_mate.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromQuery] RegisterDTO model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new JsonResult(ModelState));
+            if(!model.Email.Contains("@"))
+            {
+                return new JsonResult(new { status = 400, message = "email not valid" });
+            }
+            if (model.Password.Length <= 5 )
+            {
+                return new JsonResult(new { status = 400, message = "password must have at least 6 charecter" });
+            }
+            if(model.Name == null)
+            {
+                return new JsonResult(new { status = 400, message = "name is requied" });
+            }
 
             var result = await _userService.RegisterAsync(model);
 
             if (!result.IsAuthenticated)
-                return BadRequest(new JsonResult(result.Message));
+            {
+                return new JsonResult(new {status = 400 , message = result.Message });
+            }
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
             await _libraryService.CreateLibrary(result.Id);
 
-            return Ok("successfully!!");
+            return new JsonResult(new { status = 200, message = "successfully!",token = result.Token });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> GetTokenAsync([FromQuery] TokenRequest model)
         {
+            if (!model.Email.Contains("@"))
+            {
+                return new JsonResult(new { status = 400, message = "email not valid" });
+            }
+            if (model.Password.Length <= 5)
+            {
+                return new JsonResult(new { status = 400, message = "password must have at least 6 charecter" });
+            }
+            
             var result = await _userService.GetTokenAsync(model);
 
             if (!result.IsAuthenticated)
-                return BadRequest(new JsonResult(result.Message));
+                return new JsonResult(new {status = 400 , message = result.Message });
 
-            if (!string.IsNullOrEmpty(result.RefreshToken))
-                SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+            //if (!string.IsNullOrEmpty(result.RefreshToken))
+            //    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(new JsonResult(result));
+            return new JsonResult(new { status = 200 , message = "successfully!" ,token = result.Token});
         }
 
         [HttpPost("addRole")]
@@ -97,14 +118,14 @@ namespace book_mate.Controllers
             var token = t ?? Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new JsonResult("Token is required!"));
+                return new JsonResult(new { status = 400,message = "Token is required!"});
 
             var result = await _userService.RevokeTokenAsync(token);
 
             if (!result)
-                return BadRequest(new JsonResult("Token is invalid!"));
+                return new JsonResult(new { status = 400, message = "Token is invalid!" });
 
-            return Ok();
+            return new JsonResult(new {status = 200,message = "successfully!" });
         }
 
         private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
