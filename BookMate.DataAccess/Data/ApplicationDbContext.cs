@@ -24,6 +24,8 @@ namespace BookMate.DataAccess.Data
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Library> Librarys { get; set; }
+
+        public DbSet<BookLibrary> BookLibraries { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
