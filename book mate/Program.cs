@@ -32,12 +32,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
+    options.AddPolicy("ReactApp",
         builder =>
         {
-            builder.WithOrigins("http://example.com")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
+            builder.WithOrigins("http://localhost:5173");
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+            builder.AllowCredentials();
         });
 });
 
@@ -97,7 +98,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowSpecificOrigin");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -110,6 +111,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors("ReactApp");
 
 app.Run();
 
