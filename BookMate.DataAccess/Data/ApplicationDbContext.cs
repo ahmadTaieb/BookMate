@@ -35,6 +35,38 @@ namespace BookMate.DataAccess.Data
             builder.Entity<Category>().HasData(new Category()
             { categoryID = 2, categoryName = "action" });
 
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Title = "Test1",
+                Author = "Author1",
+                NumberOfPage = 100,
+            });
+
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Title = "Test2",
+                Author = "Author2",
+                NumberOfPage = 200,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Title = "Test3",
+                Author = "Author3",
+                NumberOfPage = 300,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Title = "Test4",
+                Author = "Author4",
+                NumberOfPage = 400,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Title = "Test5",
+                Author = "Author5",
+                NumberOfPage = 500,
+            });
+
             //builder.Entity<ApplicationUser>()
             //    .HasMany(c => c.Clubs)
             //    .WithOne(u => u.ApplicationUser)
