@@ -18,7 +18,8 @@ namespace ServiceContracts
         Task<List<Club>> GetAllClubsAsync();
         Task<Club> AddClubAsync(string adminId, ClubAddRequest club);
         Task<ApplicationUserClub> AddMember(string userId, Guid clubId);
-        Task<List<ApplicationUserClub>> GetMembers(Guid clubId);
+        Task<List<ApplicationUser>> GetMembers(string clubId);
+        Task<List<Club>> GetClubsMember(string userId);
 
 
     }

@@ -24,7 +24,7 @@ namespace BookMate.DataAccess.Data
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Library> Librarys { get; set; }
-        public DbSet<ApplicationUserClub> applicationUserClubs { get; set; }
+        //public DbSet<ApplicationUserClub> applicationUserClubs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -40,23 +40,32 @@ namespace BookMate.DataAccess.Data
             //    .WithOne(u => u.ApplicationUser)
             //    .HasForeignKey(i => i.ApplicationUserId);
 
-            
 
-            builder.Entity<ApplicationUserClub>()
-                .HasKey(c => new { c.ApplicationUserId, c.ClubId });
 
-            builder.Entity<ApplicationUserClub>()
-                .HasOne(c => c.ApplicationUser)
-                .WithMany(c => c.ClubsMember)
-                .IsRequired()
-                .HasForeignKey(c => c.ApplicationUserId);
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasKey(c => new { c.ApplicationUserId, c.ClubId });
 
-            builder.Entity<ApplicationUserClub>()
-                .HasOne(c => c.Club)
-                .WithMany(c => c.ApplicationUsersMember)
-                .IsRequired()
-                .HasForeignKey(c => c.ClubId);
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasOne(c => c.ApplicationUser)
+            //    .WithMany(c => c.ClubsMember)
+            //    .IsRequired()
+            //    .HasForeignKey(c => c.ApplicationUserId);
 
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasOne(c => c.Club)
+            //    .WithMany(c => c.ApplicationUsersMember)
+            //    .IsRequired()
+            //    .HasForeignKey(c => c.ClubId);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(x => x.ClubsMember)
+                .WithOne(x => x.ApplicationUser)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Club>()
+                .HasMany(x => x.ApplicationUsersMember)
+                .WithOne(x => x.Club)
+                .OnDelete(DeleteBehavior.SetNull);
 
         }
 

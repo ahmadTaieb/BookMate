@@ -26,7 +26,7 @@ namespace BookMate.Entities
         //public List<ApplicationUser>? applicationUserParents { get; set; }
         public ICollection<Club>? Clubs { get; set; }
 
-        public ICollection<ApplicationUserClub>? ClubsMember { get; set;}
+        public ICollection<ApplicationUserClub>? ClubsMember { get; set;} = new List<ApplicationUserClub>(); 
 
 
     }

@@ -18,6 +18,8 @@ namespace BookMate.DataAccess.IRepository
         Task<List<Club>> GetAdminClubs(string adminId);
         Task<ApplicationUser> GetAdminClub(string clubId);
         Task<ApplicationUserClub> AddMember(string userId, Guid clubId);
-        Task<List<ApplicationUserClub>> GetMembers(string clubId);
+        List<ApplicationUserClub> GetMembers(string clubId);
+
+        List<ApplicationUserClub> GetClubsMember(string userId);
     }
 }

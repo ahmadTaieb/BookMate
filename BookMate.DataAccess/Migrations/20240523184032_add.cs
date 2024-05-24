@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Add : Migration
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -285,27 +285,29 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "applicationUserClubs",
+                name: "ApplicationUserClub",
                 columns: table => new
                 {
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClubId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ClubId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_applicationUserClubs", x => new { x.ApplicationUserId, x.ClubId });
+                    table.PrimaryKey("PK_ApplicationUserClub", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_applicationUserClubs_AspNetUsers_ApplicationUserId",
+                        name: "FK_ApplicationUserClub_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_applicationUserClubs_Clubs_ClubId",
+                        name: "FK_ApplicationUserClub_Clubs_ClubId",
                         column: x => x.ClubId,
                         principalTable: "Clubs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,8 +346,13 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_applicationUserClubs_ClubId",
-                table: "applicationUserClubs",
+                name: "IX_ApplicationUserClub_ApplicationUserId",
+                table: "ApplicationUserClub",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserClub_ClubId",
+                table: "ApplicationUserClub",
                 column: "ClubId");
 
             migrationBuilder.CreateIndex(
@@ -417,7 +424,7 @@ namespace BookMate.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "applicationUserClubs");
+                name: "ApplicationUserClub");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");

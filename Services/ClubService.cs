@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Services
 {
@@ -94,9 +95,29 @@ namespace Services
             return a;
         }
 
-        public async Task<List<ApplicationUserClub>> GetMembers(Guid clubId)
+        public async Task<List<ApplicationUser>> GetMembers(string clubId)
         {
-            return await _unitOfWork.Club.GetMembers(clubId.ToString());
+            var m = _unitOfWork.Club.GetMembers(clubId);
+            List<ApplicationUser> members = new List<ApplicationUser>();
+            
+            foreach (ApplicationUserClub c in m)
+            {
+                members.Add(c.ApplicationUser);
+            }
+            
+
+            return members;
+        }
+
+        public async Task<List<Club>> GetClubsMember(string userId)
+        {
+            var clubs = _unitOfWork.Club.GetClubsMember(userId);
+            List<Club> c = new List<Club>();
+            foreach (var club in clubs)
+            {
+                c.Add(club.Club);
+            }
+            return c;
         }
     }
 }
