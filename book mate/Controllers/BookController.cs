@@ -97,7 +97,7 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("/addBook")]
-        public async Task<IActionResult> addBook([FromForm] BookAddRequest? model)
+        public async Task<IActionResult> addBook([FromBody] BookAddRequest? model)
         {
 
             if(model == null)
@@ -126,7 +126,7 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("editBook")]
-        public async Task<IActionResult> EditBook([FromQuery] Guid? id, [FromForm] BookAddRequest editedBook)
+        public async Task<IActionResult> EditBook([FromBody] Guid? id, [FromBody] BookAddRequest editedBook)
         {
             
             if(editedBook == null)
