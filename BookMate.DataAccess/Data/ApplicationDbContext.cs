@@ -42,7 +42,7 @@ namespace BookMate.DataAccess.Data
                 Id = Guid.NewGuid(),
                 Title = "Test1",
                 Author = "Author1",
-                NumberOfPage = 100,
+                NumberOfPages = 100,
             });
 
             builder.Entity<Book>().HasData(new Book()
@@ -50,28 +50,28 @@ namespace BookMate.DataAccess.Data
                 Id = Guid.NewGuid(),
                 Title = "Test2",
                 Author = "Author2",
-                NumberOfPage = 200,
+                NumberOfPages = 200,
             });
             builder.Entity<Book>().HasData(new Book()
             {
                 Id = Guid.NewGuid(),
                 Title = "Test3",
                 Author = "Author3",
-                NumberOfPage = 300,
+                NumberOfPages = 300,
             });
             builder.Entity<Book>().HasData(new Book()
             {
                 Id = Guid.NewGuid(),
                 Title = "Test4",
                 Author = "Author4",
-                NumberOfPage = 400,
+                NumberOfPages = 400,
             });
             builder.Entity<Book>().HasData(new Book()
             {
                 Id = Guid.NewGuid(),
                 Title = "Test5",
                 Author = "Author5",
-                NumberOfPage = 500,
+                NumberOfPages = 500,
             });
 
             //builder.Entity<ApplicationUser>()

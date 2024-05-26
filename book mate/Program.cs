@@ -26,12 +26,12 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddMvc()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddControllers();
-//builder.Services.AddControllers()
-  //  .AddJsonOptions(options =>
-    //{
-      //  options.JsonSerializerOptions.PropertyNamingPolicy = null;
-    //});
+//builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
