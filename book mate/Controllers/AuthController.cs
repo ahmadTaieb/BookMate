@@ -31,7 +31,7 @@ namespace book_mate.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromQuery] RegisterDTO model)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO model)
         {
             if(!model.Email.Contains("@"))
             {
@@ -61,7 +61,7 @@ namespace book_mate.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> GetTokenAsync([FromQuery] TokenRequest model)
+        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequest model)
         {
             if (!model.Email.Contains("@"))
             {
@@ -143,7 +143,7 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpPost("updateUser")]
-        public async Task<IActionResult> updateUser([FromQuery] ApplicationUserUpdateRequest userAddRequest)
+        public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest userAddRequest)
         {
 
             if (userAddRequest == null)

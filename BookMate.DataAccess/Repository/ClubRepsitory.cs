@@ -78,5 +78,41 @@ namespace BookMate.DataAccess.Repository
             return matchingClub;
 
         }
+
+        public async Task<ApplicationUserClub> AddMember(string userId, Guid clubId) 
+        {
+            var a = new ApplicationUserClub 
+            {
+                ApplicationUserId = userId,
+                ClubId = clubId,
+                ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id == userId),
+                Club = _db.Clubs.FirstOrDefault(c => c.Id == clubId),
+            };
+            //_db.applicationUserClubs.Add(a);
+            
+            return a;
+        }
+
+        public List<ApplicationUserClub> GetMembers(string clubId)
+        {
+            var c =  _db.Clubs
+                .Include(x => x.ApplicationUsersMember)
+                .ThenInclude(y => y.ApplicationUser)
+                .FirstOrDefault(i => i.Id.ToString() == clubId);
+            
+            return (List<ApplicationUserClub>)c.ApplicationUsersMember;
+    
+        }
+        public List<ApplicationUserClub> GetClubsMember(string userId)
+        {
+            var a = _db.ApplicationUsers.
+                Include(u => u.ClubsMember)
+                .ThenInclude(i => i.Club)
+                .FirstOrDefault(i => i.Id == userId);
+
+            return (List<ApplicationUserClub>)a.ClubsMember;
+        }
+
+
     }
 }

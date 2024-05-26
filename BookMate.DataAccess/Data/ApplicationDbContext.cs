@@ -37,28 +37,74 @@ namespace BookMate.DataAccess.Data
             builder.Entity<Category>().HasData(new Category()
             { categoryID = 2, categoryName = "action" });
 
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test1",
+                Author = "Author1",
+                NumberOfPage = 100,
+            });
+
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test2",
+                Author = "Author2",
+                NumberOfPage = 200,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test3",
+                Author = "Author3",
+                NumberOfPage = 300,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test4",
+                Author = "Author4",
+                NumberOfPage = 400,
+            });
+            builder.Entity<Book>().HasData(new Book()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test5",
+                Author = "Author5",
+                NumberOfPage = 500,
+            });
+
             //builder.Entity<ApplicationUser>()
             //    .HasMany(c => c.Clubs)
             //    .WithOne(u => u.ApplicationUser)
             //    .HasForeignKey(i => i.ApplicationUserId);
 
-            
 
-            builder.Entity<ApplicationUserClub>()
-                .HasKey(c => new { c.ApplicationUserId, c.ClubId });
 
-            builder.Entity<ApplicationUserClub>()
-                .HasOne(c => c.ApplicationUser)
-                .WithMany(c => c.ClubsMember)
-                .IsRequired()
-                .HasForeignKey(c => c.ApplicationUserId);
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasKey(c => new { c.ApplicationUserId, c.ClubId });
 
-            builder.Entity<ApplicationUserClub>()
-                .HasOne(c => c.Club)
-                .WithMany(c => c.ApplicationUsersMember)
-                .IsRequired()
-                .HasForeignKey(c => c.ClubId);
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasOne(c => c.ApplicationUser)
+            //    .WithMany(c => c.ClubsMember)
+            //    .IsRequired()
+            //    .HasForeignKey(c => c.ApplicationUserId);
 
+            //builder.Entity<ApplicationUserClub>()
+            //    .HasOne(c => c.Club)
+            //    .WithMany(c => c.ApplicationUsersMember)
+            //    .IsRequired()
+            //    .HasForeignKey(c => c.ClubId);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(x => x.ClubsMember)
+                .WithOne(x => x.ApplicationUser)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Club>()
+                .HasMany(x => x.ApplicationUsersMember)
+                .WithOne(x => x.Club)
+                .OnDelete(DeleteBehavior.SetNull);
 
         }
 

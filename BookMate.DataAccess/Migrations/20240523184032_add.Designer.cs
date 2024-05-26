@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240519111502_lib")]
-    partial class lib
+    [Migration("20240523184032_add")]
+    partial class add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,29 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ClubId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ClubId");
+
+                    b.ToTable("ApplicationUserClub");
+                });
+
             modelBuilder.Entity("BookMate.Entities.Book", b =>
                 {
                     b.Property<Guid>("Id")
@@ -163,6 +186,29 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("LibraryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("LibraryId");
+
+                    b.ToTable("BookLibrary");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Category", b =>
@@ -238,8 +284,7 @@ namespace BookMate.DataAccess.Migrations
 
                     b.HasKey("LibraryId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Librarys");
                 });
@@ -429,6 +474,42 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("ClubsMember")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("BookMate.Entities.Club", "Club")
+                        .WithMany("ApplicationUsersMember")
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Club");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
+                {
+                    b.HasOne("BookMate.Entities.Book", "Book")
+                        .WithMany("BookLibrary")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMate.Entities.Library", "Library")
+                        .WithMany("books")
+                        .HasForeignKey("LibraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Library");
+                });
+
             modelBuilder.Entity("BookMate.Entities.Club", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
@@ -441,8 +522,8 @@ namespace BookMate.DataAccess.Migrations
             modelBuilder.Entity("BookMate.Entities.Library", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "user")
-                        .WithOne("UserLibrary")
-                        .HasForeignKey("BookMate.Entities.Library", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -504,7 +585,22 @@ namespace BookMate.DataAccess.Migrations
                 {
                     b.Navigation("Clubs");
 
-                    b.Navigation("UserLibrary");
+                    b.Navigation("ClubsMember");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Book", b =>
+                {
+                    b.Navigation("BookLibrary");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Club", b =>
+                {
+                    b.Navigation("ApplicationUsersMember");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Library", b =>
+                {
+                    b.Navigation("books");
                 });
 #pragma warning restore 612, 618
         }

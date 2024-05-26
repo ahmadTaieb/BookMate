@@ -17,5 +17,9 @@ namespace BookMate.DataAccess.IRepository
         Task<bool> DeleteClub(string id);
         Task<List<Club>> GetAdminClubs(string adminId);
         Task<ApplicationUser> GetAdminClub(string clubId);
+        Task<ApplicationUserClub> AddMember(string userId, Guid clubId);
+        List<ApplicationUserClub> GetMembers(string clubId);
+
+        List<ApplicationUserClub> GetClubsMember(string userId);
     }
 }

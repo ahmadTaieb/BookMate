@@ -11,6 +11,7 @@ using ServiceContracts;
 using Services;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,11 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IClubService, ClubService>();
 
+builder.Services.AddControllersWithViews()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+builder.Services.AddMvc()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddControllers();
 //builder.Services.AddControllers()
@@ -31,6 +36,18 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5173");
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+            builder.AllowCredentials();
+        });
+});
 
 builder.Services.AddScoped<IBooksService,BooksService >();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
@@ -84,7 +101,10 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -98,6 +118,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors("ReactApp");
 
 app.Run();
 

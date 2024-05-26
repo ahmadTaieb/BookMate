@@ -130,6 +130,29 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("applicationUserClubs");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ClubId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ClubId");
+
+                    b.ToTable("ApplicationUserClub");
+                });
+
             modelBuilder.Entity("BookMate.Entities.Book", b =>
                 {
                     b.Property<Guid>("Id")
@@ -198,6 +221,29 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("LibraryId");
 
                     b.ToTable("BookLibraries");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("LibraryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("LibraryId");
+
+                    b.ToTable("BookLibrary");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Category", b =>
@@ -476,6 +522,23 @@ namespace BookMate.DataAccess.Migrations
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Club");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("ClubsMember")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("BookMate.Entities.Club", "Club")
+                        .WithMany("ApplicationUsersMember")
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ApplicationUser");
 

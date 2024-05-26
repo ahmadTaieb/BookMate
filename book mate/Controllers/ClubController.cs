@@ -1,8 +1,10 @@
-﻿using BookMate.DataAccess.IRepository;
+﻿using BookMate.DataAccess.Data;
+using BookMate.DataAccess.IRepository;
 using BookMate.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
@@ -17,22 +19,18 @@ namespace book_mate.Controllers
         private Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
         private IClubService _clubService;
         private IUnitOfWork _unitOfWork;
+        private ApplicationDbContext _db;
 
-        public ClubController(IClubService clubService, IUnitOfWork unitOfWork,Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager) 
+        public ClubController(ApplicationDbContext db,IClubService clubService, IUnitOfWork unitOfWork,Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager) 
         {
             _userManager = userManager;
             _clubService =  clubService;
             _unitOfWork = unitOfWork;
+            _db = db;
 
         }
 
-        [HttpGet("getClub/{id}")]
-        public async Task<IActionResult> getClub(string id)
-        {
-            var club = await _clubService.GetClub(id);
-            return new JsonResult(club);
-
-        }
+        
 
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromQuery] ClubAddRequest club)
@@ -40,8 +38,15 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
             var adminId = user.Id;
-            
-            return new JsonResult(_clubService.AddClubAsync(adminId, club));
+            Club c = new Club() {
+                Name = club.Name 
+                ,ApplicationUserId = adminId
+            };
+            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c,ApplicationUserId=adminId});
+            _db.Clubs.Add(c);
+            _db.SaveChanges();
+            return new JsonResult(c);
+            //return new JsonResult(_clubService.AddClubAsync(adminId, club));
         }
 
 
@@ -69,6 +74,51 @@ namespace book_mate.Controllers
             }
 
             return new JsonResult(await _clubService.UpdateAsync(clubId, club));
+        }
+        [Authorize]
+        [HttpPost("AddMember")]
+        public async Task<IActionResult> AddMember([FromQuery]string clubId)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            var c = await _db.Clubs
+                .FirstOrDefaultAsync(i => i.Id.ToString() == clubId);
+            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c, ApplicationUserId = user.Id });
+            //_db.Clubs.Add(c);
+            _db.SaveChanges();
+            return new JsonResult(c);
+            //await _clubService.AddMember( user.Id,new Guid(clubId));
+
+            //return new JsonResult(new { status = 200, message = "member added successfully" });
+        }
+
+
+        [HttpGet("getMembers/{id}")]
+        public async Task<IActionResult> getClub(string id)
+        {
+
+            var members = _clubService.GetMembers(id).Result;
+            List<ApplicationUserResponse> response = new List<ApplicationUserResponse>();
+            foreach (var u in members)
+            {
+                response.Add(new ApplicationUserResponse { Id = u.Id, Name = u.Name });
+            }
+
+            return new JsonResult(new { status = 200, message = "success", data = response });
+
+        }
+
+        [Authorize]
+        [HttpGet("GetClubsMember")]
+        public async Task<IActionResult> GetClubsMember()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            var clubs = _clubService.GetClubsMember(user.Id).Result;
+
+            return new JsonResult(clubs);
         }
 
     }

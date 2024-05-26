@@ -21,8 +21,8 @@ namespace BookMate.Entities
         [ForeignKey("ApplicationUserId")]
         [JsonIgnore]
         public ApplicationUser? ApplicationUser {  get; set; }
-
-        public ICollection<ApplicationUserClub> ApplicationUsersMember { get; set; }
+        [JsonIgnore]
+        public ICollection<ApplicationUserClub> ApplicationUsersMember { get; set; } = new List<ApplicationUserClub>();
         
     }
 }
