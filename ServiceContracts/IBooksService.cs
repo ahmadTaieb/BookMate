@@ -17,7 +17,7 @@ namespace ServiceContracts
         Task<List<BookResponse>> GetBooksByCategory(List<string>categoriesName);
         BookResponse? GetBookByBookId(Guid? Id);
 
-        Task EditBookAsync(Guid? bookId, BookAddRequest? editedBook);
+        Task EditBookAsync(string Title, BookAddRequest? editedBook);
 
         Task IncrementReadingCount(Guid bookId);
     }

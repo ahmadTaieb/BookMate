@@ -39,37 +39,46 @@ namespace book_mate.Controllers
         
         [HttpGet]
         [Route("/Books")]
-        public IActionResult GetBookByTitle([FromQuery] string title = null, [FromQuery] Guid id = default(Guid) )
+        public IActionResult GetAllBooks( )
         {
-            if (!string.IsNullOrEmpty(title))
+            
+           
+
+
+            List<BookResponse> Books = _booksService.GetAllBooks();
+            
+            return Ok(Books);
+
+
+        }
+
+
+        [HttpGet]
+        [Route("/Books/{Title}")]
+        public IActionResult GetBookByTitle(string Title)
+        {
+            if (!string.IsNullOrEmpty(Title))
             {
                 // If title is provided, return the book with that title
-                BookResponse? response = _booksService.GetBookByBookTitle(title);
-                if (response != null)
-                {
-                    return Ok(response);
-                }
-            } 
-
-            if (id != Guid.Empty)
-            {
-                // If id is provided, return the book with that id
-                BookResponse? response = _booksService.GetBookByBookId(id);
+                BookResponse? response = _booksService.GetBookByBookTitle(Title);
                 if (response != null)
                 {
                     return Ok(response);
                 }
             }
-
            
-
-
-            List<BookResponse> Books = _booksService.GetAllBooks();
-
-            return Ok(Books);
-
+                return NotFound();
 
         }
+
+      
+
+
+
+
+
+
+
 
 
         [HttpGet("/Books/categories")]
@@ -123,10 +132,9 @@ namespace book_mate.Controllers
 
 
 
-
         [HttpPost]
-        [Route("editBook")]
-        public async Task<IActionResult> EditBook([FromQuery] Guid? id, [FromForm] BookAddRequest editedBook)
+        [Route("/editBook/{Title}")]
+        public async Task<IActionResult> EditBook( string Title , [FromForm] BookAddRequest editedBook)
         {
             
             if(editedBook == null)
@@ -135,13 +143,13 @@ namespace book_mate.Controllers
                 return BadRequest("Edited Book is null");
             }
 
-            if(id ==null)
+            if(Title ==null)
             {
                 return BadRequest("Book id is null");
             }
             try
             {
-                await _booksService.EditBookAsync(id, editedBook); // Await the EditBookAsync method call
+                await _booksService.EditBookAsync(Title, editedBook); // Await the EditBookAsync method call
 
                 return Ok("Book edited successfully");
 

@@ -24,8 +24,8 @@ namespace BookMate.Entities
         public string? VoiceUrl { get; set; }
 
         public string? Description { get; set; }
-        public int? NumberOfPage { get; set; }
-        public int? PublishedYear { get; set; }
+        public int? NumberOfPages { get; set; }
+        public string? PublishedYear { get; set; }
 
         public double? AverageRating { get; set; }
 

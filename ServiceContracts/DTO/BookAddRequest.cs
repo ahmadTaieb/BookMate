@@ -19,7 +19,7 @@ namespace ServiceContracts.DTO
        
         public string? Author { get; set; }
 
-        public List<int>? CategoryIds { get; set; }
+        public List<string>? CategoriesNames { get; set; }
 
         // Properties for file uploads
         public IFormFile? ImageFile { get; set; }
@@ -28,8 +28,8 @@ namespace ServiceContracts.DTO
 
        
         public string? Description { get; set; }
-        public int? NumberOfPage { get; set; }
-        public int? PublishedYear { get; set; }
+        public int? NumberOfPages { get; set; }
+        public string? PublishedYear { get; set; }
 
         
 
@@ -59,16 +59,16 @@ namespace ServiceContracts.DTO
                 PdfUrl = PdfUrl,
                 VoiceUrl = VoiceUrl,
                 Description = Description,
-                NumberOfPage = NumberOfPage,
+                NumberOfPages = NumberOfPages,
                 PublishedYear = PublishedYear,
                
             };
 
-            if (CategoryIds != null)
+            if (CategoriesNames != null)
             {
 
 
-                book.Categories = allCategories.Where(c => this.CategoryIds.Contains(c.categoryID)).ToList();
+                book.Categories = allCategories.Where(c => this.CategoriesNames.Contains(c.categoryName)).ToList();
 
 
             }

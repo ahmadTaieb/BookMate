@@ -66,12 +66,13 @@ namespace Services
             if(Id== null) 
                 return null;
 
-            Book? book_response=_db.Books.FirstOrDefault(temp=>temp.Id==Id);
+            Book? book_response=_db.Books.Include(book => book.Categories).FirstOrDefault(temp=>temp.Id==Id);
 
             if(book_response == null)
                 return null;
 
-            return book_response.ToBookResponse();
+            BookResponse? bookResponse = book_response.ToBookResponse();
+            return bookResponse;
 
         }
         public BookResponse? GetBookByBookTitle(string? title)
@@ -79,7 +80,7 @@ namespace Services
             if (title == null)
                 return null;
 
-            Book? book_response = _db.Books.FirstOrDefault(temp => temp.Title == title);
+            Book? book_response = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Title == title);
 
             if (book_response == null)
                 return null;
@@ -126,10 +127,10 @@ namespace Services
 
             
         }
-        public async Task EditBookAsync(Guid? bookId, BookAddRequest? editedBook)
+        public async Task EditBookAsync(string? bookTitle, BookAddRequest? editedBook)
         {
             // Find the book you want to edit
-            var book = await _db.Books.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == bookId);
+            var book = await _db.Books.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Title == bookTitle);
 
             if (book != null)
             {
@@ -140,10 +141,10 @@ namespace Services
                 book.PdfUrl = await GetPdfUrl(file : editedBook.PdfFile); 
                 book.VoiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
                 book.Description = editedBook.Description;
-                book.NumberOfPage = editedBook.NumberOfPage;
+                book.NumberOfPages = editedBook.NumberOfPages;
                 book.PublishedYear = editedBook.PublishedYear;
 
-                book.Categories = _db.Categories.Where(c => editedBook.CategoryIds.Contains(c.categoryID)).ToList();
+                book.Categories = _db.Categories.Where(c => editedBook.CategoriesNames.Contains(c.categoryName)).ToList();
 
 
                  try
@@ -171,7 +172,7 @@ namespace Services
             else
             {
                 // Handle case where the book with the specified ID is not found
-                throw new InvalidOperationException($"Book with ID '{bookId}' not found.");
+                throw new InvalidOperationException($"Book with title '{bookTitle}' not found.");
             }
         }
 
