@@ -144,10 +144,11 @@ namespace Services
                 book.NumberOfPages = editedBook.NumberOfPages;
                 book.PublishedYear = editedBook.PublishedYear;
 
-                book.Categories = _db.Categories.Where(c => editedBook.CategoriesNames.Contains(c.categoryName)).ToList();
+                var categoryNames = editedBook.Categories.Select(c => c.CategoryName).ToList();
+                book.Categories = _db.Categories.Where(c => categoryNames.Contains(c.categoryName)).ToList();
 
 
-                 try
+                try
         {
             // Ensure that the book entity is marked as modified
             _db.Entry(book).State = EntityState.Modified;

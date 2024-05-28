@@ -106,7 +106,7 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("/addBook")]
-        public async Task<IActionResult> addBook([FromBody] BookAddRequest? model)
+        public async Task<IActionResult> addBook([FromForm] BookAddRequest? model)
         {
 
             if(model == null)
