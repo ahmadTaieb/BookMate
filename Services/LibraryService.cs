@@ -40,8 +40,12 @@ namespace Services
         }
 
 
-        public async Task AddBookToLibrary(string userId, Guid bookId, ReadingStatus? readingstatus)
+        public async Task AddBookToLibrary(string userId, Guid bookId, string? status)
         {
+
+           
+
+
             if (userId == null)
             {
                 throw new ArgumentNullException(nameof(userId));
@@ -60,6 +64,21 @@ namespace Services
                 throw new InvalidOperationException("Library not found for the user.");
             }
 
+            ReadingStatus? readingStatus;
+            if (status == "Reading")
+                readingStatus = ReadingStatus.Reading;
+            else if(status=="ToRead")
+                readingStatus = ReadingStatus.ToRead;
+            else if(status=="Read")
+            {
+                readingStatus= ReadingStatus.Read;
+            }
+            else
+            {
+                throw new InvalidOperationException("Reading status not correct.");
+            }
+
+
             // Check if the book already exists in the library
             BookLibrary? existingBookLibrary = _db.BookLibraries
                 .FirstOrDefault(x => x.LibraryId == library.LibraryId && x.BookId == bookId);
@@ -67,7 +86,7 @@ namespace Services
             if (existingBookLibrary != null)
             {
                 // Update the status if the book is already in the library
-                existingBookLibrary.ReadingStatus = readingstatus;
+                existingBookLibrary.ReadingStatus = readingStatus;
             }
             else
             {
@@ -76,7 +95,7 @@ namespace Services
                 {
                     BookId = bookId,
                     LibraryId = library.LibraryId,
-                    ReadingStatus = readingstatus // Include the status in the new entry
+                    ReadingStatus = readingStatus // Include the status in the new entry
                 };
 
                 _db.BookLibraries.Add(bookLibrary);
@@ -86,7 +105,9 @@ namespace Services
             await _db.SaveChangesAsync();
         }
 
-
-
+        public Task GetReadBook(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

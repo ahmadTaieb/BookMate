@@ -11,10 +11,10 @@ namespace ServiceContracts
     public interface IBooksService
     {
         Task AddBook(BookAddRequest? bookAddRequest);
-        List<BookResponse> GetAllBooks();
+        List<BookResponse> GetAllBooks(string? userId);
         BookResponse? GetBookByBookTitle(string? title);
         //List<BookResponse> GetBooksByCategory(String? Category);
-        Task<List<BookResponse>> GetBooksByCategory(List<string>categoriesName);
+        Task<List<BookResponse?>>? GetBooksByCategory(List<string>categoriesName,string? userId);
         BookResponse? GetBookByBookId(Guid? Id);
 
         Task EditBookAsync(string Title, BookAddRequest? editedBook);

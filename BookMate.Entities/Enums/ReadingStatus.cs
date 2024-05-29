@@ -8,8 +8,10 @@ namespace BookMate.Entities.Enums
 {
     public enum ReadingStatus
     {
-        ToRead,
-        Reading,
-        Readed
+         ToRead=0,
+        Reading=1,
+        Read=2
+
+      
     }
 }

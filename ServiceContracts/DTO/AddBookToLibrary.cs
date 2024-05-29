@@ -11,6 +11,6 @@ namespace ServiceContracts.DTO
     {
         public Guid bookId { get; set; }
 
-        public ReadingStatus? ReadingStatus { get; set; }
+        public string? status { get; set; }
     }
 }

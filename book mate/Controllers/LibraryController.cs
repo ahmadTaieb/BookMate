@@ -12,9 +12,12 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
+
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
+
+
 public class LibraryController : ControllerBase
 {
     private readonly ILibraryService _libraryService;
@@ -25,8 +28,8 @@ public class LibraryController : ControllerBase
         _applicationDbContext = applicationDbContext;
     }
 
-    [HttpPost("add")]
-    public async Task<IActionResult> Add([FromBody] AddBookToLibrary book)
+    [HttpPost("AddBookToLibrary")]
+    public async Task<IActionResult> AddBookToLibrary([FromBody] AddBookToLibrary book)
     {
         try
         {
@@ -39,16 +42,22 @@ public class LibraryController : ControllerBase
             {
                 return BadRequest("User ID is not available in the token.");
             }
-            ReadingStatus status;
-           
+            
 
-            await _libraryService.AddBookToLibrary(userId, book.bookId,book.ReadingStatus);
-            return Ok("done");
+
+
+            await _libraryService.AddBookToLibrary(userId, book.bookId,book.status);
+            return Ok("Book Add to library Successfully");
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
+
+
+
+
+
 }
 

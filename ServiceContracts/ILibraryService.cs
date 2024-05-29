@@ -11,6 +11,10 @@ namespace ServiceContracts
     {
         Task CreateLibrary(string userId);
         //Task AddBookToLibrary(string userId, Guid bookId,ReadingStatus status);
-        Task AddBookToLibrary(string userId, Guid bookId, ReadingStatus? readingStatus);
+        Task AddBookToLibrary(string userId, Guid bookId, string? status);
+
+        Task GetReadBook(string userId);
+
+
     }
 }

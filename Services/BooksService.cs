@@ -12,6 +12,8 @@ using BookMate.DataAccess.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Humanizer;
+using BookMate.Entities.Enums;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 //using BookMate.DataAccess.Migrations;
 
 namespace Services
@@ -34,15 +36,37 @@ namespace Services
 
 
      
-        public List<BookResponse> GetAllBooks()
+        public List<BookResponse?> GetAllBooks(string? userId)
         {
 
+            if (userId == null)
+            {
+                return _db.Books
+                    .Include(book => book.Categories)
+                    .Select(book => book.ToBookResponse())
+                    .ToList();
+            }
             return _db.Books
-                .Include(book => book.Categories)
-                .Select(book => book.ToBookResponse())
-                .ToList();
+       .Include(book => book.Categories)
+       .Include(book => book.BookLibrary)
+       .ThenInclude(bookLibrary => bookLibrary.Library)
+       .Select(book => new
+       {
+           Book = book,
+           ReadingStatus = book.BookLibrary
+               .Where(bl => bl.Library.UserId == userId)
+               .Select(bl => bl.ReadingStatus)
+               .FirstOrDefault()
+       })
+       .AsEnumerable() // Switch to client-side evaluation for the custom projection.
+       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus))
+       .ToList();
+
+
         }
-        public async Task<List<BookResponse>> GetBooksByCategory(List<string>? categoriesName)
+
+
+        public async Task<List<BookResponse?>>? GetBooksByCategory(List<string>? categoriesName, string? userId)
         {
             // Validate input
             if (categoriesName == null || !categoriesName.Any())
@@ -52,12 +76,35 @@ namespace Services
 
             // Query the books that have all the specified categories
             var books = await _db.Books
-                                 .Include(book => book.Categories)
-                                 .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
-                                 .ToListAsync();
+                           .Include(book => book.Categories)
+                           .Include(book => book.BookLibrary)
+                           .ThenInclude(bookLibrary => bookLibrary.Library)
+                           .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
+                           .ToListAsync();
 
+
+            List<BookResponse?> bookResponses;
             // Map the books to BookResponse objects
-            var bookResponses = books.Select(book => book.ToBookResponse()).ToList();
+            if (userId == null) {
+
+                bookResponses = books.Select(book => book.ToBookResponse()).ToList();
+
+            }
+            else
+            {
+                 bookResponses = books.Select(book =>
+                {
+                    var readingStatus = book.BookLibrary
+                                            .Where(bl => bl.Library.UserId == userId)
+                                            .Select(bl => (ReadingStatus?)bl.ReadingStatus)
+                                            .FirstOrDefault();
+
+                    return book.ToBookResponseMobile(readingStatus);
+                }).ToList();
+            
+
+
+            }
 
             return bookResponses;
         }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BookMate.Entities;
+using BookMate.Entities.Enums;
 namespace ServiceContracts.DTO
 {
     public class BookResponse
@@ -27,6 +28,9 @@ namespace ServiceContracts.DTO
         public int? RatingsCount { get; set; }
 
         public int? ReadingCount { get; set; }
+
+        public ReadingStatus? ReadingStatus { get; set; }
+
     }
 
     public static class BookExtension
@@ -53,9 +57,47 @@ namespace ServiceContracts.DTO
                 AverageRating = book.AverageRating,
                 RatingsCount = book.RatingsCount,
                 ReadingCount = book.ReadingCount,
+                
 
             };
 
         }
+
+
+        public static BookResponse? ToBookResponseMobile(this Book book, ReadingStatus? status)
+        {
+
+
+            return new BookResponse()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Categories = book.Categories?.Select(c => new CategoryResponse
+                {
+                    CategoryID = c.categoryID,
+                    CategoryName = c.categoryName
+                }).ToList(),
+                ImageUrl = book.ImageUrl,
+                PdfUrl = book.PdfUrl,
+                VoiceUrl = book.VoiceUrl,
+                Description = book.Description,
+                NumberOfPages = book.NumberOfPages,
+                PublishedYear = book.PublishedYear,
+                AverageRating = book.AverageRating,
+                RatingsCount = book.RatingsCount,
+                ReadingCount = book.ReadingCount,
+                ReadingStatus = status
+
+            };
+
+        }
+
+        
+
     }
+
+
+  
+
 }
