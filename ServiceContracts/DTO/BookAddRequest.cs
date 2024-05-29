@@ -19,7 +19,7 @@ namespace ServiceContracts.DTO
        
         public string? Author { get; set; }
 
-        public List<string>? CategoriesNames { get; set; }
+        public List<CategoryResponse>? Categories { get; set; }
 
         // Properties for file uploads
         public IFormFile? ImageFile { get; set; }
@@ -39,15 +39,27 @@ namespace ServiceContracts.DTO
 
         private string? VoiceUrl { get; set; }
 
+        private List<String?>? CategoriesNames;
 
 
 
 
         public Book ToBook(IEnumerable<Category>? allCategories)
         {
+                
+            CategoriesNames = new List<String?>();
 
-
-
+            if (Categories != null)
+            {
+                foreach (CategoryResponse cat in Categories)
+                {
+                    if (cat.CategoryName != null)
+                    {
+                        CategoriesNames?.Add(cat.CategoryName);
+                        Console.WriteLine(cat.CategoryName);
+                    }
+                }
+            }
             
             // Create a new Book instance
             var book = new Book()

@@ -14,17 +14,18 @@ using NuGet.Protocol;
 using BookMate.Entities;
 using Azure.Core;
 using NuGet.Protocol.Plugins;
+using System.Security.Claims;
 namespace book_mate.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BookWebController : ControllerBase
     {
 
         private readonly IBooksService _booksService;
-        private ApplicationDbContext applicationDbContext;
+        private ApplicationDbContext? applicationDbContext;
 
-        public BookController(IBooksService booksService) { 
+        public BookWebController(IBooksService booksService) { 
 
             _booksService = booksService;
 
@@ -41,11 +42,10 @@ namespace book_mate.Controllers
         [Route("/Books")]
         public IActionResult GetAllBooks( )
         {
-            
-           
 
+        
 
-            List<BookResponse> Books = _booksService.GetAllBooks();
+            List<BookResponse> Books = _booksService.GetAllBooks(null);
             
             return Ok(Books);
 
@@ -82,7 +82,7 @@ namespace book_mate.Controllers
 
 
         [HttpGet("/Books/categories")]
-        public async Task<ActionResult<List<BookResponse>>> GetBooksByCategory([FromQuery] List<string> categoriesName )
+        public async Task<ActionResult<List<BookResponse?>>>? GetBooksByCategory([FromQuery] List<string> categoriesName )
         {
             if (categoriesName == null || categoriesName.Count == 0)
             {
@@ -90,7 +90,8 @@ namespace book_mate.Controllers
             }
 
            
-            var books = await _booksService.GetBooksByCategory(categoriesName);
+            var books = await _booksService.GetBooksByCategory(categoriesName,null);
+
             if (books.Count == 0)
             {
                 return NotFound("No books found for the specified categories.");
@@ -106,7 +107,7 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("/addBook")]
-        public async Task<IActionResult> addBook([FromBody] BookAddRequest? model)
+        public async Task<IActionResult> addBook([FromForm] BookAddRequest? model)
         {
 
             if(model == null)

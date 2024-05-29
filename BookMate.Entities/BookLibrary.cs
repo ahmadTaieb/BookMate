@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookMate.Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BookMate.Entities
         public Guid BookId { get; set; }
 
         public Book Book { get; set; }
+
+       public ReadingStatus? ReadingStatus { get; set; }
 
         [ForeignKey("Library")]
         public int LibraryId { get; set; }
