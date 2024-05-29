@@ -29,27 +29,27 @@ namespace book_mate.Controllers
             _db = db;
 
         }
-
-        
-
+        [Authorize]
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromQuery] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
             var adminId = user.Id;
-            Club c = new Club() {
-                Name = club.Name 
-                ,ApplicationUserId = adminId
-            };
-            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c,ApplicationUserId=adminId});
-            _db.Clubs.Add(c);
-            _db.SaveChanges();
-            return new JsonResult(c);
-            //return new JsonResult(_clubService.AddClubAsync(adminId, club));
+            //Club c = new Club() {
+            //    Name = club.Name 
+            //    ,ApplicationUserId = adminId
+            //};
+            ////c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c,ApplicationUserId=adminId});
+            //_db.Clubs.Add(c);
+            //_db.SaveChanges();
+            
+            //AddMember(c.Id.ToString(), user.Id);
+            return new JsonResult(_clubService.AddClubAsync(adminId, club).Result);
+            //return new JsonResult(c);
         }
 
-
+        [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
         {
@@ -60,7 +60,7 @@ namespace book_mate.Controllers
 
             return new JsonResult(clubs);
         }
-
+        [Authorize]
         [HttpPost("UpdateClub")]
         public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromQuery] ClubAddRequest club)
         {
@@ -82,17 +82,18 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            var c = await _db.Clubs
-                .FirstOrDefaultAsync(i => i.Id.ToString() == clubId);
-            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c, ApplicationUserId = user.Id });
-            //_db.Clubs.Add(c);
-            _db.SaveChanges();
-            return new JsonResult(c);
-            //await _clubService.AddMember( user.Id,new Guid(clubId));
+            
+            await _clubService.AddMember( user.Id,new Guid(clubId));
 
-            //return new JsonResult(new { status = 200, message = "member added successfully" });
+            return new JsonResult(new { status = 200, message = "member added successfully" });
         }
-
+        //public async Task<ApplicationUserClub> AddMember([FromQuery] string clubId,string userId)
+        //{
+            
+            
+        //    return await _clubService.AddMember(userId, new Guid(clubId));
+           
+        //}
 
         [HttpGet("getMembers/{id}")]
         public async Task<IActionResult> getClub(string id)

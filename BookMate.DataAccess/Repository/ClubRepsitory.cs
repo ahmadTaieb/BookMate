@@ -14,9 +14,10 @@ namespace BookMate.DataAccess.Repository
         {
             _db = db;
         }
-        public async Task<Club> AddClub(Club club)
+        public async Task<Club> AddClub(string adminId, Club club)
         {
-            _db.Clubs.Add(club);
+            var c = _db.Clubs.Add(club);
+            AddMember(adminId, club.Id);
             return club;
         }
 
@@ -88,9 +89,9 @@ namespace BookMate.DataAccess.Repository
                 ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id == userId),
                 Club = _db.Clubs.FirstOrDefault(c => c.Id == clubId),
             };
-            //_db.applicationUserClubs.Add(a);
+            _db.ApplicationUserClubs.Add(a);
             
-            return a;
+            return  a;
         }
 
         public List<ApplicationUserClub> GetMembers(string clubId)

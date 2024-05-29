@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240525111919_edit")]
-    partial class edit
+    [Migration("20240529202313_Add_Every_Thing")]
+    partial class Add_Every_Thing
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,17 +120,25 @@ namespace BookMate.DataAccess.Migrations
 
             modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("ClubId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ApplicationUserId", "ClubId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("ClubId");
 
-                    b.ToTable("applicationUserClubs");
+                    b.ToTable("ApplicationUserClubs");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Book", b =>
@@ -178,6 +186,43 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4bebe3d5-e7af-4e77-a268-8d539d35ceba"),
+                            Author = "Author1",
+                            NumberOfPages = 100,
+                            Title = "Test1"
+                        },
+                        new
+                        {
+                            Id = new Guid("d52c0109-58bc-493d-a980-062dcd9309fa"),
+                            Author = "Author2",
+                            NumberOfPages = 200,
+                            Title = "Test2"
+                        },
+                        new
+                        {
+                            Id = new Guid("039a1b0e-6efc-42d4-a8fc-8dabc6e84e37"),
+                            Author = "Author3",
+                            NumberOfPages = 300,
+                            Title = "Test3"
+                        },
+                        new
+                        {
+                            Id = new Guid("cf83ee42-f299-40f4-8caf-2b618e3af2fa"),
+                            Author = "Author4",
+                            NumberOfPages = 400,
+                            Title = "Test4"
+                        },
+                        new
+                        {
+                            Id = new Guid("375349ee-1a14-4d80-89c2-1a0c89835732"),
+                            Author = "Author5",
+                            NumberOfPages = 500,
+                            Title = "Test5"
+                        });
                 });
 
             modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
@@ -471,14 +516,12 @@ namespace BookMate.DataAccess.Migrations
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("ClubsMember")
                         .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BookMate.Entities.Club", "Club")
                         .WithMany("ApplicationUsersMember")
                         .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ApplicationUser");
 

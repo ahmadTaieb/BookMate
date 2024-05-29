@@ -50,7 +50,7 @@ namespace Services
                 ApplicationUser =await _userManager.FindByIdAsync(adminId),
 
             };
-            var user = _unitOfWork.Club.AddClub(newClub);
+            var user = _unitOfWork.Club.AddClub(adminId,newClub);
             _unitOfWork.saveAsync();
             return newClub;
         }
@@ -86,7 +86,7 @@ namespace Services
         }
         public async Task<ApplicationUserClub> AddMember(string userId,Guid clubId)
         {
-            if (_unitOfWork.Club.Get(clubId.ToString()) == null)
+            if (await _unitOfWork.Club.Get(clubId.ToString()) == null)
             {
                 return null;
             }

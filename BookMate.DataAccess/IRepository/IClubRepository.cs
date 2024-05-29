@@ -12,7 +12,7 @@ namespace BookMate.DataAccess.IRepository
     {
         Task<Club> Get(string id);
         Task<List<Club>> GetAll();
-        Task<Club> AddClub(Club club);
+        Task<Club> AddClub(string adminId,Club club);
         Task<Club> UpdateClub(string id,ClubAddRequest club);
         Task<bool> DeleteClub(string id);
         Task<List<Club>> GetAdminClubs(string adminId);

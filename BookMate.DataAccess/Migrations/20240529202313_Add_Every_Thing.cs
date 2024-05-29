@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class add : Migration
+    public partial class Add_Every_Thing : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,8 +67,8 @@ namespace BookMate.DataAccess.Migrations
                     PdfUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VoiceUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumberOfPage = table.Column<int>(type: "int", nullable: true),
-                    PublishedYear = table.Column<int>(type: "int", nullable: true),
+                    NumberOfPages = table.Column<int>(type: "int", nullable: true),
+                    PublishedYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AverageRating = table.Column<double>(type: "float", nullable: true),
                     RatingsCount = table.Column<int>(type: "int", nullable: true),
                     ReadingCount = table.Column<int>(type: "int", nullable: true)
@@ -285,7 +285,7 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApplicationUserClub",
+                name: "ApplicationUserClubs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -295,15 +295,15 @@ namespace BookMate.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicationUserClub", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationUserClubs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ApplicationUserClub_AspNetUsers_ApplicationUserId",
+                        name: "FK_ApplicationUserClubs_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_ApplicationUserClub_Clubs_ClubId",
+                        name: "FK_ApplicationUserClubs_Clubs_ClubId",
                         column: x => x.ClubId,
                         principalTable: "Clubs",
                         principalColumn: "Id",
@@ -311,7 +311,7 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookLibrary",
+                name: "BookLibraries",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -321,19 +321,31 @@ namespace BookMate.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookLibrary", x => x.Id);
+                    table.PrimaryKey("PK_BookLibraries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Books_BookId",
+                        name: "FK_BookLibraries_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Librarys_LibraryId",
+                        name: "FK_BookLibraries_Librarys_LibraryId",
                         column: x => x.LibraryId,
                         principalTable: "Librarys",
                         principalColumn: "LibraryId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Books",
+                columns: new[] { "Id", "Author", "AverageRating", "Description", "ImageUrl", "NumberOfPages", "PdfUrl", "PublishedYear", "RatingsCount", "ReadingCount", "Title", "VoiceUrl" },
+                values: new object[,]
+                {
+                    { new Guid("039a1b0e-6efc-42d4-a8fc-8dabc6e84e37"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
+                    { new Guid("375349ee-1a14-4d80-89c2-1a0c89835732"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null },
+                    { new Guid("4bebe3d5-e7af-4e77-a268-8d539d35ceba"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
+                    { new Guid("cf83ee42-f299-40f4-8caf-2b618e3af2fa"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
+                    { new Guid("d52c0109-58bc-493d-a980-062dcd9309fa"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null }
                 });
 
             migrationBuilder.InsertData(
@@ -346,13 +358,13 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserClub_ApplicationUserId",
-                table: "ApplicationUserClub",
+                name: "IX_ApplicationUserClubs_ApplicationUserId",
+                table: "ApplicationUserClubs",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserClub_ClubId",
-                table: "ApplicationUserClub",
+                name: "IX_ApplicationUserClubs_ClubId",
+                table: "ApplicationUserClubs",
                 column: "ClubId");
 
             migrationBuilder.CreateIndex(
@@ -400,13 +412,13 @@ namespace BookMate.DataAccess.Migrations
                 column: "booksId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookLibrary_BookId",
-                table: "BookLibrary",
+                name: "IX_BookLibraries_BookId",
+                table: "BookLibraries",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookLibrary_LibraryId",
-                table: "BookLibrary",
+                name: "IX_BookLibraries_LibraryId",
+                table: "BookLibraries",
                 column: "LibraryId");
 
             migrationBuilder.CreateIndex(
@@ -424,7 +436,7 @@ namespace BookMate.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationUserClub");
+                name: "ApplicationUserClubs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -445,7 +457,7 @@ namespace BookMate.DataAccess.Migrations
                 name: "BookCategory");
 
             migrationBuilder.DropTable(
-                name: "BookLibrary");
+                name: "BookLibraries");
 
             migrationBuilder.DropTable(
                 name: "RefreshToken");
