@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
@@ -144,20 +145,30 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpPost("updateUser")]
-        public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest userAddRequest)
+        public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest? userUpdateRequest)
         {
+           
 
-            if (userAddRequest == null)
+            if (userUpdateRequest == null)
             {
-                return Ok();
+                return new JsonResult(new {status = 200 , message = "successfully! nothing changed"});
             }
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            await _userService.UpdateUserAsync(user.Id, userAddRequest);
+
+            if (!await _userManager.CheckPasswordAsync(user, userUpdateRequest.currentPassword))
+                return new JsonResult(new { status = 400, message = "incorrect password!" });
+            else
+            {
+                var result = await _userManager.ChangePasswordAsync(user, userUpdateRequest.currentPassword, userUpdateRequest.Password);
+            }
+
+
+            await _userService.UpdateUserAsync(user.Id, userUpdateRequest);
             _unitOfWork.saveAsync();
 
-            return Ok();
+            return new JsonResult(new {status = 200 , message = "updated successfully!"});
         }
         [Authorize]
         [HttpGet("deleteUser")]

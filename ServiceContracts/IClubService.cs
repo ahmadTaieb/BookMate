@@ -12,7 +12,7 @@ namespace ServiceContracts
     public interface IClubService
     {
         Task<Club> GetClub(string id);
-        Task<bool> DeleteAsync(string id);
+        Task<bool> DeleteAsync(string id,string adminId);
         Task<Club> UpdateAsync(string id, ClubAddRequest club);
         Task<List<Club>> GetAdminClubsAsync(string id);
         Task<List<Club>> GetAllClubsAsync();

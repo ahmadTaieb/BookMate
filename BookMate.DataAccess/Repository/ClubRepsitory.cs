@@ -30,7 +30,7 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<Club> Get(string id)
         {
-            var club = await _db.Clubs.Include(i => i.ApplicationUser).FirstOrDefaultAsync(i => i.Id.ToString() == id);
+            Club club = await _db.Clubs.Include(i => i.ApplicationUser).FirstOrDefaultAsync(i => i.Id.ToString() == id);
             return club;
         }
 
