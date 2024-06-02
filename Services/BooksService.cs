@@ -225,6 +225,20 @@ namespace Services
         }
 
 
+        public async Task DeleteBook(string title)
+        {
+            var book = _db.Books.FirstOrDefault(b => b.Title == title);
+
+            if (book == null)
+            {
+                throw new ArgumentException("Book not found");
+            }
+
+            _db.Books.Remove(book);
+            await _db.SaveChangesAsync();
+        }
+
+
 
 
         public async Task IncrementReadingCount(Guid bookId)
