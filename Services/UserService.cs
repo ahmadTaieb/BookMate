@@ -141,9 +141,6 @@ namespace Services
             return result.Succeeded ? string.Empty : "Sonething went wrong";
         }
 
-
-
-
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);

@@ -30,37 +30,34 @@ namespace book_mate.Controllers
 
         }
 
-        
 
+        [Authorize]
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromQuery] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
             var adminId = user.Id;
-            Club c = new Club() {
-                Name = club.Name 
-                ,ApplicationUserId = adminId
-            };
-            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c,ApplicationUserId=adminId});
-            _db.Clubs.Add(c);
-            _db.SaveChanges();
-            return new JsonResult(c);
-            //return new JsonResult(_clubService.AddClubAsync(adminId, club));
+            
+            return new JsonResult(_clubService.AddClubAsync(adminId, club).Result);
+            
         }
 
 
+        [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
         {
 
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-            var clubs =await _clubService.GetAdminClubsAsync(user.Id.ToString());
+            var clubs = _clubService.GetAdminClubsAsync(user.Id.ToString()).Result;
 
             return new JsonResult(clubs);
         }
 
+
+        [Authorize]
         [HttpPost("UpdateClub")]
         public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromQuery] ClubAddRequest club)
         {
@@ -72,9 +69,12 @@ namespace book_mate.Controllers
             {
                 return new JsonResult("you are not admin in this club");
             }
+            var UpdatedClub = _clubService.UpdateAsync(adminId, club).Result;
 
-            return new JsonResult(await _clubService.UpdateAsync(clubId, club));
+            return new JsonResult(UpdatedClub);
         }
+
+
         [Authorize]
         [HttpPost("AddMember")]
         public async Task<IActionResult> AddMember([FromQuery]string clubId)
@@ -82,17 +82,12 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            var c = await _db.Clubs
-                .FirstOrDefaultAsync(i => i.Id.ToString() == clubId);
-            c.ApplicationUsersMember.Add(new ApplicationUserClub { Club = c, ApplicationUserId = user.Id });
-            //_db.Clubs.Add(c);
-            _db.SaveChanges();
-            return new JsonResult(c);
-            //await _clubService.AddMember( user.Id,new Guid(clubId));
+            
+            await _clubService.AddMember( user.Id,new Guid(clubId));
 
-            //return new JsonResult(new { status = 200, message = "member added successfully" });
+            return new JsonResult(new { status = 200, message = "member added successfully" });
         }
-
+        
 
         [HttpGet("getMembers/{id}")]
         public async Task<IActionResult> getClub(string id)
@@ -109,6 +104,7 @@ namespace book_mate.Controllers
 
         }
 
+
         [Authorize]
         [HttpGet("GetClubsMember")]
         public async Task<IActionResult> GetClubsMember()
@@ -119,6 +115,40 @@ namespace book_mate.Controllers
             var clubs = _clubService.GetClubsMember(user.Id).Result;
 
             return new JsonResult(clubs);
+        }
+
+
+        [Authorize]
+        [HttpGet("deleteClub/{id}")]
+        public async Task<IActionResult> DeleteClub(string id) 
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            bool ok = await _clubService.DeleteAsync(id, user.Id);
+
+            if (ok)
+            {
+                return new JsonResult(new { status = 200, message = "success" });
+            }
+            return new JsonResult(new {status = 400 ,message = "failed"});
+        }
+
+
+        [HttpGet("getClub/{id}")]
+        public async Task<IActionResult> GetClub(string id)
+        {
+            return new JsonResult(new { status = 200, message = "success", data = _clubService.GetClub(id) });
+        }
+
+        [HttpPost("searchClub")]
+        public async Task<IActionResult> SearchClubByName([FromBody] string search)
+        {
+            var AllClubs = _clubService.GetAllClubsAsync();
+            var clubs = AllClubs.Result.Where(o => o.Name.ToLower().Contains(search.Trim().ToLower()));
+
+            return new JsonResult(new { status = 200, message = "success", data = clubs});
+
         }
 
     }

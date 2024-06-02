@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
@@ -57,7 +58,7 @@ namespace book_mate.Controllers
 
             await _libraryService.CreateLibrary(result.Id);
 
-            return new JsonResult(new { status = 200, message = "successfully!",token = result.Token });
+            return new JsonResult(new { status = 200, message = "successfully!",token = result.Token ,email = model.Email,id = result.Id });
         }
 
         [HttpPost("login")]
@@ -73,14 +74,14 @@ namespace book_mate.Controllers
             }
             
             var result = await _userService.GetTokenAsync(model);
-
+            
             if (!result.IsAuthenticated)
                 return new JsonResult(new {status = 400 , message = result.Message });
-
+            ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
             //if (!string.IsNullOrEmpty(result.RefreshToken))
             //    SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return new JsonResult(new { status = 200 , message = "successfully!" ,token = result.Token});
+            return new JsonResult(new { status = 200 , message = "successfully!" ,token = result.Token, email = model.Email, id = user.Id });
         }
 
         [HttpPost("addRole")]
@@ -113,19 +114,20 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> RevokeToken([FromBody] string? t)
+        public async Task<IActionResult> RevokeToken()
         {
-            var token = t ?? Request.Cookies["refreshToken"];
 
-            if (string.IsNullOrEmpty(token))
-                return new JsonResult(new { status = 400,message = "Token is required!"});
+            //if (string.IsNullOrEmpty(s))
+            //    return new JsonResult(new { status = 400,message = "Token is required!"});
 
-            var result = await _userService.RevokeTokenAsync(token);
+            //var result = await _userService.RevokeTokenAsync(s);
 
-            if (!result)
-                return new JsonResult(new { status = 400, message = "Token is invalid!" });
+            //if (!result)
+            //    return new JsonResult(new { status = 400, message = result });
 
-            return new JsonResult(new {status = 200,message = "successfully!" });
+            return new JsonResult(new { status = 200, message = "successfully!" });
+            
+            
         }
 
         private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
@@ -143,20 +145,30 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpPost("updateUser")]
-        public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest userAddRequest)
+        public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest? userUpdateRequest)
         {
+           
 
-            if (userAddRequest == null)
+            if (userUpdateRequest == null)
             {
-                return Ok();
+                return new JsonResult(new {status = 200 , message = "successfully! nothing changed"});
             }
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            await _userService.UpdateUserAsync(user.Id, userAddRequest);
+
+            if (!await _userManager.CheckPasswordAsync(user, userUpdateRequest.currentPassword))
+                return new JsonResult(new { status = 400, message = "incorrect password!" });
+            else
+            {
+                var result = await _userManager.ChangePasswordAsync(user, userUpdateRequest.currentPassword, userUpdateRequest.Password);
+            }
+
+
+            await _userService.UpdateUserAsync(user.Id, userUpdateRequest);
             _unitOfWork.saveAsync();
 
-            return Ok();
+            return new JsonResult(new {status = 200 , message = "updated successfully!"});
         }
         [Authorize]
         [HttpGet("deleteUser")]
@@ -175,6 +187,17 @@ namespace book_mate.Controllers
         public async Task<List<ApplicationUser>> getAll()
         {
             return await _userService.GetAllUsersAsync();
+        }
+
+        [Authorize]
+        [HttpGet("isAuth")]
+        public async Task<IActionResult> isAuth()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            return new JsonResult(new { userEmail });
+
         }
     }
 }

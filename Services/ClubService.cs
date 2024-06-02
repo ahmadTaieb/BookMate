@@ -22,9 +22,9 @@ namespace Services
         private IUnitOfWork _unitOfWork;
         //private readonly JWT _jwt;
         private IConfiguration _configuration;
-        
 
-        public ClubService (UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUnitOfWork unitOfWork)
+
+        public ClubService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -32,25 +32,25 @@ namespace Services
             _configuration = configuration;
         }
 
-        public async Task<Club> GetClub(string id) 
+        public async Task<Club> GetClub(string id)
         {
             return await _unitOfWork.Club.Get(id);
         }
-        
+
 
         public async Task<Club> AddClubAsync(string adminId, ClubAddRequest club)
         {
             Club newClub = new Club()
             {
                 Name = club.Name,
-                Description =  club.Description,
+                Description = club.Description,
                 ImageUrl = club.ImageUrl,
                 Hidden = club.Hidden ?? false,
                 ApplicationUserId = adminId,
-                ApplicationUser =await _userManager.FindByIdAsync(adminId),
+                ApplicationUser = await _userManager.FindByIdAsync(adminId),
 
             };
-            var user = _unitOfWork.Club.AddClub(newClub);
+            var user = _unitOfWork.Club.AddClub(adminId, newClub);
             _unitOfWork.saveAsync();
             return newClub;
         }
@@ -62,35 +62,42 @@ namespace Services
         public async Task<List<Club>> GetAdminClubsAsync(string id)
         {
             /*var user = _userManager.FindByEmailAsync(ClaimTypes.Email);*/ // will give the user's userId
-            
+
             var clubs = await _unitOfWork.Club.GetAdminClubs(id);
             return clubs;
 
         }
-        public async Task<Club> UpdateAsync(string id,ClubAddRequest club)
+        public async Task<Club> UpdateAsync(string id, ClubAddRequest club)
         {
 
-            Club c = await _unitOfWork.Club.UpdateClub(id,club);
+            Club c = await _unitOfWork.Club.UpdateClub(id, club);
             _unitOfWork.saveAsync();
             return c;
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id, string adminId)
         {
-            if(await _unitOfWork.Club.DeleteClub(id))
+            var AId = _unitOfWork.Club.Get(id).Result.ApplicationUserId;
+            if (AId != adminId)
+            {
+                return false;
+            }
+
+            if (await _unitOfWork.Club.DeleteClub(id))
             {
                 _unitOfWork.saveAsync();
                 return true;
             }
+
             return false;
         }
-        public async Task<ApplicationUserClub> AddMember(string userId,Guid clubId)
+        public async Task<ApplicationUserClub> AddMember(string userId, Guid clubId)
         {
-            if (_unitOfWork.Club.Get(clubId.ToString()) == null)
+            if (await _unitOfWork.Club.Get(clubId.ToString()) == null)
             {
                 return null;
             }
-            var a =await _unitOfWork.Club.AddMember(userId, clubId);
+            var a = await _unitOfWork.Club.AddMember(userId, clubId);
             _unitOfWork.saveAsync();
             return a;
         }
@@ -99,12 +106,12 @@ namespace Services
         {
             var m = _unitOfWork.Club.GetMembers(clubId);
             List<ApplicationUser> members = new List<ApplicationUser>();
-            
+
             foreach (ApplicationUserClub c in m)
             {
                 members.Add(c.ApplicationUser);
             }
-            
+
 
             return members;
         }
@@ -119,5 +126,7 @@ namespace Services
             }
             return c;
         }
+
+       
     }
 }

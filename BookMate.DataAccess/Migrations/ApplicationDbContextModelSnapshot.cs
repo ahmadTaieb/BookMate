@@ -135,7 +135,11 @@ namespace BookMate.DataAccess.Migrations
 
                     b.HasIndex("ClubId");
 
+<<<<<<< HEAD
                     b.ToTable("applicationUserClubs");
+=======
+                    b.ToTable("ApplicationUserClubs");
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                 });
 
             modelBuilder.Entity("BookMate.Entities.Book", b =>
@@ -187,35 +191,55 @@ namespace BookMate.DataAccess.Migrations
                     b.HasData(
                         new
                         {
+<<<<<<< HEAD
                             Id = new Guid("a1f3fa3d-e732-4e5c-bf43-224cf7f7ad3c"),
+=======
+                            Id = new Guid("4bebe3d5-e7af-4e77-a268-8d539d35ceba"),
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                             Author = "Author1",
                             NumberOfPages = 100,
                             Title = "Test1"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = new Guid("9833e307-ac94-4ca4-a31e-23c0a62913fe"),
+=======
+                            Id = new Guid("d52c0109-58bc-493d-a980-062dcd9309fa"),
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                             Author = "Author2",
                             NumberOfPages = 200,
                             Title = "Test2"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = new Guid("11787fe9-7544-4c61-a861-194f68635bb1"),
+=======
+                            Id = new Guid("039a1b0e-6efc-42d4-a8fc-8dabc6e84e37"),
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                             Author = "Author3",
                             NumberOfPages = 300,
                             Title = "Test3"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = new Guid("479ecec8-c164-42f7-905e-1f9a87fe334d"),
+=======
+                            Id = new Guid("cf83ee42-f299-40f4-8caf-2b618e3af2fa"),
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                             Author = "Author4",
                             NumberOfPages = 400,
                             Title = "Test4"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = new Guid("146589e2-3a06-47aa-9b99-a4d15611306a"),
+=======
+                            Id = new Guid("375349ee-1a14-4d80-89c2-1a0c89835732"),
+>>>>>>> 190b7204582e671f7d475bc2781dabb97799c4e0
                             Author = "Author5",
                             NumberOfPages = 500,
                             Title = "Test5"

@@ -26,7 +26,7 @@ namespace BookMate.DataAccess.Data
         public DbSet<Library> Librarys { get; set; }
 
         public DbSet<BookLibrary> BookLibraries { get; set; }
-        public DbSet<ApplicationUserClub> applicationUserClubs { get; set; }
+        public DbSet<ApplicationUserClub> ApplicationUserClubs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
