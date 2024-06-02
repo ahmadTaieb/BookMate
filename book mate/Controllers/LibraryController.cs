@@ -1,5 +1,5 @@
 ﻿using BookMate.DataAccess.Data;
-using BookMate.DataAccess.Migrations;
+//using BookMate.DataAccess.Migrations;
 using BookMate.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
