@@ -117,21 +117,6 @@ namespace BookMate.DataAccess.Migrations
 
             modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
                 {
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid?>("ClubId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ApplicationUserId", "ClubId");
-
-                    b.HasIndex("ClubId");
-
-                    b.ToTable("applicationUserClubs");
-                });
-
-            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
-                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
@@ -150,7 +135,7 @@ namespace BookMate.DataAccess.Migrations
 
                     b.HasIndex("ClubId");
 
-                    b.ToTable("ApplicationUserClub");
+                    b.ToTable("applicationUserClubs");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Book", b =>
@@ -198,6 +183,43 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a1f3fa3d-e732-4e5c-bf43-224cf7f7ad3c"),
+                            Author = "Author1",
+                            NumberOfPages = 100,
+                            Title = "Test1"
+                        },
+                        new
+                        {
+                            Id = new Guid("9833e307-ac94-4ca4-a31e-23c0a62913fe"),
+                            Author = "Author2",
+                            NumberOfPages = 200,
+                            Title = "Test2"
+                        },
+                        new
+                        {
+                            Id = new Guid("11787fe9-7544-4c61-a861-194f68635bb1"),
+                            Author = "Author3",
+                            NumberOfPages = 300,
+                            Title = "Test3"
+                        },
+                        new
+                        {
+                            Id = new Guid("479ecec8-c164-42f7-905e-1f9a87fe334d"),
+                            Author = "Author4",
+                            NumberOfPages = 400,
+                            Title = "Test4"
+                        },
+                        new
+                        {
+                            Id = new Guid("146589e2-3a06-47aa-9b99-a4d15611306a"),
+                            Author = "Author5",
+                            NumberOfPages = 500,
+                            Title = "Test5"
+                        });
                 });
 
             modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
@@ -212,6 +234,9 @@ namespace BookMate.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("LibraryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReadingStatus")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -221,29 +246,6 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("LibraryId");
 
                     b.ToTable("BookLibraries");
-                });
-
-            modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("LibraryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("LibraryId");
-
-                    b.ToTable("BookLibrary");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Category", b =>
@@ -507,25 +509,6 @@ namespace BookMate.DataAccess.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
-                {
-                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany("ClubsMember")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookMate.Entities.Club", "Club")
-                        .WithMany("ApplicationUsersMember")
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Club");
                 });
 
             modelBuilder.Entity("BookMate.Entities.ApplicationUserClub", b =>
