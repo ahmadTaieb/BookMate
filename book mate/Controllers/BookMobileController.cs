@@ -44,7 +44,7 @@ namespace book_mate.Controllers
 
 
         [HttpGet("/Books/ByCategories")]
-        public async Task<ActionResult<List<BookResponse>>> GetBooksByCategory([FromBody] List<string> categoriesName)
+        public async Task<ActionResult<List<BookResponse>>> GetBooksByCategory([FromBody] List<string?>? CategoriesNames)
         {
 
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -53,13 +53,15 @@ namespace book_mate.Controllers
 
 
 
-            if (categoriesName == null || categoriesName.Count == 0)
+            if (CategoriesNames == null || CategoriesNames.Count == 0)
             {
-                return BadRequest("Category IDs must be provided.");
+                List<BookResponse> Books = _booksService.GetAllBooks(userId);
+
+                return Ok(Books);
             }
            
 
-            var books = await _booksService.GetBooksByCategory(categoriesName,userId);
+            var  books = await _booksService.GetBooksByCategory(CategoriesNames,userId);
             if (books.Count == 0)
             {
                 return NotFound("No books found for the specified categories.");

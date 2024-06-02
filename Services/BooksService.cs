@@ -92,7 +92,7 @@ namespace Services
             }
             else
             {
-                 bookResponses = books.Select(book =>
+                  bookResponses = books.Select(book =>
                 {
                     var readingStatus = book.BookLibrary
                                             .Where(bl => bl.Library.UserId == userId)
@@ -273,7 +273,6 @@ namespace Services
 
         private async Task<string?> GetImageUrl(IFormFile? file)
         {
-
             if (file == null)
             {
                 return null;
@@ -282,17 +281,21 @@ namespace Services
             string filename = "";
             try
             {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                var extension = Path.GetExtension(file.FileName);
                 filename = DateTime.Now.Ticks.ToString() + extension;
 
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\");
+                // Save images to wwwroot/images
+                var relativePath = Path.Combine("wwwroot", "images", "books");
+
+                // Combine the relative path with the current directory
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
 
                 if (!Directory.Exists(filepath))
                 {
                     Directory.CreateDirectory(filepath);
                 }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Images\\", filename);
+                var exactpath = Path.Combine(filepath, filename);
                 using (var stream = new FileStream(exactpath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -300,9 +303,12 @@ namespace Services
             }
             catch (Exception ex)
             {
+                // Handle the exception (e.g., log it)
+                Console.WriteLine(ex.Message);
             }
-            return filename;
+            return $"/images/books/{filename}"; // Return the relative URL path
         }
+
 
         private async Task<string?> GetPdfUrl(IFormFile? file)
         {
@@ -310,20 +316,23 @@ namespace Services
             {
                 return null;
             }
+
             string filename = "";
             try
             {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                var extension = Path.GetExtension(file.FileName);
                 filename = DateTime.Now.Ticks.ToString() + extension;
 
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\");
+                // Save PDFs to wwwroot/pdf
+                var relativePath = Path.Combine("wwwroot", "pdf");
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
 
                 if (!Directory.Exists(filepath))
                 {
                     Directory.CreateDirectory(filepath);
                 }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Pdfs\\", filename);
+                var exactpath = Path.Combine(filepath, filename);
                 using (var stream = new FileStream(exactpath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -331,9 +340,13 @@ namespace Services
             }
             catch (Exception ex)
             {
+                // Handle the exception if needed
+                Console.WriteLine(ex.Message);
             }
-            return filename;
+            // Return the relative URL path for the saved PDF
+            return $"/pdf/{filename}";
         }
+
 
         private async Task<string?> GetVoiceUrl(IFormFile? file)
         {
@@ -341,20 +354,23 @@ namespace Services
             {
                 return null;
             }
+
             string filename = "";
             try
             {
-                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                var extension = Path.GetExtension(file.FileName);
                 filename = DateTime.Now.Ticks.ToString() + extension;
 
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\");
+                // Save voices to wwwroot/voices
+                var relativePath = Path.Combine("wwwroot", "voices");
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
 
                 if (!Directory.Exists(filepath))
                 {
                     Directory.CreateDirectory(filepath);
                 }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "C:\\dotNet\\book mate\\BookMate.DataAccess\\Upload\\Books\\Voices\\", filename);
+                var exactpath = Path.Combine(filepath, filename);
                 using (var stream = new FileStream(exactpath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -362,8 +378,11 @@ namespace Services
             }
             catch (Exception ex)
             {
+                // Handle the exception if needed
+                Console.WriteLine(ex.Message);
             }
-            return filename;
+            // Return the relative URL path for the saved voice
+            return $"/voices/{filename}";
         }
 
 
