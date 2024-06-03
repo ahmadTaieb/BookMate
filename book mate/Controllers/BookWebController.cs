@@ -55,16 +55,16 @@ namespace book_mate.Controllers
 
         [HttpDelete]
         [Route("/DeleteBook")]
-        public IActionResult DeleteBook([FromBody]string Title)
+        public IActionResult DeleteBook([FromBody] BookAddRequest request)
         {
-            if (!string.IsNullOrEmpty(Title))
+            if (!string.IsNullOrEmpty(request.Title))
             {
                 // If title is provided, return the book with that title
-                BookResponse? response = _booksService.GetBookByBookTitle(Title);
+                BookResponse? response = _booksService.GetBookByBookTitle(request.Title);
 
                 if (response != null)
                 {
-                    _booksService.DeleteBook(Title);
+                    _booksService.DeleteBook(request.Title);
                     return Ok("Book deleted successfully");
                 }
             }
