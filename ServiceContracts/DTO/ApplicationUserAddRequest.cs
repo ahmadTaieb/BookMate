@@ -16,7 +16,7 @@ namespace ServiceContracts.DTO
         
         public DateTime? DateOfBirth { get; set; }
         public DateTime? RegisteredAt { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
+        //public List<RefreshToken>? RefreshTokens { get; set; }
 
 
         public ApplicationUser ToApplicationUser()
@@ -27,7 +27,7 @@ namespace ServiceContracts.DTO
                 Email = Email,
                 DateOfBirth = DateOfBirth,
                 PasswordHash = PasswordHash,
-                RefreshTokens = RefreshTokens,
+                //RefreshTokens = RefreshTokens,
                 RegisteredAt = RegisteredAt,
                 gender = gender,
 

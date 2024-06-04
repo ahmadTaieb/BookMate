@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_Every_Thing : Migration
+    public partial class addApplicationUserRelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -110,6 +110,31 @@ namespace BookMate.DataAccess.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserRelations",
+                columns: table => new
+                {
+                    ApplicationUserParentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserChildId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    confirm = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserRelations", x => new { x.ApplicationUserParentId, x.ApplicationUserChildId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserRelations_AspNetUsers_ApplicationUserChildId",
+                        column: x => x.ApplicationUserChildId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserRelations_AspNetUsers_ApplicationUserParentId",
+                        column: x => x.ApplicationUserParentId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -317,6 +342,7 @@ namespace BookMate.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReadingStatus = table.Column<int>(type: "int", nullable: true),
                     LibraryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -341,11 +367,11 @@ namespace BookMate.DataAccess.Migrations
                 columns: new[] { "Id", "Author", "AverageRating", "Description", "ImageUrl", "NumberOfPages", "PdfUrl", "PublishedYear", "RatingsCount", "ReadingCount", "Title", "VoiceUrl" },
                 values: new object[,]
                 {
-                    { new Guid("039a1b0e-6efc-42d4-a8fc-8dabc6e84e37"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
-                    { new Guid("375349ee-1a14-4d80-89c2-1a0c89835732"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null },
-                    { new Guid("4bebe3d5-e7af-4e77-a268-8d539d35ceba"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
-                    { new Guid("cf83ee42-f299-40f4-8caf-2b618e3af2fa"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
-                    { new Guid("d52c0109-58bc-493d-a980-062dcd9309fa"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null }
+                    { new Guid("266c45f7-6a70-4dab-8346-134e1db6a835"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
+                    { new Guid("3f2fe0e9-ee0f-4ba8-895c-31f5b05d3200"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null },
+                    { new Guid("6bed67e5-304d-418b-8173-c249f43a983b"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
+                    { new Guid("c748269e-88e1-439a-aecf-6a2a52068ff4"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
+                    { new Guid("e122abcc-0486-4a32-9638-2f81db4d5c60"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null }
                 });
 
             migrationBuilder.InsertData(
@@ -366,6 +392,11 @@ namespace BookMate.DataAccess.Migrations
                 name: "IX_ApplicationUserClubs_ClubId",
                 table: "ApplicationUserClubs",
                 column: "ClubId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserRelations_ApplicationUserChildId",
+                table: "ApplicationUserRelations",
+                column: "ApplicationUserChildId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -437,6 +468,9 @@ namespace BookMate.DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ApplicationUserClubs");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationUserRelations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");

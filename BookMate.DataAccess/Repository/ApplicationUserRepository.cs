@@ -60,7 +60,7 @@ namespace BookMate.DataAccess.Repository
             matchingUser.UserName = user.Email;
             matchingUser.gender = user.gender ?? matchingUser.gender;
             matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
-            matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
+            //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
 
             
             return matchingUser;

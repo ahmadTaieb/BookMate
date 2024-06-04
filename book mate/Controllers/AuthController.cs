@@ -98,20 +98,20 @@ namespace book_mate.Controllers
             return Ok();
         }
 
-        [HttpGet("refreshToken")]
-        public async Task<IActionResult> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
+        //[HttpGet("refreshToken")]
+        //public async Task<IActionResult> RefreshToken()
+        //{
+        //    var refreshToken = Request.Cookies["refreshToken"];
 
-            var result = await _userService.RefreshTokenAsync(refreshToken);
+        //    var result = await _userService.RefreshTokenAsync(refreshToken);
 
-            if (!result.IsAuthenticated)
-                return BadRequest(result);
+        //    if (!result.IsAuthenticated)
+        //        return BadRequest(result);
 
-            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+        //    //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> RevokeToken()
@@ -159,7 +159,7 @@ namespace book_mate.Controllers
 
             if (!await _userManager.CheckPasswordAsync(user, userUpdateRequest.currentPassword))
                 return new JsonResult(new { status = 400, message = "incorrect password!" });
-            else
+            if(userUpdateRequest.Password != null) 
             {
                 var result = await _userManager.ChangePasswordAsync(user, userUpdateRequest.currentPassword, userUpdateRequest.Password);
             }
