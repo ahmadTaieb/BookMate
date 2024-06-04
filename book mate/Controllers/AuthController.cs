@@ -147,8 +147,7 @@ namespace book_mate.Controllers
         [HttpPost("updateUser")]
         public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest? userUpdateRequest)
         {
-           
-
+         
             if (userUpdateRequest == null)
             {
                 return new JsonResult(new {status = 200 , message = "successfully! nothing changed"});
@@ -165,12 +164,11 @@ namespace book_mate.Controllers
                 pass = userUpdateRequest.Password;
             }
 
-
             await _userService.UpdateUserAsync(user.Id, userUpdateRequest);
             _unitOfWork.saveAsync();
-            var token = GetTokenAsync(new TokenRequest { Email = user.Email, Password = pass });
+            var token = await _userService.GetTokenAsync(new TokenRequest { Email = user.Email, Password = pass });
 
-            return new JsonResult(new {status = 200 , message = "updated successfully!", newToken = token ,user_id = user.Id});
+            return new JsonResult(new {status = 200 , message = "updated successfully!", newToken = token.Token ,user_id = user.Id,email = user.Email});
         }
         [Authorize]
         [HttpGet("deleteUser")]
