@@ -53,6 +53,27 @@ namespace book_mate.Controllers
         }
 
 
+        [HttpDelete]
+        [Route("/DeleteBook")]
+        public IActionResult DeleteBook([FromBody] BookAddRequest request)
+        {
+            if (!string.IsNullOrEmpty(request.Title))
+            {
+                // If title is provided, return the book with that title
+                BookResponse? response = _booksService.GetBookByBookTitle(request.Title);
+
+                if (response != null)
+                {
+                    _booksService.DeleteBook(request.Title);
+                    return Ok("Book deleted successfully");
+                }
+            }
+           
+                return NotFound();
+
+        }
+
+
         [HttpGet]
         [Route("/Books/{Title}")]
         public IActionResult GetBookByTitle(string Title)
@@ -66,12 +87,10 @@ namespace book_mate.Controllers
                     return Ok(response);
                 }
             }
-           
-                return NotFound();
+
+            return NotFound();
 
         }
-
-      
 
 
 

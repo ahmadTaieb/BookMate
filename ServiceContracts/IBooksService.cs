@@ -19,6 +19,7 @@ namespace ServiceContracts
 
         Task EditBookAsync(string Title, BookAddRequest? editedBook);
 
+        Task DeleteBook(string title);
         Task IncrementReadingCount(Guid bookId);
     }
 }
