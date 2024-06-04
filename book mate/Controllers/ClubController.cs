@@ -33,7 +33,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("CreateClub")]
-        public async Task<IActionResult> createClub([FromQuery] ClubAddRequest club)
+        public async Task<IActionResult> createClub([FromBody] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -53,13 +53,13 @@ namespace book_mate.Controllers
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
             var clubs = _clubService.GetAdminClubsAsync(user.Id.ToString()).Result;
 
-            return new JsonResult(clubs);
+            return new JsonResult( clubs);
         }
 
 
         [Authorize]
-        [HttpPost("UpdateClub")]
-        public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromQuery] ClubAddRequest club)
+        [HttpPost("UpdateClub/{clubId}")]
+        public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromBody] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -77,7 +77,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("AddMember")]
-        public async Task<IActionResult> AddMember([FromQuery]string clubId)
+        public async Task<IActionResult> AddMember([FromBody]string clubId)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);

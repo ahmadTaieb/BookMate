@@ -43,8 +43,8 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<List<Club>> GetAdminClubs(string adminId)
         {
-            var admin =  _db.ApplicationUsers.FirstOrDefaultAsync(i => i.Id.ToString() == adminId);
-            var clubs =  _db?.Clubs.Where(i => i.ApplicationUserId == adminId).ToList();
+            var admin =await  _db.ApplicationUsers.FirstOrDefaultAsync(i => i.Id.ToString() == adminId);
+            var clubs =await  _db.Clubs.Where(i => i.ApplicationUserId == adminId).ToListAsync();
             return clubs;
 
         }

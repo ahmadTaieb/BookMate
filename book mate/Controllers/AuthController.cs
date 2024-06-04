@@ -155,20 +155,22 @@ namespace book_mate.Controllers
             }
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-
+            var pass = userUpdateRequest.currentPassword;
 
             if (!await _userManager.CheckPasswordAsync(user, userUpdateRequest.currentPassword))
                 return new JsonResult(new { status = 400, message = "incorrect password!" });
             if(userUpdateRequest.Password != null) 
             {
                 var result = await _userManager.ChangePasswordAsync(user, userUpdateRequest.currentPassword, userUpdateRequest.Password);
+                pass = userUpdateRequest.Password;
             }
 
 
             await _userService.UpdateUserAsync(user.Id, userUpdateRequest);
             _unitOfWork.saveAsync();
+            var token = GetTokenAsync(new TokenRequest { Email = user.Email, Password = pass });
 
-            return new JsonResult(new {status = 200 , message = "updated successfully!"});
+            return new JsonResult(new {status = 200 , message = "updated successfully!", newToken = token ,user_id = user.Id});
         }
         [Authorize]
         [HttpGet("deleteUser")]
@@ -196,7 +198,7 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            return new JsonResult(new { userEmail });
+            return new JsonResult(new { user });
 
         }
     }
