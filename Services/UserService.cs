@@ -247,7 +247,7 @@ namespace Services
             };
         }
 
-        public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(string id, ApplicationUserUpdateRequest user)
+        public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user)
         {
             //ApplicationUser matchingUser =await _unitOfWork.ApplicationUser.Get(user.Id);
             //if (matchingUser == null)
@@ -258,8 +258,15 @@ namespace Services
             //matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
             //matchingUser.gender=user.gender ?? matchingUser.gender;
             //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
-            
-            ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id,user);
+
+            matchingUser.Name = user.Name ?? matchingUser.Name;
+            matchingUser.Email = user.Email ?? matchingUser.Email;
+            matchingUser.UserName = matchingUser.Email;
+            matchingUser.gender = user.gender ?? matchingUser.gender;
+            matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
+
+
+            //ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id, user);
             await _userManager.UpdateAsync(matchingUser);
             return user;
         }

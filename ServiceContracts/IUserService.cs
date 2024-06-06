@@ -17,7 +17,7 @@ namespace ServiceContracts
         Task<string> AddRoleAsync(string userId , string role);
         //Task<AuthModel> RefreshTokenAsync(string token);
         //Task<bool> RevokeTokenAsync(string token);
-        Task<ApplicationUserUpdateRequest> UpdateUserAsync(string id, ApplicationUserUpdateRequest user);
+        Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user);
         Task<ApplicationUser> DeleteUserAsync(ApplicationUser user);
         Task<List<ApplicationUser>> GetAllUsersAsync();
 

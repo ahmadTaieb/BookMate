@@ -61,9 +61,10 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    ServiceLifetime.Transient
+);
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
