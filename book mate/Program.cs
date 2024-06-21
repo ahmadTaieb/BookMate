@@ -61,12 +61,23 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    ServiceLifetime.Transient
+);
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+    option =>
+    {
+        option.Password.RequiredLength = 6;
+        option.Password.RequireNonAlphanumeric = false;
+        option.Password.RequireDigit = false;
+        option.Password.RequireLowercase = false;
+        option.Password.RequireUppercase = false;
+
+    } 
+    )
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

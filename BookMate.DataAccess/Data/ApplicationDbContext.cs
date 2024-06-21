@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace BookMate.DataAccess.Data
 
         public DbSet<BookLibrary> BookLibraries { get; set; }
         public DbSet<ApplicationUserClub> ApplicationUserClubs { get; set; }
+        public DbSet<ApplicationUserRelation> ApplicationUserRelations { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -105,6 +107,22 @@ namespace BookMate.DataAccess.Data
                 .HasMany(x => x.ApplicationUsersMember)
                 .WithOne(x => x.Club)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<ApplicationUserRelation>()
+                .HasKey(x => new { x.ApplicationUserParentId, x.ApplicationUserChildId });
+
+            builder.Entity<ApplicationUserRelation>()
+                .HasOne(x => x.ApplicationUserParent)
+                .WithMany(x => x.Followers)
+                .HasForeignKey(x => x.ApplicationUserParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<ApplicationUserRelation>()
+                .HasOne(x => x.ApplicationUserChild)
+                .WithMany(x => x.Following)
+                .HasForeignKey(x => x.ApplicationUserChildId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 

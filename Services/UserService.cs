@@ -68,7 +68,7 @@ namespace Services
             var jwtSecurityToken = await CreateJwtToken(user);
 
             var refreshToken = GenerateRefreshToken();
-            user.RefreshTokens?.Add(refreshToken);
+            //user.RefreshTokens?.Add(refreshToken);
             await _userManager.UpdateAsync(user);
 
             return new AuthModel
@@ -80,8 +80,8 @@ namespace Services
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = user.UserName,
                 Id=user.Id,
-                RefreshToken = refreshToken.Token,
-                RefreshTokenExpiration = refreshToken.ExpiresOn
+                //RefreshToken = refreshToken.Token,
+                //RefreshTokenExpiration = refreshToken.ExpiresOn
             };
         }
 
@@ -94,7 +94,7 @@ namespace Services
             if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 authModel.Message = "Email or Password is incorrect!";
-                authModel.RefreshTokenExpiration = DateTime.UtcNow;
+                //authModel.RefreshTokenExpiration = DateTime.UtcNow;
                 return authModel;
             }
 
@@ -108,20 +108,20 @@ namespace Services
             //authModel.ExpiresOn = jwtSecurityToken.ValidTo;
             authModel.Roles = rolesList.ToList();
 
-            if (user.RefreshTokens.Any(t => t.IsActive))
-            {
-                var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
-                authModel.RefreshToken = activeRefreshToken.Token;
-                authModel.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
-            }
-            else
-            {
-                var refreshToken = GenerateRefreshToken();
-                authModel.RefreshToken = refreshToken.Token;
-                authModel.RefreshTokenExpiration = refreshToken.ExpiresOn;
-                user.RefreshTokens.Add(refreshToken);
-                await _userManager.UpdateAsync(user);
-            }
+            //if (user.RefreshTokens.Any(t => t.IsActive))
+            //{
+            //    var activeRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+            //    authModel.RefreshToken = activeRefreshToken.Token;
+            //    authModel.RefreshTokenExpiration = activeRefreshToken.ExpiresOn;
+            //}
+            //else
+            //{
+            //    var refreshToken = GenerateRefreshToken();
+            //    authModel.RefreshToken = refreshToken.Token;
+            //    authModel.RefreshTokenExpiration = refreshToken.ExpiresOn;
+            //    user.RefreshTokens.Add(refreshToken);
+            //    await _userManager.UpdateAsync(user);
+            //}
 
             return authModel;
         }
@@ -173,63 +173,63 @@ namespace Services
             return jwtSecurityToken;
         }
 
-        public async Task<AuthModel> RefreshTokenAsync(string token)
-        {
-            var authModel = new AuthModel();
+        //public async Task<AuthModel> RefreshTokenAsync(string token)
+        //{
+        //    var authModel = new AuthModel();
 
-            var user =  _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+        //    var user =  _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
-            if (user == null)
-            {
-                authModel.Message = "Invalid token";
-                return authModel;
-            }
+        //    if (user == null)
+        //    {
+        //        authModel.Message = "Invalid token";
+        //        return authModel;
+        //    }
 
-            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+        //    var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
 
-            if (!refreshToken.IsActive)
-            {
-                authModel.Message = "Inactive token";
-                return authModel;
-            }
+        //    if (!refreshToken.IsActive)
+        //    {
+        //        authModel.Message = "Inactive token";
+        //        return authModel;
+        //    }
 
-            refreshToken.RevokedOn = DateTime.UtcNow;
+        //    refreshToken.RevokedOn = DateTime.UtcNow;
 
-            var newRefreshToken = GenerateRefreshToken();
-            user.RefreshTokens.Add(newRefreshToken);
-            await _userManager.UpdateAsync(user);
+        //    var newRefreshToken = GenerateRefreshToken();
+        //    user.RefreshTokens.Add(newRefreshToken);
+        //    await _userManager.UpdateAsync(user);
 
-            var jwtToken = await CreateJwtToken(user);
-            authModel.IsAuthenticated = true;
-            authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-            authModel.Email = user.Email;
-            authModel.Username = user.UserName;
-            var roles = await _userManager.GetRolesAsync(user);
-            authModel.Roles = roles.ToList();
-            authModel.RefreshToken = newRefreshToken.Token;
-            authModel.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+        //    var jwtToken = await CreateJwtToken(user);
+        //    authModel.IsAuthenticated = true;
+        //    authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        //    authModel.Email = user.Email;
+        //    authModel.Username = user.UserName;
+        //    var roles = await _userManager.GetRolesAsync(user);
+        //    authModel.Roles = roles.ToList();
+        //    //authModel.RefreshToken = newRefreshToken.Token;
+        //    //authModel.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
 
-            return authModel;
-        }
+        //    return authModel;
+        //}
 
-        public async Task<bool> RevokeTokenAsync(string token)
-        {
-            var user =  _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+        //public async Task<bool> RevokeTokenAsync(string token)
+        //{
+        //    var user =  _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
-            if (user == null)
-                return false;
+        //    if (user == null)
+        //        return false;
 
-            var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
+        //    var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
 
-            if (!refreshToken.IsActive)
-                return false;
+        //    if (!refreshToken.IsActive)
+        //        return false;
 
-            refreshToken.RevokedOn = DateTime.UtcNow;
+        //    refreshToken.RevokedOn = DateTime.UtcNow;
 
-            await _userManager.UpdateAsync(user);
+        //    await _userManager.UpdateAsync(user);
 
-            return true;
-        }
+        //    return true;
+        //}
 
         private RefreshToken GenerateRefreshToken()
         {
@@ -247,7 +247,7 @@ namespace Services
             };
         }
 
-        public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(string id, ApplicationUserUpdateRequest user)
+        public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user)
         {
             //ApplicationUser matchingUser =await _unitOfWork.ApplicationUser.Get(user.Id);
             //if (matchingUser == null)
@@ -258,8 +258,15 @@ namespace Services
             //matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
             //matchingUser.gender=user.gender ?? matchingUser.gender;
             //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
-            
-            ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id,user);
+
+            matchingUser.Name = user.Name ?? matchingUser.Name;
+            matchingUser.Email = user.Email ?? matchingUser.Email;
+            matchingUser.UserName = matchingUser.Email;
+            matchingUser.gender = user.gender ?? matchingUser.gender;
+            matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
+
+
+            //ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id, user);
             await _userManager.UpdateAsync(matchingUser);
             return user;
         }

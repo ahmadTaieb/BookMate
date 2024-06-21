@@ -15,18 +15,14 @@ namespace BookMate.Entities
        
         [Required]
         public string Name { get; set; }
-        //[Required]
-        //public string Password { get; set; }
         public string? gender { get; set; }
-        //public int? Age { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public DateTime? RegisteredAt { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
-        //public List<ApplicationUser>? applicationUserChildren { get; set; }
-        //public List<ApplicationUser>? applicationUserParents { get; set; }
+        //public List<RefreshToken>? RefreshTokens { get; set; }
         public ICollection<Club>? Clubs { get; set; }
-
-        public ICollection<ApplicationUserClub>? ClubsMember { get; set;} = new List<ApplicationUserClub>(); 
+        public ICollection<ApplicationUserClub>? ClubsMember { get; set;} = new List<ApplicationUserClub>();
+        public ICollection<ApplicationUserRelation>? Followers { get; set; } = new List<ApplicationUserRelation>();
+        public ICollection<ApplicationUserRelation>? Following { get; set; } = new List<ApplicationUserRelation>();
 
 
     }

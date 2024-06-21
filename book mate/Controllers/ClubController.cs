@@ -33,7 +33,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("CreateClub")]
-        public async Task<IActionResult> createClub([FromQuery] ClubAddRequest club)
+        public async Task<IActionResult> createClub([FromBody] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -58,8 +58,8 @@ namespace book_mate.Controllers
 
 
         [Authorize]
-        [HttpPost("UpdateClub")]
-        public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromQuery] ClubAddRequest club)
+        [HttpPost("UpdateClub/{clubId}")]
+        public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromBody] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -76,8 +76,8 @@ namespace book_mate.Controllers
 
 
         [Authorize]
-        [HttpPost("AddMember")]
-        public async Task<IActionResult> AddMember([FromQuery]string clubId)
+        [HttpPost("AddMember/{clubId}")]
+        public async Task<IActionResult> AddMember(string clubId)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -138,7 +138,7 @@ namespace book_mate.Controllers
         [HttpGet("getClub/{id}")]
         public async Task<IActionResult> GetClub(string id)
         {
-            return new JsonResult(new { status = 200, message = "success", data = _clubService.GetClub(id) });
+            return new JsonResult(new { status = 200, message = "success", data = _clubService.GetClub(id).Result });
         }
 
         [HttpPost("searchClub")]

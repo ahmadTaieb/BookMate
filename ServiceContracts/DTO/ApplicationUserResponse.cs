@@ -11,7 +11,7 @@ namespace ServiceContracts.DTO
         public string? gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public DateTime? RegisteredAt { get; set; }
-        public List<RefreshToken>? RefreshTokens { get; set; }
+        //public List<RefreshToken>? RefreshTokens { get; set; }
 
     }
 }

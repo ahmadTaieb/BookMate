@@ -47,22 +47,22 @@ namespace BookMate.DataAccess.Repository
             return await _db.ApplicationUsers.ToListAsync();
         }
 
-        public async Task<ApplicationUser> Update(string id,ApplicationUserUpdateRequest user)
+        public async Task<ApplicationUser> Update(string id, ApplicationUserUpdateRequest user)
         {
-            ApplicationUser? matchingUser =await _db.ApplicationUsers.FirstOrDefaultAsync(t => t.Id.Equals(id));
+            ApplicationUser? matchingUser = await _db.ApplicationUsers.FirstOrDefaultAsync(t => t.Id.Equals(id));
 
-            if (matchingUser == null) 
+            if (matchingUser == null)
             {
                 return null;
             }
             matchingUser.Name = user.Name ?? matchingUser.Name;
             matchingUser.Email = user.Email ?? matchingUser.Email;
-            matchingUser.UserName = user.Email;
+            matchingUser.UserName = matchingUser.Email;
             matchingUser.gender = user.gender ?? matchingUser.gender;
             matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
-            matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
+            //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
 
-            
+
             return matchingUser;
 
         }

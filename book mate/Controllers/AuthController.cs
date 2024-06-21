@@ -98,20 +98,20 @@ namespace book_mate.Controllers
             return Ok();
         }
 
-        [HttpGet("refreshToken")]
-        public async Task<IActionResult> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
+        //[HttpGet("refreshToken")]
+        //public async Task<IActionResult> RefreshToken()
+        //{
+        //    var refreshToken = Request.Cookies["refreshToken"];
 
-            var result = await _userService.RefreshTokenAsync(refreshToken);
+        //    var result = await _userService.RefreshTokenAsync(refreshToken);
 
-            if (!result.IsAuthenticated)
-                return BadRequest(result);
+        //    if (!result.IsAuthenticated)
+        //        return BadRequest(result);
 
-            SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+        //    //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> RevokeToken()
@@ -147,28 +147,28 @@ namespace book_mate.Controllers
         [HttpPost("updateUser")]
         public async Task<IActionResult> updateUser([FromBody] ApplicationUserUpdateRequest? userUpdateRequest)
         {
-           
 
             if (userUpdateRequest == null)
             {
-                return new JsonResult(new {status = 200 , message = "successfully! nothing changed"});
+                return new JsonResult(new { status = 200, message = "successfully! nothing changed" });
             }
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-
+            var pass = userUpdateRequest.currentPassword;
 
             if (!await _userManager.CheckPasswordAsync(user, userUpdateRequest.currentPassword))
                 return new JsonResult(new { status = 400, message = "incorrect password!" });
-            else
+            if (userUpdateRequest.Password != null)
             {
                 var result = await _userManager.ChangePasswordAsync(user, userUpdateRequest.currentPassword, userUpdateRequest.Password);
+                pass = userUpdateRequest.Password;
             }
 
-
-            await _userService.UpdateUserAsync(user.Id, userUpdateRequest);
+            await _userService.UpdateUserAsync(user, userUpdateRequest);
             _unitOfWork.saveAsync();
+            var token = await _userService.GetTokenAsync(new TokenRequest { Email = user.Email, Password = pass });
 
-            return new JsonResult(new {status = 200 , message = "updated successfully!"});
+            return new JsonResult(new { status = 200, message = "updated successfully!", newToken = token.Token, user_id = user.Id, email = user.Email });
         }
         [Authorize]
         [HttpGet("deleteUser")]
@@ -196,7 +196,7 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            return new JsonResult(new { userEmail });
+            return new JsonResult(new { user });
 
         }
     }
