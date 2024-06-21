@@ -27,15 +27,11 @@ namespace Services
 
         public BooksService(ApplicationDbContext applicationDbContext)
         {
-
             _db = applicationDbContext;
-
-          
-
         }
 
 
-     
+
         public List<BookResponse?> GetAllBooks(string? userId)
         {
 
@@ -53,7 +49,7 @@ namespace Services
        .Select(book => new
        {
            Book = book,
-           ReadingStatus = book.BookLibrary
+           ReadingStatus = book.BookLibrary!
                .Where(bl => bl.Library.UserId == userId)
                .Select(bl => bl.ReadingStatus)
                .FirstOrDefault()
@@ -85,23 +81,24 @@ namespace Services
 
             List<BookResponse?> bookResponses;
             // Map the books to BookResponse objects
-            if (userId == null) {
+            if (userId == null)
+            {
 
                 bookResponses = books.Select(book => book.ToBookResponse()).ToList();
 
             }
             else
             {
-                  bookResponses = books.Select(book =>
-                {
-                    var readingStatus = book.BookLibrary
-                                            .Where(bl => bl.Library.UserId == userId)
-                                            .Select(bl => (ReadingStatus?)bl.ReadingStatus)
-                                            .FirstOrDefault();
+                bookResponses = books.Select(book =>
+              {
+                  var readingStatus = book.BookLibrary
+                                          .Where(bl => bl.Library.UserId == userId)
+                                          .Select(bl => (ReadingStatus?)bl.ReadingStatus)
+                                          .FirstOrDefault();
 
-                    return book.ToBookResponseMobile(readingStatus);
-                }).ToList();
-            
+                  return book.ToBookResponseMobile(readingStatus);
+              }).ToList();
+
 
 
             }
@@ -110,12 +107,12 @@ namespace Services
         }
         public BookResponse? GetBookByBookId(Guid? Id)
         {
-            if(Id== null) 
+            if (Id == null)
                 return null;
 
-            Book? book_response=_db.Books.Include(book => book.Categories).FirstOrDefault(temp=>temp.Id==Id);
+            Book? book_response = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Id == Id);
 
-            if(book_response == null)
+            if (book_response == null)
                 return null;
 
             BookResponse? bookResponse = book_response.ToBookResponse();
@@ -139,7 +136,7 @@ namespace Services
 
         public async Task AddBook(BookAddRequest? bookAddRequest)
         {
-         
+
 
             if (bookAddRequest == null)
             {
@@ -147,13 +144,13 @@ namespace Services
             }
 
 
-            if(bookAddRequest.Title == null)
+            if (bookAddRequest.Title == null)
             {
                 throw new ArgumentException(nameof(bookAddRequest.Title));
             }
 
 
-            if(_db.Books.Count(temp=>temp.Title==bookAddRequest.Title)>0)
+            if (_db.Books.Count(temp => temp.Title == bookAddRequest.Title) > 0)
             {
 
                 throw new ArgumentException("Given Book Title already exists");
@@ -162,9 +159,9 @@ namespace Services
 
             Book book = bookAddRequest.ToBook(_db.Categories);
             book.ImageUrl = await GetImageUrl(file: bookAddRequest.ImageFile);
-            book.PdfUrl=await GetPdfUrl(file: bookAddRequest.PdfFile);
-            book.VoiceUrl=await GetVoiceUrl(file: bookAddRequest.VoiceFile);
-            book.Id=Guid.NewGuid();
+            book.PdfUrl = await GetPdfUrl(file: bookAddRequest.PdfFile);
+            book.VoiceUrl = await GetVoiceUrl(file: bookAddRequest.VoiceFile);
+            book.Id = Guid.NewGuid();
             book.AverageRating = 0;
             book.RatingsCount = 0;
             book.ReadingCount = 0;
@@ -172,7 +169,7 @@ namespace Services
             _db.SaveChanges();
 
 
-            
+
         }
         public async Task EditBookAsync(string? bookTitle, BookAddRequest? editedBook)
         {
@@ -185,7 +182,7 @@ namespace Services
                 book.Title = editedBook.Title;
                 book.Author = editedBook.Author;
                 book.ImageUrl = await GetImageUrl(file: editedBook.ImageFile);
-                book.PdfUrl = await GetPdfUrl(file : editedBook.PdfFile); 
+                book.PdfUrl = await GetPdfUrl(file: editedBook.PdfFile);
                 book.VoiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
                 book.Description = editedBook.Description;
                 book.NumberOfPages = editedBook.NumberOfPages;
@@ -196,26 +193,26 @@ namespace Services
 
 
                 try
-        {
-            // Ensure that the book entity is marked as modified
-            _db.Entry(book).State = EntityState.Modified;
+                {
+                    // Ensure that the book entity is marked as modified
+                    _db.Entry(book).State = EntityState.Modified;
 
-            // Save changes to the database
-            await _db.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            // Handle concurrency conflicts
-            // Log or handle the exception as needed
-            throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            // Handle other database update errors
-            // Log or handle the exception as needed
-            throw;
-        }
-              
+                    // Save changes to the database
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // Handle concurrency conflicts
+                    // Log or handle the exception as needed
+                    throw;
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Handle other database update errors
+                    // Log or handle the exception as needed
+                    throw;
+                }
+
             }
             else
             {
@@ -281,7 +278,7 @@ namespace Services
                 throw new InvalidOperationException("An unexpected error occurred while updating the book.");
             }
 
-           
+
         }
 
 
