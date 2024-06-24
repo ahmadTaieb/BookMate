@@ -249,16 +249,7 @@ namespace Services
 
         public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user)
         {
-            //ApplicationUser matchingUser =await _unitOfWork.ApplicationUser.Get(user.Id);
-            //if (matchingUser == null)
-            //    return null;
-
-            //matchingUser.Name = user.Name ?? matchingUser.Name;
-            //matchingUser.Email = user.Email ?? matchingUser.Email;
-            //matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
-            //matchingUser.gender=user.gender ?? matchingUser.gender;
-            //matchingUser.RefreshTokens = user.RefreshTokens ?? matchingUser.RefreshTokens;
-
+            
             matchingUser.Name = user.Name ?? matchingUser.Name;
             matchingUser.Email = user.Email ?? matchingUser.Email;
             matchingUser.UserName = matchingUser.Email;
@@ -266,7 +257,7 @@ namespace Services
             matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
 
 
-            //ApplicationUser matchingUser = await _unitOfWork.ApplicationUser.Update(id, user);
+          
             await _userManager.UpdateAsync(matchingUser);
             return user;
         }
@@ -281,7 +272,13 @@ namespace Services
 
         public Task<List<ApplicationUser>> GetAllUsersAsync()
         {
+
             return _unitOfWork.ApplicationUser.GetAll();
+        }
+        public Task<ApplicationUser> GetUserAsync(string id)
+        {
+            var user = _userManager.FindByIdAsync(id);
+            return user;
         }
     }
 }

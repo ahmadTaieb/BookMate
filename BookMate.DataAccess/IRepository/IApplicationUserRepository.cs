@@ -15,5 +15,6 @@ namespace BookMate.DataAccess.IRepository
         Task<bool> Delete(ApplicationUser user);
         Task<ApplicationUser> Get(string id);
         Task<List<ApplicationUser>> GetAll();
+        
     }
 }

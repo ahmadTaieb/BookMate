@@ -12,6 +12,7 @@ namespace ServiceContracts
 {
     public interface IUserService
     {
+        Task<ApplicationUser> GetUserAsync(string id);
         Task<AuthModel> RegisterAsync(RegisterDTO model);
         Task<AuthModel> GetTokenAsync(TokenRequest model);
         Task<string> AddRoleAsync(string userId , string role);
@@ -20,6 +21,7 @@ namespace ServiceContracts
         Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user);
         Task<ApplicationUser> DeleteUserAsync(ApplicationUser user);
         Task<List<ApplicationUser>> GetAllUsersAsync();
+
 
 
 

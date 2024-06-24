@@ -21,13 +21,32 @@ namespace book_mate.Controllers
             _unitOfWork = unitOfWork;
         
         }
+        [Authorize]
+        [HttpGet("getCurrentUser")]
+        public async Task<IActionResult> getCurrentUser()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            return new JsonResult(new { status = "200", message = "successfully" ,data = user });
+        }
+        [AllowAnonymous]
+        [HttpGet("getUser/{id}")]
+        public async Task<IActionResult> getCurrentUser(string id)
+        {
+            var user = _userService.GetUserAsync(id);
+
+            return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
+        }
+
+        [Authorize]
         [HttpGet("Follow/{id}")]
         public async Task<IActionResult> Follow()  
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-
+            
 
             return new JsonResult (new { status = "200" , message = "successfully followed!" });
         }
