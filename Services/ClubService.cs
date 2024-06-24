@@ -47,11 +47,11 @@ namespace Services
                 ImageUrl = club.ImageUrl,
                 Hidden = club.Hidden ?? false,
                 ApplicationUserId = adminId,
-                ApplicationUser = await _userManager.FindByIdAsync(adminId),
+                //ApplicationUser = await _userManager.FindByIdAsync(adminId),
 
             };
             var user = _unitOfWork.Club.AddClub(adminId, newClub);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return newClub;
         }
         public async Task<List<Club>> GetAllClubsAsync()

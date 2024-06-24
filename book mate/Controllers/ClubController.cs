@@ -38,9 +38,18 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
             var adminId = user.Id;
-            
+
+            //_db.Clubs.Add(new Club
+            //{
+            //    Name = club.Name,
+            //    ApplicationUserId = adminId,
+            //    //
+            //});
+
+            //_db.SaveChanges();
+            //return new JsonResult(new { status = 200});
             return new JsonResult(_clubService.AddClubAsync(adminId, club).Result);
-            
+
         }
 
 
@@ -59,7 +68,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("UpdateClub/{clubId}")]
-        public async Task<IActionResult> UpdateClub([FromQuery]string clubId,[FromBody] ClubAddRequest club)
+        public async Task<IActionResult> UpdateClub([FromRoute]string clubId,[FromBody] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -69,9 +78,9 @@ namespace book_mate.Controllers
             {
                 return new JsonResult("you are not admin in this club");
             }
-            var UpdatedClub = _clubService.UpdateAsync(adminId, club).Result;
+            var UpdatedClub = await _clubService.UpdateAsync(clubId, club);
 
-            return new JsonResult(UpdatedClub);
+            return new JsonResult(new {status = 200 , message = "successfully"});
         }
 
 

@@ -32,7 +32,7 @@ namespace Services
 
             foreach (ApplicationUserRelation c in x)
             {
-                users.Add(c.ApplicationUserParent);
+                users.Add(c.ApplicationUserChild);
             }
 
             return users;

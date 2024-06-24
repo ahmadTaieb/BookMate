@@ -17,7 +17,9 @@ namespace BookMate.DataAccess.Repository
         public async Task<Club> AddClub(string adminId, Club club)
         {
             var c = _db.Clubs.Add(club);
+            
             AddMember(adminId, club.Id);
+            
             return club;
         }
 
@@ -64,18 +66,18 @@ namespace BookMate.DataAccess.Repository
             }
             matchingClub.Name = club.Name ?? matchingClub.Name;
             matchingClub.Description = club.Description ?? matchingClub.Description;
-            matchingClub.ApplicationUserId = club.ApplicationUserId ?? club.ApplicationUserId;
+            matchingClub.ApplicationUserId = club.ApplicationUserId ?? matchingClub.ApplicationUserId;
             matchingClub.ImageUrl = club.ImageUrl ?? matchingClub.ImageUrl;
             matchingClub.Hidden = club.Hidden ?? matchingClub.Hidden;
-            if (club.ApplicationUser != null)
-            {
-                matchingClub.ApplicationUser = club.ApplicationUser;
-            }
-            else
-            {
-                matchingClub.ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id.ToString() == matchingClub.ApplicationUserId);
-            }
-
+            //if (club.ApplicationUser != null)
+            //{
+            //    matchingClub.ApplicationUser = club.ApplicationUser;
+            //}
+            //else
+            //{
+            //    matchingClub.ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id.ToString() == matchingClub.ApplicationUserId);
+            //}
+            _db.Clubs.Update(matchingClub);
             return matchingClub;
 
         }
@@ -86,8 +88,8 @@ namespace BookMate.DataAccess.Repository
             {
                 ApplicationUserId = userId,
                 ClubId = clubId,
-                ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id == userId),
-                Club = _db.Clubs.FirstOrDefault(c => c.Id == clubId),
+                //ApplicationUser = _db.ApplicationUsers.FirstOrDefault(i => i.Id == userId),
+                //Club = _db.Clubs.FirstOrDefault(c => c.Id == clubId),
             };
             _db.ApplicationUserClubs.Add(a);
             
