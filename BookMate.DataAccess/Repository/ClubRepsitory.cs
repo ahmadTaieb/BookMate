@@ -102,7 +102,11 @@ namespace BookMate.DataAccess.Repository
                 .Include(x => x.ApplicationUsersMember)
                 .ThenInclude(y => y.ApplicationUser)
                 .FirstOrDefault(i => i.Id.ToString() == clubId);
-            
+            if(c == null)
+            {
+                return [];
+            }
+
             return (List<ApplicationUserClub>)c.ApplicationUsersMember;
     
         }

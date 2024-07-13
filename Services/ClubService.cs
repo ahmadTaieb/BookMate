@@ -93,7 +93,8 @@ namespace Services
         }
         public async Task<ApplicationUserClub> AddMember(string userId, Guid clubId)
         {
-            if (await _unitOfWork.Club.Get(clubId.ToString()) == null)
+            var c = await _unitOfWork.Club.Get(clubId.ToString());
+            if (c == null)
             {
                 return null;
             }
