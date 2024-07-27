@@ -180,31 +180,19 @@ namespace book_mate.Controllers
             }
         }
 
-
-
-        [HttpPost("increment-reading-count/{bookId}")]
-        public async Task<ActionResult<BookResponse>> IncrementReadingCount(Guid bookId)
+        [HttpGet]
+        [Route("/SearchByTitle")]
+        public async Task<ActionResult<List<BookResponse?>>>? Search([FromQuery]string title)
         {
-            try
-            {
-                await _booksService.IncrementReadingCount(bookId);
-                return Ok("done");
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Book not found");
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine("Invalid operation exception: " + ex.Message);
-                return StatusCode(500, ex.Message);
-            }
-            catch (Exception ex)
-            {
+
+           var response = await _booksService.Search(title);
+
+            return Ok(response);
            
-                return StatusCode(500, "An unexpected exception occurred: " + ex.Message);
-            }
         }
+
+
+
 
 
 

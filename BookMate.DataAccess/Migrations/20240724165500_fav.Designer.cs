@@ -4,6 +4,7 @@ using BookMate.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724165500_fav")]
+    partial class fav
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,35 +208,35 @@ namespace BookMate.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0072fa3d-f8d7-4f3f-bf20-9e98822ecc15"),
+                            Id = new Guid("2d58fcf1-2642-4281-a2be-38a3b9e6e95d"),
                             Author = "Author1",
                             NumberOfPages = 100,
                             Title = "Test1"
                         },
                         new
                         {
-                            Id = new Guid("f1a34c65-c0f2-4cdb-a3ac-cdbf77582870"),
+                            Id = new Guid("20cd6a45-774e-45f8-a1a8-7a3564230e3d"),
                             Author = "Author2",
                             NumberOfPages = 200,
                             Title = "Test2"
                         },
                         new
                         {
-                            Id = new Guid("d79fb358-ea28-4c64-9db6-08346120c340"),
+                            Id = new Guid("b7fa1705-2fce-4a7c-8fa5-0b1c96ab3df0"),
                             Author = "Author3",
                             NumberOfPages = 300,
                             Title = "Test3"
                         },
                         new
                         {
-                            Id = new Guid("82a9cc77-3176-4f48-8565-659d474018b1"),
+                            Id = new Guid("538f435b-0d0e-4411-a4ef-b11a815d532f"),
                             Author = "Author4",
                             NumberOfPages = 400,
                             Title = "Test4"
                         },
                         new
                         {
-                            Id = new Guid("b9a6ea16-2da2-470d-8821-27a9a498cbc3"),
+                            Id = new Guid("19d5194b-296e-431e-83a8-d177268c3aca"),
                             Author = "Author5",
                             NumberOfPages = 500,
                             Title = "Test5"
@@ -576,13 +579,13 @@ namespace BookMate.DataAccess.Migrations
             modelBuilder.Entity("BookMate.Entities.BookFavorite", b =>
                 {
                     b.HasOne("BookMate.Entities.Book", "Book")
-                        .WithMany("BookFavorite")
+                        .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookMate.Entities.Favorite", "Favorite")
-                        .WithMany("books")
+                        .WithMany()
                         .HasForeignKey("FavoriteId");
 
                     b.Navigation("Book");
@@ -704,19 +707,12 @@ namespace BookMate.DataAccess.Migrations
 
             modelBuilder.Entity("BookMate.Entities.Book", b =>
                 {
-                    b.Navigation("BookFavorite");
-
                     b.Navigation("BookLibrary");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Club", b =>
                 {
                     b.Navigation("ApplicationUsersMember");
-                });
-
-            modelBuilder.Entity("BookMate.Entities.Favorite", b =>
-                {
-                    b.Navigation("books");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Library", b =>

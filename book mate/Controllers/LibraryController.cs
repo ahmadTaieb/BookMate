@@ -55,6 +55,69 @@ public class LibraryController : ControllerBase
         }
     }
 
+    [HttpPost("RemoveBookFromLibrary")]
+    public async Task <IActionResult> RemoveBook([FromQuery] Guid bookId)
+    {
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+
+
+
+            await _libraryService.RemoveBookFromLibrary(userId,bookId);
+            return Ok("Book Deleted Successfully");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+
+    }
+
+
+
+
+    [HttpGet("GetBooksByStatus")]
+
+    public async Task<IActionResult> GetBooksByStatus([FromQuery] string status)
+    {
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+            List<BookResponse?> responses=await _libraryService.GetBooksByStatus(userId,status);
+
+            return Ok(responses);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+
 
 
 
