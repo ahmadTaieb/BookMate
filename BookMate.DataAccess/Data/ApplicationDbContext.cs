@@ -24,7 +24,10 @@ namespace BookMate.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
 
-        public DbSet<Library> Librarys { get; set; }
+        public DbSet<Library> Libraries { get; set; }
+
+        public DbSet<Favorite>Favorites { get; set; }
+        public DbSet<BookFavorite>BookFavorites { get; set; }
 
         public DbSet<BookLibrary> BookLibraries { get; set; }
         public DbSet<ApplicationUserClub> ApplicationUserClubs { get; set; }

@@ -58,8 +58,22 @@ builder.Services.AddCors(options =>
         });
 });
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddScoped<IBooksService,BooksService >();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<IFavoritesService,FavoritesService >();
 
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -108,6 +122,10 @@ builder.Services.AddAuthentication(options =>
 //End Identity
 
 
+
+
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -144,4 +162,8 @@ app.MapControllers();
 app.UseCors("ReactApp");
 
 app.Run();
+
+
+// Apply CORS policy
+app.UseCors("AllowAll");
 
