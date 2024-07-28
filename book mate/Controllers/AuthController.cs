@@ -174,14 +174,14 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = 200, message = "updated successfully!", newToken = token.Token, user_id = user.Id, email = user.Email });
         }
         [Authorize]
-        [HttpGet("deleteUser")]
+        [HttpDelete("deleteUser")]
         public async Task<IActionResult> deleteUser()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
             _userService.DeleteUserAsync(user);
-            _unitOfWork.saveAsync();
+            
             return Ok();
         }
 

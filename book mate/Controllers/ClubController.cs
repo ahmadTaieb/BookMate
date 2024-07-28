@@ -102,8 +102,9 @@ namespace book_mate.Controllers
                 return new JsonResult("you are not admin in this club");
             }
             var UpdatedClub = await _clubService.UpdateAsync(clubId, club);
-
-            return new JsonResult(new {status = 200 , message = "successfully"});
+            
+            var newClub = await _clubService.GetClub(clubId);
+            return new JsonResult(new {status = 200 , message = "successfully" ,data = newClub});
         }
 
 
@@ -152,10 +153,17 @@ namespace book_mate.Controllers
 
       
         [HttpGet("deleteClub/{id}")]
-        public async Task<IActionResult> DeleteClub(string id) 
+        public async Task<IActionResult> DeleteClub([FromRoute]string id) 
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            var adminId = user.Id;
+            var c = await _clubService.GetClub(id);
+            if (c.ApplicationUserId != adminId)
+            {
+                return new JsonResult("you are not admin in this club");
+            }
 
             bool ok = await _clubService.DeleteAsync(id, user.Id);
 

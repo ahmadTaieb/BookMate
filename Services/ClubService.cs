@@ -123,7 +123,15 @@ namespace Services
             List<Club> c = new List<Club>();
             foreach (var club in clubs)
             {
-                c.Add(club.Club);
+                if (club.Club == null)
+                {
+
+                }
+                else
+                {
+                    c.Add(club.Club);
+                }
+                
             }
             return c;
         }

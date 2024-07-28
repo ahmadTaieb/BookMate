@@ -20,6 +20,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IClubService, ClubService>();
 builder.Services.AddTransient<IFollowService, FollowService>();
+builder.Services.AddTransient<IPostService, PostService>();
 
 
 

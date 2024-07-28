@@ -15,7 +15,7 @@ namespace BookMate.Entities
         public string? ApplicationUserChildId { get; set; }
         public virtual ApplicationUser? ApplicationUserChild { get; set; }
         
-        public bool confirm { get; set; } = false;
+        public bool? confirm { get; set; } = false;
         //Confirm = table.Column<bool>(type: "bit", nullable: false),
 
 

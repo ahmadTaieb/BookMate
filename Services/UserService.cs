@@ -264,9 +264,9 @@ namespace Services
 
         public async Task<ApplicationUser> DeleteUserAsync(ApplicationUser user)
         {
-            
-            await _unitOfWork.ApplicationUser.Delete(user);
-
+            _userManager.DeleteAsync(user);
+            //await _unitOfWork.ApplicationUser.Delete(user);
+            _unitOfWork.saveAsync();
             return user;
         }
 
