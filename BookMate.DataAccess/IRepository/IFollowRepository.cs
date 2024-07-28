@@ -11,10 +11,11 @@ namespace BookMate.DataAccess.IRepository
     {
         Task<ApplicationUserRelation> Add(ApplicationUserRelation entity);
         Task<ApplicationUserRelation> Update(ApplicationUserRelation entity);
-        Task<ApplicationUserRelation> Delete(ApplicationUserRelation entity);
-        List<ApplicationUserRelation> GetAllFollowersRequests(string id);
+        Task<bool> Delete(ApplicationUserRelation entity);
+        List<ApplicationUser> GetAllFollowersRequests(string id);
         Task<List<ApplicationUserRelation>> GetAllFollowers(string id);
-        Task<List<ApplicationUserRelation>> GetAllFollowing(string id);
+        List<ApplicationUser> GetAllFollowing(string id);
+        ApplicationUserRelation Get(string parentId, string childId);
 
 
     }

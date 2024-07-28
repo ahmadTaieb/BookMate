@@ -24,18 +24,44 @@ namespace Services
             _unitOfWork.saveAsync();
             return entity;
         }
+        public async Task<ApplicationUserRelation> UnFollowAsync(ApplicationUserRelation entity)
+        {
+            _unitOfWork.Follow.Delete(entity);
+            _unitOfWork.saveAsync();
+            return entity;
+        }
 
         public async Task<List<ApplicationUser>> GetFollowRequestsAsync(string id)
         {
             var x = _unitOfWork.Follow.GetAllFollowersRequests(id);
-            List<ApplicationUser> users = new List<ApplicationUser>();
+            //List<ApplicationUser> users = new List<ApplicationUser>();
 
-            foreach (ApplicationUserRelation c in x)
-            {
-                users.Add(c.ApplicationUserChild);
-            }
+            //foreach (ApplicationUserRelation c in x)
+            //{
+            //    users.Add(c.ApplicationUserChild);
+            //}
 
-            return users;
+            return x;
+        }
+        public async Task<List<ApplicationUser>> GetFollowingAsync(string id)
+        {
+            var x = _unitOfWork.Follow.GetAllFollowing(id);
+            //List<ApplicationUser> users = new List<ApplicationUser>();
+
+            //foreach (ApplicationUserRelation c in x)
+            //{
+            //    users.Add(c.ApplicationUserChild);
+            //}
+
+            return x;
+        }
+
+        public async Task<bool> IsFollowing(ApplicationUserRelation entity)
+        {
+            var x = _unitOfWork.Follow.Get(entity.ApplicationUserParentId,entity.ApplicationUserChildId);
+            if (x == null)
+                return false;
+            return true;
         }
     }
 }

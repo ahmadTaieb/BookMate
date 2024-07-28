@@ -15,12 +15,15 @@ namespace BookMate.DataAccess.Repository
         public IClubRepository Club { get; private set; }
         public IFollowRepository Follow { get; private set; }
 
+        public IPostRepository Post {  get; private set; }
+
         public UnitOfWork (ApplicationDbContext db)
         {
             _db = db;
             ApplicationUser = new ApplicationUserRepository(_db);
-            Club = new ClubRepsitory(_db);
+            Club = new ClubRepository(_db);
             Follow = new FollowRepository(_db);
+            Post = new PostRepository(_db);
 
         }
 
