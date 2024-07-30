@@ -12,7 +12,8 @@ namespace BookMate.DataAccess.IRepository
         IClubRepository Club { get; }
         IFollowRepository Follow { get; }
         IPostRepository Post { get; }
-        
+        ICommentRepository Comment { get; }
+        IReactRepository React { get; }
 
         public void saveAsync();
         public void save();

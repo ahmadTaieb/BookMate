@@ -24,7 +24,10 @@ namespace BookMate.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
 
-        public DbSet<Library> Librarys { get; set; }
+        public DbSet<Library> Libraries { get; set; }
+
+        public DbSet<Favorite>Favorites { get; set; }
+        public DbSet<BookFavorite>BookFavorites { get; set; }
 
         public DbSet<BookLibrary> BookLibraries { get; set; }
         public DbSet<ApplicationUserClub> ApplicationUserClubs { get; set; }
@@ -32,7 +35,7 @@ namespace BookMate.DataAccess.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments {  get; set; } 
-        public DbSet<React> Reactes { get; set; }
+        public DbSet<React> Reacts { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -80,13 +83,7 @@ namespace BookMate.DataAccess.Data
                 NumberOfPages = 500,
             });
 
-            builder.Entity<Post>().HasData(new Post()
-            {
-                Id = Guid.NewGuid(),
-                Content = "hello 1",
-                ClubId = Guid.NewGuid(),
-                ApplicationUserId = null,
-            });
+            
 
             //builder.Entity<ApplicationUser>()
             //    .HasMany(c => c.Clubs)
@@ -184,6 +181,11 @@ namespace BookMate.DataAccess.Data
             builder.Entity<Club>()
                 .HasMany(x => x.ApplicationUsersMember)
                 .WithOne(x => x.Club)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Club>()
+                .HasOne(x => x.ApplicationUser)
+                .WithMany(x => x.Clubs)
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUserRelation>()

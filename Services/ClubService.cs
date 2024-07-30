@@ -99,7 +99,7 @@ namespace Services
                 return null;
             }
             var a = await _unitOfWork.Club.AddMember(userId, clubId);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return a;
         }
 
@@ -136,6 +136,15 @@ namespace Services
             return c;
         }
 
-       
+        public async Task<bool> CheckIfMember(string userId, string clubId)
+        {
+            var clubs =await GetClubsMember(userId);
+            foreach (var club in clubs)
+            {
+                if(club.Id.ToString() == clubId)
+                    return true;
+            }
+            return false;
+        }
     }
 }

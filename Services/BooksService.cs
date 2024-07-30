@@ -237,49 +237,21 @@ namespace Services
 
 
 
-
-        public async Task IncrementReadingCount(Guid bookId)
+        public async Task<List<BookResponse?>>Search(string title)
         {
-            if (bookId == Guid.Empty) throw new ArgumentException("Invalid book ID", nameof(bookId));
 
-            var book = await _db.Books.FindAsync(bookId);
-            if (book == null)
-            {
-                throw new KeyNotFoundException("Book not found");
-            }
+            var books = await _db.Books.Include(book => book.Categories)
+                            .Where(b => b.Title.Contains(title)).
+                            Select(book => book.ToBookResponse())
+                            .ToListAsync();
+            return books;
 
-            if (book.ReadingCount.HasValue)
-            {
-                book.ReadingCount++;
-            }
-            else
-            {
-                book.ReadingCount = 1;
-            }
-
-            try
-            {
-                _db.Entry(book).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                Console.WriteLine("Concurrency exception: " + ex.Message);
-                throw new InvalidOperationException("A concurrency error occurred while updating the book.");
-            }
-            catch (DbUpdateException ex)
-            {
-                Console.WriteLine("Database update exception: " + ex.Message);
-                throw new InvalidOperationException("An error occurred while updating the book.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An unexpected exception occurred: " + ex.Message);
-                throw new InvalidOperationException("An unexpected error occurred while updating the book.");
-            }
-
+           
 
         }
+
+
+        
 
 
         private async Task<string?> GetImageUrl(IFormFile? file)

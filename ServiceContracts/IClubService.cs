@@ -20,6 +20,7 @@ namespace ServiceContracts
         Task<ApplicationUserClub> AddMember(string userId, Guid clubId);
         Task<List<ApplicationUser>> GetMembers(string clubId);
         Task<List<Club>> GetClubsMember(string userId);
+        Task<bool> CheckIfMember(string userId, string clubId);
 
 
     }
