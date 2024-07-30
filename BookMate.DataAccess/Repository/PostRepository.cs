@@ -46,7 +46,7 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<Post> Update(Guid id, PostAddRequest post)
         {
-            Post? matchingPost = await _db.Posts.FirstOrDefaultAsync(q => q.Id == id);
+            Post? matchingPost = await _db.Posts.FirstOrDefaultAsync(q => q.Id.ToString() == id.ToString());
             if (matchingPost != null)
             {
                 matchingPost.Content = post.Content;

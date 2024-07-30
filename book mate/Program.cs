@@ -21,6 +21,9 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IClubService, ClubService>();
 builder.Services.AddTransient<IFollowService, FollowService>();
 builder.Services.AddTransient<IPostService, PostService>();
+builder.Services.AddTransient<IFavoritesService, FavoritesService>();
+builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IReactService, ReactService>();
 
 
 

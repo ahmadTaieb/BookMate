@@ -397,6 +397,60 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Libraries");
+<<<<<<< HEAD
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ClubId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ClubId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.React", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Reaction")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Reacts");
+=======
+>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
                 });
 
             modelBuilder.Entity("BookMate.Entities.Post", b =>
@@ -676,9 +730,26 @@ namespace BookMate.DataAccess.Migrations
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Clubs")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ApplicationUser");
+                });
+
+<<<<<<< HEAD
+            modelBuilder.Entity("BookMate.Entities.Comment", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("BookMate.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Comment", b =>

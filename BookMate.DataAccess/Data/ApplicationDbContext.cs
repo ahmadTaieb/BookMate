@@ -35,7 +35,7 @@ namespace BookMate.DataAccess.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments {  get; set; } 
-        public DbSet<React> Reactes { get; set; }
+        public DbSet<React> Reacts { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -155,6 +155,11 @@ namespace BookMate.DataAccess.Data
             builder.Entity<Club>()
                 .HasMany(x => x.ApplicationUsersMember)
                 .WithOne(x => x.Club)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Club>()
+                .HasOne(x => x.ApplicationUser)
+                .WithMany(x => x.Clubs)
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUserRelation>()

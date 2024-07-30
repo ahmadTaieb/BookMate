@@ -180,8 +180,15 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            _userService.DeleteUserAsync(user);
-            
+            //await _unitOfWork.ApplicationUser.Delete(user);
+            //await _userService.DeleteUserAsync(user);
+            //var x =await _userManager.DeleteAsync(user);
+            //if (x!=null)
+            //{
+                
+            //}
+            await _unitOfWork.ApplicationUser.Delete(user);
+            _unitOfWork.save();
             return Ok();
         }
 

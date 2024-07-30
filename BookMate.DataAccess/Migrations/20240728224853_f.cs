@@ -9,6 +9,7 @@ namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class f : Migration
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -238,7 +239,8 @@ namespace BookMate.DataAccess.Migrations
                         name: "FK_Clubs_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -566,11 +568,15 @@ namespace BookMate.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
+========
+                name: "IX_Favorites_UserId",
+                table: "Favorites",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Libraries_UserId",
                 table: "Libraries",
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -623,9 +629,18 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookFavorites");
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
 
             migrationBuilder.DropTable(
                 name: "BookLibraries");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
+========
+
+            migrationBuilder.DropTable(
+                name: "BookLibraries");
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
 
             migrationBuilder.DropTable(
                 name: "Comments");
@@ -647,6 +662,15 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Libraries");
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
+
+            migrationBuilder.DropTable(
+                name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "Clubs");
+========
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
 
             migrationBuilder.DropTable(
                 name: "Posts");
