@@ -1,5 +1,4 @@
-﻿using BookMate.Entities.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookMate.Entities
 {
-    public class BookLibrary
+    public class BookFavorite
     {
 
         public int Id { get; set; }
@@ -18,11 +17,8 @@ namespace BookMate.Entities
 
         public Book? Book { get; set; }
 
-       public ReadingStatus? ReadingStatus { get; set; }
+        public int  Favorite_Id { get; set; }
 
-        [ForeignKey("Library")]
-        public int LibraryId { get; set; }
-        public Library Library { get; set; } 
-
+        public Favorite? Favorite { get; set; }
     }
 }

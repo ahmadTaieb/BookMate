@@ -38,7 +38,7 @@ namespace Services
 
             };
             await _unitOfWork.Post.Add(post);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return post;
         }
 
@@ -46,7 +46,7 @@ namespace Services
         {
             Post post = await GetAsync(postId);
             await _unitOfWork.Post.Delete(post);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return post;
         }
 
@@ -69,7 +69,7 @@ namespace Services
         public async Task<Post> UpdateAsync(Guid id, PostAddRequest postUpdateRequest)
         {
             Post p =await _unitOfWork.Post.Update(id, postUpdateRequest);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return p;
             
         }

@@ -16,6 +16,8 @@ namespace BookMate.DataAccess.Repository
         public IFollowRepository Follow { get; private set; }
 
         public IPostRepository Post {  get; private set; }
+        public ICommentRepository Comment { get; private set; }
+        public IReactRepository React { get; private set; }
 
         public UnitOfWork (ApplicationDbContext db)
         {
@@ -24,6 +26,8 @@ namespace BookMate.DataAccess.Repository
             Club = new ClubRepository(_db);
             Follow = new FollowRepository(_db);
             Post = new PostRepository(_db);
+            Comment = new CommentRepository(_db);
+            React = new ReactRepository(_db);
 
         }
 

@@ -31,8 +31,13 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<bool> Delete(ApplicationUser user)
         {
+            var relation1 = _db.ApplicationUserRelations.Where(x => x.ApplicationUserParentId == user.Id);
+            var relation2 = _db.ApplicationUserRelations.Where(x => x.ApplicationUserChildId == user.Id);
+
+            _db.ApplicationUserRelations.RemoveRange(relation1);
+            _db.ApplicationUserRelations.RemoveRange(relation2);
             _db.ApplicationUsers.Remove(user);
-            
+            _db.SaveChanges(); 
             return true;
 
         }

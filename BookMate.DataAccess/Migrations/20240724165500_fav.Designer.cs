@@ -4,6 +4,7 @@ using BookMate.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMate.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+    [Migration("20240728190318_a")]
+    partial class a
+========
+    [Migration("20240724165500_fav")]
+    partial class fav
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,55 +213,55 @@ namespace BookMate.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("d3597dcb-a3cf-47ba-b797-aff2ae7a4b31"),
-=======
-                            Id = new Guid("0072fa3d-f8d7-4f3f-bf20-9e98822ecc15"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+                            Id = new Guid("ceae109a-7be8-4126-8b22-4ae210becb63"),
+========
+                            Id = new Guid("2d58fcf1-2642-4281-a2be-38a3b9e6e95d"),
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                             Author = "Author1",
                             NumberOfPages = 100,
                             Title = "Test1"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("eb02f5e0-7e59-4966-91c9-ca36f867584f"),
-=======
-                            Id = new Guid("f1a34c65-c0f2-4cdb-a3ac-cdbf77582870"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+                            Id = new Guid("580214fb-113c-4c1b-884d-ca0911aaddbd"),
+========
+                            Id = new Guid("20cd6a45-774e-45f8-a1a8-7a3564230e3d"),
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                             Author = "Author2",
                             NumberOfPages = 200,
                             Title = "Test2"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("788d2b4e-e7de-4a6f-b460-dad2791f5fbe"),
-=======
-                            Id = new Guid("d79fb358-ea28-4c64-9db6-08346120c340"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+                            Id = new Guid("28b4208c-f594-430e-af57-41b109199b35"),
+========
+                            Id = new Guid("b7fa1705-2fce-4a7c-8fa5-0b1c96ab3df0"),
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                             Author = "Author3",
                             NumberOfPages = 300,
                             Title = "Test3"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("5855b7eb-22cc-4ee0-8098-cfe40edb08e0"),
-=======
-                            Id = new Guid("82a9cc77-3176-4f48-8565-659d474018b1"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+                            Id = new Guid("9b7a7e38-e810-40f1-9b2d-4d795f46cee5"),
+========
+                            Id = new Guid("538f435b-0d0e-4411-a4ef-b11a815d532f"),
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                             Author = "Author4",
                             NumberOfPages = 400,
                             Title = "Test4"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("e32496b0-e7ef-4b92-b318-602fd9921969"),
-=======
-                            Id = new Guid("b9a6ea16-2da2-470d-8821-27a9a498cbc3"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
+                            Id = new Guid("e64b4582-0421-4b20-b811-421c4d9326b6"),
+========
+                            Id = new Guid("19d5194b-296e-431e-83a8-d177268c3aca"),
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                             Author = "Author5",
                             NumberOfPages = 500,
                             Title = "Test5"
@@ -371,7 +379,7 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Clubs");
                 });
 
-<<<<<<< HEAD
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
             modelBuilder.Entity("BookMate.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -397,8 +405,8 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Comments");
                 });
 
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+========
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
             modelBuilder.Entity("BookMate.Entities.Favorite", b =>
                 {
                     b.Property<int>("Id")
@@ -435,7 +443,7 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Libraries");
-<<<<<<< HEAD
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
                 });
 
             modelBuilder.Entity("BookMate.Entities.Post", b =>
@@ -486,9 +494,9 @@ namespace BookMate.DataAccess.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Reacts");
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                    b.ToTable("Reactes");
+========
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -678,13 +686,21 @@ namespace BookMate.DataAccess.Migrations
             modelBuilder.Entity("BookMate.Entities.BookFavorite", b =>
                 {
                     b.HasOne("BookMate.Entities.Book", "Book")
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
                         .WithMany("BookFavorite")
+========
+                        .WithMany()
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookMate.Entities.Favorite", "Favorite")
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
                         .WithMany("books")
+========
+                        .WithMany()
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
                         .HasForeignKey("FavoriteId");
 
                     b.Navigation("Book");
@@ -721,7 +737,7 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-<<<<<<< HEAD
+<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.Designer.cs
             modelBuilder.Entity("BookMate.Entities.Comment", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
@@ -737,8 +753,8 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("Post");
                 });
 
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+========
+>>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.Designer.cs
             modelBuilder.Entity("BookMate.Entities.Favorite", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "user")

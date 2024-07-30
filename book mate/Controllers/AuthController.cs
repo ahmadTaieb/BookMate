@@ -22,13 +22,15 @@ namespace book_mate.Controllers
         private ApplicationDbContext _db;
 
         private ILibraryService _libraryService;
-        public AuthController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db, ILibraryService libraryService)
+        private IFavoritesService _favoritesService;
+        public AuthController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db, ILibraryService libraryService,IFavoritesService favoriteService)
         {
             _userManager = userManager;
             _userService = userService;
             _unitOfWork = unitOfWork;
             _db = db;
             _libraryService = libraryService;
+            _favoritesService = favoriteService;
         }
 
         [HttpPost("register")]
@@ -57,6 +59,7 @@ namespace book_mate.Controllers
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
             await _libraryService.CreateLibrary(result.Id);
+            await _favoritesService.CreateFavorite(result.Id);
 
             return new JsonResult(new { status = 200, message = "successfully!",token = result.Token ,email = model.Email,id = result.Id });
         }
@@ -177,8 +180,15 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email); // will give the user's userId
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            _userService.DeleteUserAsync(user);
-            
+            //await _unitOfWork.ApplicationUser.Delete(user);
+            //await _userService.DeleteUserAsync(user);
+            //var x =await _userManager.DeleteAsync(user);
+            //if (x!=null)
+            //{
+                
+            //}
+            await _unitOfWork.ApplicationUser.Delete(user);
+            _unitOfWork.save();
             return Ok();
         }
 

@@ -21,6 +21,9 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IClubService, ClubService>();
 builder.Services.AddTransient<IFollowService, FollowService>();
 builder.Services.AddTransient<IPostService, PostService>();
+builder.Services.AddTransient<IFavoritesService, FavoritesService>();
+builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IReactService, ReactService>();
 
 
 
@@ -58,8 +61,22 @@ builder.Services.AddCors(options =>
         });
 });
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddScoped<IBooksService,BooksService >();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<IFavoritesService,FavoritesService >();
 
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -108,6 +125,10 @@ builder.Services.AddAuthentication(options =>
 //End Identity
 
 
+
+
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -144,4 +165,8 @@ app.MapControllers();
 app.UseCors("ReactApp");
 
 app.Run();
+
+
+// Apply CORS policy
+app.UseCors("AllowAll");
 

@@ -19,14 +19,16 @@ namespace book_mate.Controllers
         private IClubService _clubService;
         private IUnitOfWork _unitOfWork;
         private IPostService _postService;
+        private IReactService _reactService;
         private ApplicationDbContext _db;
 
-        public PostController(ApplicationDbContext db, IClubService clubService, IUnitOfWork unitOfWork, Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IPostService postService)
+        public PostController(ApplicationDbContext db, IClubService clubService, IUnitOfWork unitOfWork, Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IPostService postService,IReactService reactService)
         {
             _userManager = userManager;
             _clubService = clubService;
             _unitOfWork = unitOfWork;
             _postService = postService;
+            _reactService = reactService;
             _db = db;
         }
 
@@ -36,14 +38,57 @@ namespace book_mate.Controllers
         public async Task<IActionResult> getPost([FromRoute] string id)
         {
             Post post =await _postService.GetAsync(new Guid(id));
-            return new JsonResult(new { status = 200,data = post });
+
+            int[] arr = await _reactService.GetCountAsync(new Guid(id));
+            
+            int total = arr[0] + arr[1] + arr[2] + arr[3];
+            PostResponse response = new PostResponse
+            {
+                Id = post.Id.ToString(),
+                Content = post.Content,
+                ImageUrl = post.ImageUrl,
+                ApplicationUserId = post.ApplicationUserId,
+                ClubId = post.ClubId,
+                TotalReacts = total,
+                Like = arr[0],
+                Love = arr[1],
+                Laugh = arr[2],
+                Sad = arr[3]
+            };
+
+            return new JsonResult(new { status = 200,data = response  });
         }
 
         [HttpGet("getPosts/{clubId}")]
         public async Task<IActionResult> getPosts([FromRoute] string clubId)
         {
-            var posts = _postService.GetAllAsync(new Guid(clubId));
-            return new JsonResult(new { status = 200, data = posts.Result });
+            List<Post> posts =await _postService.GetAllAsync(new Guid(clubId));
+            List<PostResponse> responseList = new List<PostResponse>();
+
+            foreach(Post post in posts)
+            {
+                int[] arr = await _reactService.GetCountAsync(post.Id);
+
+                int total = arr[0] + arr[1] + arr[2] + arr[3];
+                PostResponse response = new PostResponse
+                {
+                    Id = post.Id.ToString(),
+                    Content = post.Content,
+                    ImageUrl = post.ImageUrl,
+                    ApplicationUserId = post.ApplicationUserId,
+                    ClubId = post.ClubId,
+                    TotalReacts = total,
+                    Like = arr[0],
+                    Love = arr[1],
+                    Laugh = arr[2],
+                    Sad = arr[3]
+                };
+                responseList.Add(response);
+
+            }
+
+
+            return new JsonResult(new { status = 200, data = responseList });
         }
         [Authorize]
         [HttpPost("createPost")]
@@ -51,6 +96,12 @@ namespace book_mate.Controllers
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            bool isMember =await _clubService.CheckIfMember(user.Id,request.ClubId.ToString());
+            if (!isMember) 
+            {
+                return new JsonResult(new { status = 400, message = "you are not member in this club" });
+            }
 
             PostAddRequest p = request;
             p.ApplicationUserId = user.Id;
@@ -61,7 +112,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("updatePost/{id}")]
-        public async Task<IActionResult> updatePost([FromRoute] string id,PostAddRequest request)
+        public async Task<IActionResult> updatePost([FromRoute] string id,[FromBody]PostAddRequest request)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
