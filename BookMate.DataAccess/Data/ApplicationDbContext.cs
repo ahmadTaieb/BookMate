@@ -42,54 +42,22 @@ namespace BookMate.DataAccess.Data
 
 
             builder.Entity<Category>().HasData(new Category()
-            { categoryID = 1, categoryName = "drama" });
+            { categoryID = 1, categoryName = "Drama" });
             builder.Entity<Category>().HasData(new Category()
-            { categoryID = 2, categoryName = "action" });
+            { categoryID = 2, categoryName = "Action" });
+            builder.Entity<Category>().HasData(new Category()
+            { categoryID = 3, categoryName = "Fantasy" });
+            builder.Entity<Category>().HasData(new Category()
+            { categoryID = 4, categoryName = "Romance" });
+            builder.Entity<Category>().HasData(new Category()
+            { categoryID = 5, categoryName = "History" });
+            builder.Entity<Category>().HasData(new Category()
+            { categoryID = 6, categoryName = "Philosophy" });
+            builder.Entity<Category>().HasData(new Category()
+            { categoryID = 7, categoryName = "Science" });
+           
 
-            builder.Entity<Book>().HasData(new Book()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Test1",
-                Author = "Author1",
-                NumberOfPages = 100,
-            });
 
-            builder.Entity<Book>().HasData(new Book()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Test2",
-                Author = "Author2",
-                NumberOfPages = 200,
-            });
-            builder.Entity<Book>().HasData(new Book()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Test3",
-                Author = "Author3",
-                NumberOfPages = 300,
-            });
-            builder.Entity<Book>().HasData(new Book()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Test4",
-                Author = "Author4",
-                NumberOfPages = 400,
-            });
-            builder.Entity<Book>().HasData(new Book()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Test5",
-                Author = "Author5",
-                NumberOfPages = 500,
-            });
-
-            builder.Entity<Post>().HasData(new Post()
-            {
-                Id = Guid.NewGuid(),
-                Content = "hello 1",
-                ClubId = Guid.NewGuid(),
-                ApplicationUserId = null,
-            });
 
             //builder.Entity<ApplicationUser>()
             //    .HasMany(c => c.Clubs)

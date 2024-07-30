@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class fav : Migration
+    public partial class f : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,7 +118,7 @@ namespace BookMate.DataAccess.Migrations
                 {
                     ApplicationUserParentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ApplicationUserChildId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    confirm = table.Column<bool>(type: "bit", nullable: false)
+                    confirm = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,14 +127,12 @@ namespace BookMate.DataAccess.Migrations
                         name: "FK_ApplicationUserRelations_AspNetUsers_ApplicationUserChildId",
                         column: x => x.ApplicationUserChildId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ApplicationUserRelations_AspNetUsers_ApplicationUserParentId",
                         column: x => x.ApplicationUserParentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -332,14 +330,38 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ClubId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Posts_Clubs_ClubId",
+                        column: x => x.ClubId,
+                        principalTable: "Clubs",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BookFavorites",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Favorite_Id = table.Column<int>(type: "int", nullable: false),
-                    FavoriteId = table.Column<int>(type: "int", nullable: true)
+                    FavoriteId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -354,7 +376,8 @@ namespace BookMate.DataAccess.Migrations
                         name: "FK_BookFavorites_Favorites_FavoriteId",
                         column: x => x.FavoriteId,
                         principalTable: "Favorites",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -384,16 +407,52 @@ namespace BookMate.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Books",
-                columns: new[] { "Id", "Author", "AverageRating", "Description", "ImageUrl", "NumberOfPages", "PdfUrl", "PublishedYear", "RatingsCount", "ReadingCount", "Title", "VoiceUrl" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
                 {
-                    { new Guid("19d5194b-296e-431e-83a8-d177268c3aca"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null },
-                    { new Guid("20cd6a45-774e-45f8-a1a8-7a3564230e3d"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null },
-                    { new Guid("2d58fcf1-2642-4281-a2be-38a3b9e6e95d"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
-                    { new Guid("538f435b-0d0e-4411-a4ef-b11a815d532f"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
-                    { new Guid("b7fa1705-2fce-4a7c-8fa5-0b1c96ab3df0"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null }
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comments_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reactes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Reaction = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reactes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reactes_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reactes_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -401,8 +460,13 @@ namespace BookMate.DataAccess.Migrations
                 columns: new[] { "categoryID", "categoryName" },
                 values: new object[,]
                 {
-                    { 1, "drama" },
-                    { 2, "action" }
+                    { 1, "Drama" },
+                    { 2, "Action" },
+                    { 3, "Fantasy" },
+                    { 4, "Romance" },
+                    { 5, "History" },
+                    { 6, "Philosophy" },
+                    { 7, "Science" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -490,6 +554,16 @@ namespace BookMate.DataAccess.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_ApplicationUserId",
+                table: "Comments",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_PostId",
+                table: "Comments",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
                 column: "UserId");
@@ -498,6 +572,26 @@ namespace BookMate.DataAccess.Migrations
                 name: "IX_Libraries_UserId",
                 table: "Libraries",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_ApplicationUserId",
+                table: "Posts",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_ClubId",
+                table: "Posts",
+                column: "ClubId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reactes_ApplicationUserId",
+                table: "Reactes",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reactes_PostId",
+                table: "Reactes",
+                column: "PostId");
         }
 
         /// <inheritdoc />
@@ -534,7 +628,10 @@ namespace BookMate.DataAccess.Migrations
                 name: "BookLibraries");
 
             migrationBuilder.DropTable(
-                name: "Clubs");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Reactes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -550,6 +647,12 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Libraries");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "Clubs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
