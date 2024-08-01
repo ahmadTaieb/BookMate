@@ -56,7 +56,7 @@ public class LibraryController : ControllerBase
     }
 
     [HttpPost("RemoveBookFromLibrary")]
-    public async Task <IActionResult> RemoveBook([FromQuery] Guid bookId)
+    public async Task <IActionResult> RemoveBook([FromBody] Guid bookId)
     {
         try
         {
@@ -74,7 +74,7 @@ public class LibraryController : ControllerBase
 
 
             await _libraryService.RemoveBookFromLibrary(userId,bookId);
-            return Ok("Book Deleted Successfully");
+            return Ok("Book Removed from your Library Successfully");
         }
         catch (Exception ex)
         {

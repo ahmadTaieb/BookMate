@@ -15,7 +15,7 @@ namespace Services
     public class LibraryService :ILibraryService
     {
 
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext? _db;
 
         public LibraryService(ApplicationDbContext db)
         {
@@ -67,13 +67,45 @@ namespace Services
             }
 
             ReadingStatus? readingStatus;
-            if (status == "Reading")
-                readingStatus = ReadingStatus.Reading;
-            else if(status=="ToRead")
-                readingStatus = ReadingStatus.ToRead;
-            else if(status=="Read")
+            BookLibrary? existingBookLibrary = _db.BookLibraries
+                .FirstOrDefault(x => x.LibraryId == library.LibraryId && x.BookId == bookId);
+
+
+
+            if (existingBookLibrary!=null)
             {
-                readingStatus= ReadingStatus.Read;
+
+                if (existingBookLibrary.ReadingStatus.ToString().Equals(status))
+                {
+
+                    throw new InvalidOperationException("this book already have same reading status");
+                }
+            }
+
+
+
+            if (status == "Reading")
+            {
+                readingStatus = ReadingStatus.Reading;
+
+              
+            }
+            else if (status == "ToRead")
+            {
+                readingStatus = ReadingStatus.ToRead;
+              
+            }
+            else if (status == "Read")
+            {
+               
+
+                Book? book = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Id == bookId);
+
+                book.ReadingCount++;
+
+               
+
+                readingStatus = ReadingStatus.Read;
             }
             else
             {
@@ -81,17 +113,28 @@ namespace Services
             }
 
 
-            // Check if the book already exists in the library
-            BookLibrary? existingBookLibrary = _db.BookLibraries
-                .FirstOrDefault(x => x.LibraryId == library.LibraryId && x.BookId == bookId);
+        
 
             if (existingBookLibrary != null)
             {
                 // Update the status if the book is already in the library
+
+                if(existingBookLibrary.ReadingStatus.ToString()=="Read")
+                {
+
+                    Book? book = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Id == bookId);
+                    book.ReadingCount--;
+                }
                 existingBookLibrary.ReadingStatus = readingStatus;
+                
             }
             else
             {
+
+
+            
+
+
                 // Add the book to the library if it doesn't exist
                 BookLibrary bookLibrary = new BookLibrary
                 {
@@ -99,6 +142,7 @@ namespace Services
                     LibraryId = library.LibraryId,
                     ReadingStatus = readingStatus // Include the status in the new entry
                 };
+
 
                 _db.BookLibraries.Add(bookLibrary);
             }
@@ -120,12 +164,16 @@ namespace Services
                 throw new ArgumentException($"Invalid status value: {status}", nameof(status));
             }
 
-            Console.WriteLine($"Processing userId: {userId} with status: {status}");
+            var favoriteId = _db.Favorites
+            .Where(fav => fav.UserId == userId)
+             .Select(fav => fav.Id)
+    .       FirstOrDefault();
 
-            var booksWithStatus =  _db.Books
+            var booksWithStatus = _db.Books
                 .Include(book => book.Categories)
                 .Include(book => book.BookLibrary)
-                .ThenInclude(bookLibrary => bookLibrary.Library)
+                    .ThenInclude(bookLibrary => bookLibrary.Library)
+                .Include(book => book.BookFavorite) 
                 .Where(book => book.BookLibrary.Any(bl => bl.Library.UserId == userId && bl.ReadingStatus == readingStatus))
                 .Select(book => new
                 {
@@ -133,15 +181,18 @@ namespace Services
                     ReadingStatus = book.BookLibrary
                         .Where(bl => bl.Library.UserId == userId && bl.ReadingStatus == readingStatus)
                         .Select(bl => bl.ReadingStatus)
-                        .FirstOrDefault()
+                        .FirstOrDefault(),
+                    IsFavorite = book.BookFavorite.Any(fav => fav.FavoriteId == favoriteId) 
                 })
-                .AsEnumerable() // Switch to client-side evaluation for the custom projection.
-                .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus))
-                .ToList(); // Use ToListAsync for async operation
+                .AsEnumerable().
+                Select(booksWithStatus=> booksWithStatus.Book.ToBookResponseMobile(booksWithStatus.ReadingStatus,booksWithStatus.IsFavorite ))
+                .ToList(); 
 
-          
 
             return booksWithStatus;
+
+
+
         }
 
         public async Task RemoveBookFromLibrary(string userId,Guid bookId)
@@ -165,13 +216,40 @@ namespace Services
                 throw new InvalidOperationException("Library not found for the user.");
             }
 
-            BookLibrary? book = _db.BookLibraries
+            BookLibrary? bookInLibrary = _db.BookLibraries
                 .FirstOrDefault(x => x.LibraryId == library.LibraryId && x.BookId == bookId);
 
-            if (book != null)
+            if (bookInLibrary != null)
             {
-               
-                _db.BookLibraries.Remove(book);
+                if(bookInLibrary.ReadingStatus.ToString().Equals("Read"))
+                {
+                    Book? book = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Id == bookId);
+
+                    book.ReadingCount--;
+
+                    try
+                    {
+
+                        _db.Entry(book).State = EntityState.Modified;
+
+
+                        await _db.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        // Handle concurrency conflicts
+                        // Log or handle the exception as needed
+                        throw;
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        // Handle other database update errors
+                        // Log or handle the exception as needed
+                        throw;
+                    }
+                }
+
+                _db.BookLibraries.Remove(bookInLibrary);
                 await _db.SaveChangesAsync();
             }
             else

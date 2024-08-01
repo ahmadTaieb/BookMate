@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class f : Migration
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
+    public partial class react : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -434,7 +433,7 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reactes",
+                name: "Reacts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -444,14 +443,14 @@ namespace BookMate.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reactes", x => x.Id);
+                    table.PrimaryKey("PK_Reacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reactes_AspNetUsers_ApplicationUserId",
+                        name: "FK_Reacts_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Reactes_Posts_PostId",
+                        name: "FK_Reacts_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id");
@@ -568,15 +567,11 @@ namespace BookMate.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
-========
-                name: "IX_Favorites_UserId",
-                table: "Favorites",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Libraries_UserId",
                 table: "Libraries",
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -590,13 +585,13 @@ namespace BookMate.DataAccess.Migrations
                 column: "ClubId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reactes_ApplicationUserId",
-                table: "Reactes",
+                name: "IX_Reacts_ApplicationUserId",
+                table: "Reacts",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reactes_PostId",
-                table: "Reactes",
+                name: "IX_Reacts_PostId",
+                table: "Reacts",
                 column: "PostId");
         }
 
@@ -629,24 +624,15 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookFavorites");
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
 
             migrationBuilder.DropTable(
                 name: "BookLibraries");
 
             migrationBuilder.DropTable(
                 name: "Comments");
-========
 
             migrationBuilder.DropTable(
-                name: "BookLibraries");
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
-
-            migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
-                name: "Reactes");
+                name: "Reacts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -662,15 +648,6 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Libraries");
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
-
-            migrationBuilder.DropTable(
-                name: "Posts");
-
-            migrationBuilder.DropTable(
-                name: "Clubs");
-========
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
 
             migrationBuilder.DropTable(
                 name: "Posts");

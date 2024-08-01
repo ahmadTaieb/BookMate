@@ -107,7 +107,7 @@ namespace Services
                 .ToListAsync(); // Use ToListAsync for async operation
 
             var result = favoriteBooks
-                .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus))
+                .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus,true))
                 .ToList();
 
             return result;
