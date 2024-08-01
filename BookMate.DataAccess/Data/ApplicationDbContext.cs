@@ -36,6 +36,8 @@ namespace BookMate.DataAccess.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments {  get; set; } 
         public DbSet<React> Reacts { get; set; }
+        public DbSet<Report> Reports { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

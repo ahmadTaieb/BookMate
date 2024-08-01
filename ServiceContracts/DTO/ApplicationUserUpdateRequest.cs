@@ -1,4 +1,5 @@
 ﻿using BookMate.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace ServiceContracts.DTO
         public string? Password { get; set; }
         public string? gender { get; set; }
         public DateTime? DateOfBirth { get; set;}
+        public IFormFile? ImageFile { get; set; }
+        public string? ImageUrl { get; set; }
         public List<RefreshToken>? RefreshTokens { get; set; }
         public DateTime? RegisteredAt { get; set; }
 

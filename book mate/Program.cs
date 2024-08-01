@@ -24,6 +24,8 @@ builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<IFavoritesService, FavoritesService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IReactService, ReactService>();
+builder.Services.AddTransient<IReportService, ReportService>();
+
 
 
 

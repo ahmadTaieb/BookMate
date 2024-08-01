@@ -39,6 +39,8 @@ namespace book_mate.Controllers
         {
             Post post =await _postService.GetAsync(new Guid(id));
 
+            ApplicationUser user =await _userManager.FindByIdAsync(post.ApplicationUserId);
+
             int[] arr = await _reactService.GetCountAsync(new Guid(id));
             
             int total = arr[0] + arr[1] + arr[2] + arr[3];
@@ -49,6 +51,8 @@ namespace book_mate.Controllers
                 ImageUrl = post.ImageUrl,
                 ApplicationUserId = post.ApplicationUserId,
                 ClubId = post.ClubId,
+                ApplicationUserName = user.Name,
+                ApplicationUserImageUrl = user.ImageUrl,
                 TotalReacts = total,
                 Like = arr[0],
                 Love = arr[1],
@@ -69,6 +73,8 @@ namespace book_mate.Controllers
             {
                 int[] arr = await _reactService.GetCountAsync(post.Id);
 
+                ApplicationUser user = await _userManager.FindByIdAsync(post.ApplicationUserId);
+
                 int total = arr[0] + arr[1] + arr[2] + arr[3];
                 PostResponse response = new PostResponse
                 {
@@ -77,6 +83,8 @@ namespace book_mate.Controllers
                     ImageUrl = post.ImageUrl,
                     ApplicationUserId = post.ApplicationUserId,
                     ClubId = post.ClubId,
+                    ApplicationUserName = user.Name,
+                    ApplicationUserImageUrl = user.ImageUrl,
                     TotalReacts = total,
                     Like = arr[0],
                     Love = arr[1],

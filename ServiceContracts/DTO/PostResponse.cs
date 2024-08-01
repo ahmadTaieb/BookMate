@@ -18,6 +18,8 @@ namespace ServiceContracts.DTO
         public int? Laugh{  get; set; }
         public int? Sad { get; set; }
         public string? ApplicationUserId { get; set; }
+        public string? ApplicationUserName {  get; set; } 
+        public string? ApplicationUserImageUrl { get; set; }
         public Guid? ClubId { get; set; }
         
     }
