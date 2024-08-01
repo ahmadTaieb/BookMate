@@ -14,7 +14,7 @@ namespace BookMate.DataAccess.IRepository
         IPostRepository Post { get; }
         ICommentRepository Comment { get; }
         IReactRepository React { get; }
-
+        IReportRepository Report { get; }
         public void saveAsync();
         public void save();
     }

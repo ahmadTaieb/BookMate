@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Reflection.Metadata.Ecma335;
 using BookMate.DataAccess.IRepository;
+using Microsoft.AspNetCore.Http;
 
 namespace Services
 {
@@ -39,6 +40,7 @@ namespace Services
             if (await _userManager.FindByEmailAsync(model.Email) is not null)
                 return new AuthModel { Message = "Email is already registered!" };
 
+            model.ImageUrl = await GetImageUrl(file: model.ImageFile);
 
             var user = new ApplicationUser
             {
@@ -47,6 +49,7 @@ namespace Services
                 UserName = model.Email,
                 gender = model.gender,
                 //Age = model.Age,
+                ImageUrl = model.ImageUrl,
                 DateOfBirth = model.DateOfBirth,
                 
             };
@@ -249,12 +252,15 @@ namespace Services
 
         public async Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user)
         {
-            
+            user.ImageUrl = await GetImageUrl(file: user.ImageFile);
+
+
             matchingUser.Name = user.Name ?? matchingUser.Name;
             matchingUser.Email = user.Email ?? matchingUser.Email;
             matchingUser.UserName = matchingUser.Email;
             matchingUser.gender = user.gender ?? matchingUser.gender;
             matchingUser.DateOfBirth = user.DateOfBirth ?? matchingUser.DateOfBirth;
+            matchingUser.ImageUrl = user.ImageUrl ?? matchingUser.ImageUrl;
 
 
           
@@ -280,5 +286,45 @@ namespace Services
             var user = _userManager.FindByIdAsync(id);
             return user;
         }
+
+        private async Task<string?> GetImageUrl(IFormFile? file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+
+            string filename = "";
+            try
+            {
+                var extension = Path.GetExtension(file.FileName);
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                // Save images to wwwroot/images
+                var relativePath = Path.Combine("wwwroot", "images", "users");
+
+                // Combine the relative path with the current directory
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(filepath, filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log it)
+                Console.WriteLine(ex.Message);
+            }
+            return $"/images/users/{filename}"; // Return the relative URL path
+        }
+
+
     }
 }

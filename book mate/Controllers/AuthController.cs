@@ -209,5 +209,12 @@ namespace book_mate.Controllers
             return new JsonResult(new { user });
 
         }
+        [HttpGet("getUser/{id}")]
+        public async Task<IActionResult> getUser([FromRoute] string id)
+        {
+            ApplicationUser user =await _userService.GetUserAsync(id);
+            return new JsonResult(user);
+
+        }
     }
 }

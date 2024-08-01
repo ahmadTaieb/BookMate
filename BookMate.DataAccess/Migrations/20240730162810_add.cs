@@ -8,11 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
-    public partial class a : Migration
-========
-    public partial class fav : Migration
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,6 +36,7 @@ namespace BookMate.DataAccess.Migrations
                     gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -335,7 +332,6 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
                 name: "Posts",
                 columns: table => new
                 {
@@ -361,8 +357,6 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-========
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
                 name: "BookFavorites",
                 columns: table => new
                 {
@@ -440,7 +434,7 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reactes",
+                name: "Reacts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -450,14 +444,14 @@ namespace BookMate.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reactes", x => x.Id);
+                    table.PrimaryKey("PK_Reacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reactes_AspNetUsers_ApplicationUserId",
+                        name: "FK_Reacts_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Reactes_Posts_PostId",
+                        name: "FK_Reacts_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id");
@@ -468,19 +462,11 @@ namespace BookMate.DataAccess.Migrations
                 columns: new[] { "Id", "Author", "AverageRating", "Description", "ImageUrl", "NumberOfPages", "PdfUrl", "PublishedYear", "RatingsCount", "ReadingCount", "Title", "VoiceUrl" },
                 values: new object[,]
                 {
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
-                    { new Guid("28b4208c-f594-430e-af57-41b109199b35"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
-                    { new Guid("580214fb-113c-4c1b-884d-ca0911aaddbd"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null },
-                    { new Guid("9b7a7e38-e810-40f1-9b2d-4d795f46cee5"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
-                    { new Guid("ceae109a-7be8-4126-8b22-4ae210becb63"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
-                    { new Guid("e64b4582-0421-4b20-b811-421c4d9326b6"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null }
-========
-                    { new Guid("19d5194b-296e-431e-83a8-d177268c3aca"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null },
-                    { new Guid("20cd6a45-774e-45f8-a1a8-7a3564230e3d"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null },
-                    { new Guid("2d58fcf1-2642-4281-a2be-38a3b9e6e95d"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
-                    { new Guid("538f435b-0d0e-4411-a4ef-b11a815d532f"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
-                    { new Guid("b7fa1705-2fce-4a7c-8fa5-0b1c96ab3df0"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null }
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
+                    { new Guid("82fd6199-c533-4b95-a757-c9879e00b7e5"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null },
+                    { new Guid("abf57ccf-7210-4b1e-92ec-d051a9c86fdf"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
+                    { new Guid("bd69fa15-6a8e-4f97-84a5-0d6f885537a9"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
+                    { new Guid("d515ee2e-5192-42fc-92ab-a425f1f705b5"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
+                    { new Guid("e5852139-a274-4e4c-ac64-0de18a46ce29"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null }
                 });
 
             migrationBuilder.InsertData(
@@ -577,7 +563,6 @@ namespace BookMate.DataAccess.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
                 name: "IX_Comments_ApplicationUserId",
                 table: "Comments",
                 column: "ApplicationUserId");
@@ -590,15 +575,6 @@ namespace BookMate.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
-========
-                name: "IX_Favorites_UserId",
-                table: "Favorites",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Libraries_UserId",
-                table: "Libraries",
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -617,13 +593,13 @@ namespace BookMate.DataAccess.Migrations
                 column: "ClubId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reactes_ApplicationUserId",
-                table: "Reactes",
+                name: "IX_Reacts_ApplicationUserId",
+                table: "Reacts",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reactes_PostId",
-                table: "Reactes",
+                name: "IX_Reacts_PostId",
+                table: "Reacts",
                 column: "PostId");
         }
 
@@ -656,21 +632,15 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookFavorites");
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
 
             migrationBuilder.DropTable(
                 name: "BookLibraries");
 
             migrationBuilder.DropTable(
                 name: "Comments");
-========
 
             migrationBuilder.DropTable(
-                name: "BookLibraries");
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
-
-            migrationBuilder.DropTable(
-                name: "Reactes");
+                name: "Reacts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -686,15 +656,12 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Libraries");
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240728190318_a.cs
 
             migrationBuilder.DropTable(
                 name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Clubs");
-========
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

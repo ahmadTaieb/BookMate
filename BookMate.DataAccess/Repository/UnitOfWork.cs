@@ -18,6 +18,7 @@ namespace BookMate.DataAccess.Repository
         public IPostRepository Post {  get; private set; }
         public ICommentRepository Comment { get; private set; }
         public IReactRepository React { get; private set; }
+        public IReportRepository Report { get; private set; }
 
         public UnitOfWork (ApplicationDbContext db)
         {
@@ -28,6 +29,7 @@ namespace BookMate.DataAccess.Repository
             Post = new PostRepository(_db);
             Comment = new CommentRepository(_db);
             React = new ReactRepository(_db);
+            Report = new ReportRepository(_db);
 
         }
 

@@ -59,6 +59,9 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -205,55 +208,35 @@ namespace BookMate.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("d3597dcb-a3cf-47ba-b797-aff2ae7a4b31"),
-=======
-                            Id = new Guid("0072fa3d-f8d7-4f3f-bf20-9e98822ecc15"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                            Id = new Guid("bd69fa15-6a8e-4f97-84a5-0d6f885537a9"),
                             Author = "Author1",
                             NumberOfPages = 100,
                             Title = "Test1"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("eb02f5e0-7e59-4966-91c9-ca36f867584f"),
-=======
-                            Id = new Guid("f1a34c65-c0f2-4cdb-a3ac-cdbf77582870"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                            Id = new Guid("82fd6199-c533-4b95-a757-c9879e00b7e5"),
                             Author = "Author2",
                             NumberOfPages = 200,
                             Title = "Test2"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("788d2b4e-e7de-4a6f-b460-dad2791f5fbe"),
-=======
-                            Id = new Guid("d79fb358-ea28-4c64-9db6-08346120c340"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                            Id = new Guid("abf57ccf-7210-4b1e-92ec-d051a9c86fdf"),
                             Author = "Author3",
                             NumberOfPages = 300,
                             Title = "Test3"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("5855b7eb-22cc-4ee0-8098-cfe40edb08e0"),
-=======
-                            Id = new Guid("82a9cc77-3176-4f48-8565-659d474018b1"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                            Id = new Guid("d515ee2e-5192-42fc-92ab-a425f1f705b5"),
                             Author = "Author4",
                             NumberOfPages = 400,
                             Title = "Test4"
                         },
                         new
                         {
-<<<<<<< HEAD
-                            Id = new Guid("e32496b0-e7ef-4b92-b318-602fd9921969"),
-=======
-                            Id = new Guid("b9a6ea16-2da2-470d-8821-27a9a498cbc3"),
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
+                            Id = new Guid("e5852139-a274-4e4c-ac64-0de18a46ce29"),
                             Author = "Author5",
                             NumberOfPages = 500,
                             Title = "Test5"
@@ -371,7 +354,6 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Clubs");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("BookMate.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -397,8 +379,6 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Comments");
                 });
 
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
             modelBuilder.Entity("BookMate.Entities.Favorite", b =>
                 {
                     b.Property<int>("Id")
@@ -435,7 +415,6 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Libraries");
-<<<<<<< HEAD
                 });
 
             modelBuilder.Entity("BookMate.Entities.Post", b =>
@@ -487,8 +466,6 @@ namespace BookMate.DataAccess.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Reacts");
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -721,7 +698,6 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("BookMate.Entities.Comment", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
@@ -737,8 +713,6 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("Post");
                 });
 
-=======
->>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67
             modelBuilder.Entity("BookMate.Entities.Favorite", b =>
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "user")

@@ -11,7 +11,6 @@ using ServiceContracts.DTO;
 using System.Security.Claims;
 
 namespace book_mate.Controllers
-{//rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     [Route("api/[controller]")]
     [ApiController]
     public class ReactController : ControllerBase

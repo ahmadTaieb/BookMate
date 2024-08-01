@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace book_mate.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
@@ -32,51 +32,17 @@ namespace book_mate.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromBody] ClubAddRequest club)
         {
-            try
-            {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            return new JsonResult(_clubService.AddClubAsync(user.Id, club).Result);
                 
-
-                var email = User.FindFirstValue(ClaimTypes.Email);
-
-                string? userId = _db?.Users.FirstOrDefault(u => u.Email == email)?.Id;
-
-
-
-
-                if (userId == null)
-                {
-
-                    return BadRequest("User is null");
-                }
-               
-
-                //_db.Clubs.Add(new Club
-                //{
-                //    Name = club.Name,
-                //    ApplicationUserId = adminId,
-                //    //
-                //});
-
-                //_db.SaveChanges();
-                //return new JsonResult(new { status = 200});
-                return new JsonResult(_clubService.AddClubAsync(userId, club).Result);
-            }
-            
-                catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
-
-
-        
-
-
-       
+        [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
         {
@@ -89,7 +55,7 @@ namespace book_mate.Controllers
         }
 
 
-     
+        [Authorize]
         [HttpPost("UpdateClub/{clubId}")]
         public async Task<IActionResult> UpdateClub([FromRoute]string clubId,[FromBody] ClubAddRequest club)
         {
@@ -108,7 +74,7 @@ namespace book_mate.Controllers
         }
 
 
-       
+        [Authorize]
         [HttpPost("AddMember/{clubId}")]
         public async Task<IActionResult> AddMember(string clubId)
         {
@@ -151,7 +117,7 @@ namespace book_mate.Controllers
         }
 
 
-      
+        [Authorize]
         [HttpGet("deleteClub/{id}")]
         public async Task<IActionResult> DeleteClub([FromRoute]string id) 
         {
