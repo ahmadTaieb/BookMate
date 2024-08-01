@@ -10,7 +10,8 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
 
-namespace book_mate.Controllers;
+namespace book_mate.Controllers
+{ 
     [Route("api/[controller]")]
     [ApiController]
     public class ReactController : ControllerBase
@@ -111,3 +112,4 @@ namespace book_mate.Controllers;
 
     }
 }
+
