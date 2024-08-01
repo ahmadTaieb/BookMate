@@ -10,15 +10,15 @@ namespace BookMate.Entities
     public class BookFavorite
     {
 
+
         public int Id { get; set; }
 
         [ForeignKey("Book")]
         public Guid BookId { get; set; }
-
         public Book? Book { get; set; }
 
-        public int  Favorite_Id { get; set; }
-
+        [ForeignKey("Favorite")]
+        public int FavoriteId { get; set; }
         public Favorite? Favorite { get; set; }
     }
 }

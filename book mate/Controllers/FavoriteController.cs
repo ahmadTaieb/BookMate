@@ -48,7 +48,7 @@ namespace book_mate.Controllers
 
 
                 await _favoritesService.AddBookToFav(userId,bookId);
-                return Ok("Book Add to library Successfully");
+                return Ok("Book Add to Favorite Successfully");
             }
             catch (Exception ex)
             {
@@ -67,6 +67,8 @@ namespace book_mate.Controllers
             {
                 // Extract the user ID from the token
                 var email = User.FindFirstValue(ClaimTypes.Email);
+
+               
 
                 string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
 
