@@ -11,5 +11,9 @@ namespace ServiceContracts
     {
          Task<List<CategoryPercentResponse?>?> CategoriesPercent();
 
+        Task<List<BookResponse?>?> TopReadBooks();
+
+        Task<List<ApplicationUserResponse?>?> TopReader();
+
     }
 }

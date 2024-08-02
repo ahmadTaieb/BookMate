@@ -23,12 +23,40 @@ namespace book_mate.Controllers
 
 
         [HttpGet]
-        [Route("CategoriesPercent")]
+        [Route("/CategoriesPercent")]
         public async Task<IActionResult>CategoriesPercent ()
         {
 
 
             List<CategoryPercentResponse?>? responses = await _feedBackService.CategoriesPercent();
+            return Ok(responses);
+
+
+
+        }
+
+
+        [HttpGet]
+        [Route("/TopReadBooks")]
+        public async Task<IActionResult> MostReadBooks()
+        {
+
+
+            List<BookResponse?>? responses = await _feedBackService.TopReadBooks();
+            return Ok(responses);
+
+
+
+        }
+
+
+        [HttpGet]
+        [Route("/TopReaders")]
+        public async Task<IActionResult> TopReaders()
+        {
+
+
+            List<ApplicationUserResponse?>? responses = await _feedBackService.TopReader();
             return Ok(responses);
 
 

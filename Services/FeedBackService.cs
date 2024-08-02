@@ -1,4 +1,6 @@
 ﻿using BookMate.DataAccess.Data;
+using BookMate.Entities;
+using BookMate.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
@@ -44,6 +46,38 @@ namespace Services
             }
 
             return result;
+        }
+
+     
+
+        public async Task<List<BookResponse?>?> TopReadBooks()
+        {
+            List<BookResponse?>? books = await _db.Books
+                .OrderByDescending(b => b.ReadingCount)
+                .Take(5)
+                .ToListAsync()
+                .ContinueWith(task => task.Result.Select(b => b.ToBookResponse()).ToList());
+
+            return books;
+        }
+
+        public async Task<List<ApplicationUserResponse>> TopReader()
+        {
+            var readers = await _db.BookLibraries
+                .Where(bl => bl.ReadingStatus == ReadingStatus.Read)
+                .GroupBy(bl => new { bl.Library.UserId})
+                .Select(g => new ApplicationUserResponse
+                {
+                    Id = g.Key.UserId,
+                    Name = _db.ApplicationUsers.FirstOrDefault(u=>u.Id==g.Key.UserId).UserName,
+                    Email= _db.ApplicationUsers.FirstOrDefault(u => u.Id == g.Key.UserId).Email,
+                    ReadingCount = g.Count()
+                })
+                .OrderByDescending(r => r.ReadingCount)
+                .Take(5)
+                .ToListAsync();
+
+            return readers;
         }
     }
 }
