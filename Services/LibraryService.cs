@@ -66,6 +66,14 @@ namespace Services
                 throw new InvalidOperationException("Library not found for the user.");
             }
 
+
+            Book? bo = _db.Books.FirstOrDefault(b => b.Id == bookId);
+
+            if (bo == null)
+            {
+                throw new InvalidOperationException("this Book is not found");
+            }
+
             ReadingStatus? readingStatus;
             BookLibrary? existingBookLibrary = _db.BookLibraries
                 .FirstOrDefault(x => x.LibraryId == library.LibraryId && x.BookId == bookId);
@@ -98,7 +106,7 @@ namespace Services
             else if (status == "Read")
             {
                
-
+                
                 Book? book = _db.Books.Include(book => book.Categories).FirstOrDefault(temp => temp.Id == bookId);
 
                 book.ReadingCount++;
