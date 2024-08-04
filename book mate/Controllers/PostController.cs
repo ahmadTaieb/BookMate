@@ -100,7 +100,7 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpPost("createPost")]
-        public async Task<IActionResult> createPost([FromBody] PostAddRequest request)
+        public async Task<IActionResult> createPost([FromForm] PostAddRequest request)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -120,7 +120,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("updatePost/{id}")]
-        public async Task<IActionResult> updatePost([FromRoute] string id,[FromBody]PostAddRequest request)
+        public async Task<IActionResult> updatePost([FromRoute] string id,[FromForm]PostAddRequest request)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
