@@ -29,6 +29,8 @@ namespace ServiceContracts.DTO
 
         public int? ReadingCount { get; set; }
 
+        public bool? IsFavorite { get; set; }
+
         public ReadingStatus? ReadingStatus { get; set; }
 
     }
@@ -64,7 +66,7 @@ namespace ServiceContracts.DTO
         }
 
 
-        public static BookResponse? ToBookResponseMobile(this Book book, ReadingStatus? status)
+        public static BookResponse? ToBookResponseMobile(this Book book, ReadingStatus? status,bool favorite)
         {
 
 
@@ -87,8 +89,8 @@ namespace ServiceContracts.DTO
                 AverageRating = book.AverageRating,
                 RatingsCount = book.RatingsCount,
                 ReadingCount = book.ReadingCount,
-                ReadingStatus = status
-
+                ReadingStatus = status,
+                IsFavorite=favorite
             };
 
         }

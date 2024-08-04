@@ -1,5 +1,6 @@
 ﻿using BookMate.DataAccess.IRepository;
 using BookMate.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using ServiceContracts;
@@ -40,11 +41,12 @@ namespace Services
 
         public async Task<Club> AddClubAsync(string adminId, ClubAddRequest club)
         {
+            club.ImageUrl = await GetImageUrl(file: club.ImageFile);
             Club newClub = new Club()
             {
                 Name = club.Name,
                 Description = club.Description,
-                ImageUrl = club.ImageUrl,
+                ImageUrl = club.ImageUrl ,
                 Hidden = club.Hidden ?? false,
                 ApplicationUserId = adminId,
                 //ApplicationUser = await _userManager.FindByIdAsync(adminId),
@@ -69,7 +71,7 @@ namespace Services
         }
         public async Task<Club> UpdateAsync(string id, ClubAddRequest club)
         {
-
+            club.ImageUrl = await GetImageUrl(file: club.ImageFile);
             Club c = await _unitOfWork.Club.UpdateClub(id, club);
             _unitOfWork.saveAsync();
             return c;
@@ -99,7 +101,7 @@ namespace Services
                 return null;
             }
             var a = await _unitOfWork.Club.AddMember(userId, clubId);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return a;
         }
 
@@ -123,11 +125,66 @@ namespace Services
             List<Club> c = new List<Club>();
             foreach (var club in clubs)
             {
-                c.Add(club.Club);
+                if (club.Club != null)
+                { 
+                    c.Add(club.Club);
+                }
+                
             }
             return c;
         }
 
-       
+        public async Task<bool> CheckIfMember(string userId, string clubId)
+        {
+            var clubs =await GetClubsMember(userId);
+            foreach (var club in clubs)
+            {
+                if(club.Id.ToString() == clubId)
+                    return true;
+            }
+            return false;
+        }
+
+        private async Task<string?> GetImageUrl(IFormFile? file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+
+            string filename = "";
+            try
+            {
+                var extension = Path.GetExtension(file.FileName);
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                // Save images to wwwroot/images
+                var relativePath = Path.Combine("wwwroot", "images", "clubs");
+
+                // Combine the relative path with the current directory
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(filepath, filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log it)
+                Console.WriteLine(ex.Message);
+            }
+            return $"/images/clubs/{filename}"; // Return the relative URL path
+        }
+
+
+
+
     }
 }

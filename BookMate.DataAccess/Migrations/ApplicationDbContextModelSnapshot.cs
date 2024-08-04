@@ -59,6 +59,9 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -146,7 +149,7 @@ namespace BookMate.DataAccess.Migrations
                     b.Property<string>("ApplicationUserChildId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("confirm")
+                    b.Property<bool?>("confirm")
                         .HasColumnType("bit");
 
                     b.HasKey("ApplicationUserParentId", "ApplicationUserChildId");
@@ -201,6 +204,7 @@ namespace BookMate.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
 
                     b.HasData(
                         new
@@ -238,6 +242,28 @@ namespace BookMate.DataAccess.Migrations
                             NumberOfPages = 500,
                             Title = "Test5"
                         });
+                });
+            modelBuilder.Entity("BookMate.Entities.BookFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("FavoriteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("FavoriteId");
+
+                    b.ToTable("BookFavorites");
                 });
 
             modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
@@ -287,12 +313,37 @@ namespace BookMate.DataAccess.Migrations
                         new
                         {
                             categoryID = 1,
-                            categoryName = "drama"
+                            categoryName = "Drama"
                         },
                         new
                         {
                             categoryID = 2,
-                            categoryName = "action"
+                            categoryName = "Action"
+                        },
+                        new
+                        {
+                            categoryID = 3,
+                            categoryName = "Fantasy"
+                        },
+                        new
+                        {
+                            categoryID = 4,
+                            categoryName = "Romance"
+                        },
+                        new
+                        {
+                            categoryID = 5,
+                            categoryName = "History"
+                        },
+                        new
+                        {
+                            categoryID = 6,
+                            categoryName = "Philosophy"
+                        },
+                        new
+                        {
+                            categoryID = 7,
+                            categoryName = "Science"
                         });
                 });
 
@@ -325,6 +376,50 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Clubs");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("BookMate.Entities.Library", b =>
                 {
                     b.Property<int>("LibraryId")
@@ -341,7 +436,75 @@ namespace BookMate.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Librarys");
+                    b.ToTable("Libraries");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ClubId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ClubId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.React", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Reaction")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Reacts");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Report", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -514,18 +677,37 @@ namespace BookMate.DataAccess.Migrations
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUserChild")
                         .WithMany("Following")
                         .HasForeignKey("ApplicationUserChildId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUserParent")
                         .WithMany("Followers")
                         .HasForeignKey("ApplicationUserParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ApplicationUserChild");
 
                     b.Navigation("ApplicationUserParent");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.BookFavorite", b =>
+                {
+                    b.HasOne("BookMate.Entities.Book", "Book")
+                        .WithMany("BookFavorite")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMate.Entities.Favorite", "Favorite")
+                        .WithMany("books")
+                        .HasForeignKey("FavoriteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Favorite");
                 });
 
             modelBuilder.Entity("BookMate.Entities.BookLibrary", b =>
@@ -551,9 +733,36 @@ namespace BookMate.DataAccess.Migrations
                 {
                     b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Clubs")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Comment", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("BookMate.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Favorite", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("BookMate.Entities.Library", b =>
@@ -565,6 +774,36 @@ namespace BookMate.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Post", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("BookMate.Entities.Club", "Club")
+                        .WithMany()
+                        .HasForeignKey("ClubId");
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Club");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.React", b =>
+                {
+                    b.HasOne("BookMate.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("BookMate.Entities.Post", "Post")
+                        .WithMany("Reacts")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -631,6 +870,8 @@ namespace BookMate.DataAccess.Migrations
 
             modelBuilder.Entity("BookMate.Entities.Book", b =>
                 {
+                    b.Navigation("BookFavorite");
+
                     b.Navigation("BookLibrary");
                 });
 
@@ -639,9 +880,21 @@ namespace BookMate.DataAccess.Migrations
                     b.Navigation("ApplicationUsersMember");
                 });
 
+            modelBuilder.Entity("BookMate.Entities.Favorite", b =>
+                {
+                    b.Navigation("books");
+                });
+
             modelBuilder.Entity("BookMate.Entities.Library", b =>
                 {
                     b.Navigation("books");
+                });
+
+            modelBuilder.Entity("BookMate.Entities.Post", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Reacts");
                 });
 #pragma warning restore 612, 618
         }

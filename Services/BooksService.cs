@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,20 +43,30 @@ namespace Services
                     .Select(book => book.ToBookResponse())
                     .ToList();
             }
+
+            var favoriteId = _db.Favorites
+                .Where(fav => fav.UserId == userId)
+                .Select(fav => fav.Id)
+                .FirstOrDefault();
+
+
             return _db.Books
        .Include(book => book.Categories)
        .Include(book => book.BookLibrary)
+      
        .ThenInclude(bookLibrary => bookLibrary.Library)
+       .Include(book=>book.BookFavorite)
        .Select(book => new
        {
            Book = book,
            ReadingStatus = book.BookLibrary!
                .Where(bl => bl.Library.UserId == userId)
                .Select(bl => bl.ReadingStatus)
-               .FirstOrDefault()
+               .FirstOrDefault(),
+                IsFavorite = book.BookFavorite.Any(fav => fav.FavoriteId == favoriteId)
        })
        .AsEnumerable() // Switch to client-side evaluation for the custom projection.
-       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus))
+       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus,bookWithStatus.IsFavorite))
        .ToList();
 
 
@@ -70,13 +81,7 @@ namespace Services
                 return new List<BookResponse>();
             }
 
-            // Query the books that have all the specified categories
-            var books = await _db.Books
-                           .Include(book => book.Categories)
-                           .Include(book => book.BookLibrary)
-                           .ThenInclude(bookLibrary => bookLibrary.Library)
-                           .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
-                           .ToListAsync();
+          
 
 
             List<BookResponse?> bookResponses;
@@ -84,26 +89,53 @@ namespace Services
             if (userId == null)
             {
 
+                // Query the books that have all the specified categories
+                var books = await _db.Books
+                               .Include(book => book.Categories)
+                               .Include(book => book.BookLibrary)
+                               .ThenInclude(bookLibrary => bookLibrary.Library)
+                               .Include(book => book.BookFavorite)
+                               .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
+                               .ToListAsync();
+
                 bookResponses = books.Select(book => book.ToBookResponse()).ToList();
+                return bookResponses;
 
             }
             else
             {
-                bookResponses = books.Select(book =>
-              {
-                  var readingStatus = book.BookLibrary
-                                          .Where(bl => bl.Library.UserId == userId)
-                                          .Select(bl => (ReadingStatus?)bl.ReadingStatus)
-                                          .FirstOrDefault();
-
-                  return book.ToBookResponseMobile(readingStatus);
-              }).ToList();
 
 
+                var favoriteId = _db.Favorites
+                .Where(fav => fav.UserId == userId)
+                .Select(fav => fav.Id)
+                .FirstOrDefault();
 
+
+                // Query the books that have all the specified categories
+                var books = _db.Books
+       .Include(book => book.Categories)
+       .Include(book => book.BookLibrary)
+
+       .ThenInclude(bookLibrary => bookLibrary.Library)
+       .Include(book => book.BookFavorite)
+       .Select(book => new
+       {
+           Book = book,
+           ReadingStatus = book.BookLibrary!
+               .Where(bl => bl.Library.UserId == userId)
+               .Select(bl => bl.ReadingStatus)
+               .FirstOrDefault(),
+           IsFavorite = book.BookFavorite.Any(fav => fav.FavoriteId == favoriteId)
+       })
+       .AsEnumerable() // Switch to client-side evaluation for the custom projection.
+       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus, bookWithStatus.IsFavorite))
+       .ToList();
+
+               
+                return books;
             }
 
-            return bookResponses;
         }
         public BookResponse? GetBookByBookId(Guid? Id)
         {
@@ -237,49 +269,21 @@ namespace Services
 
 
 
-
-        public async Task IncrementReadingCount(Guid bookId)
+        public async Task<List<BookResponse?>>Search(string title)
         {
-            if (bookId == Guid.Empty) throw new ArgumentException("Invalid book ID", nameof(bookId));
 
-            var book = await _db.Books.FindAsync(bookId);
-            if (book == null)
-            {
-                throw new KeyNotFoundException("Book not found");
-            }
+            var books = await _db.Books.Include(book => book.Categories)
+                            .Where(b => b.Title.Contains(title)).
+                            Select(book => book.ToBookResponse())
+                            .ToListAsync();
+            return books;
 
-            if (book.ReadingCount.HasValue)
-            {
-                book.ReadingCount++;
-            }
-            else
-            {
-                book.ReadingCount = 1;
-            }
-
-            try
-            {
-                _db.Entry(book).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                Console.WriteLine("Concurrency exception: " + ex.Message);
-                throw new InvalidOperationException("A concurrency error occurred while updating the book.");
-            }
-            catch (DbUpdateException ex)
-            {
-                Console.WriteLine("Database update exception: " + ex.Message);
-                throw new InvalidOperationException("An error occurred while updating the book.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An unexpected exception occurred: " + ex.Message);
-                throw new InvalidOperationException("An unexpected error occurred while updating the book.");
-            }
-
+           
 
         }
+
+
+        
 
 
         private async Task<string?> GetImageUrl(IFormFile? file)

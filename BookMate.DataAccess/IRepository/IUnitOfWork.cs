@@ -11,7 +11,10 @@ namespace BookMate.DataAccess.IRepository
         IApplicationUserRepository ApplicationUser { get; }
         IClubRepository Club { get; }
         IFollowRepository Follow { get; }
-
+        IPostRepository Post { get; }
+        ICommentRepository Comment { get; }
+        IReactRepository React { get; }
+        IReportRepository Report { get; }
         public void saveAsync();
         public void save();
     }

@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace book_mate.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
@@ -35,24 +36,12 @@ namespace book_mate.Controllers
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromBody] ClubAddRequest club)
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); 
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-            var adminId = user.Id;
 
-            //_db.Clubs.Add(new Club
-            //{
-            //    Name = club.Name,
-            //    ApplicationUserId = adminId,
-            //    //
-            //});
-
-            //_db.SaveChanges();
-            //return new JsonResult(new { status = 200});
-            return new JsonResult(_clubService.AddClubAsync(adminId, club).Result);
-
+            return new JsonResult(_clubService.AddClubAsync(user.Id, club).Result);
+                
         }
-
-
         [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
@@ -79,8 +68,9 @@ namespace book_mate.Controllers
                 return new JsonResult("you are not admin in this club");
             }
             var UpdatedClub = await _clubService.UpdateAsync(clubId, club);
-
-            return new JsonResult(new {status = 200 , message = "successfully"});
+            
+            var newClub = await _clubService.GetClub(clubId);
+            return new JsonResult(new {status = 200 , message = "successfully" ,data = newClub});
         }
 
 
@@ -129,10 +119,17 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpGet("deleteClub/{id}")]
-        public async Task<IActionResult> DeleteClub(string id) 
+        public async Task<IActionResult> DeleteClub([FromRoute]string id) 
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            var adminId = user.Id;
+            var c = await _clubService.GetClub(id);
+            if (c.ApplicationUserId != adminId)
+            {
+                return new JsonResult("you are not admin in this club");
+            }
 
             bool ok = await _clubService.DeleteAsync(id, user.Id);
 

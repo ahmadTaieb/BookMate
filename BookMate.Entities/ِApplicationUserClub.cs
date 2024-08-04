@@ -13,10 +13,10 @@ namespace BookMate.Entities
         [Key]
         public int Id { get; set; }
         public string? ApplicationUserId { get; set; }
-        //[ForeignKey("ApplicationUserId")]
+        [ForeignKey("ApplicationUserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }
         public Guid? ClubId { get; set; }
-        //[ForeignKey("ClubId")]
+        [ForeignKey("ClubId")]
         public virtual Club? Club { get; set; }
     }
 }

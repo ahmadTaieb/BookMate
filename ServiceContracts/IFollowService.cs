@@ -11,6 +11,9 @@ namespace ServiceContracts
     {
 
         Task<ApplicationUserRelation> FollowAsync(ApplicationUserRelation entity);
+        Task<ApplicationUserRelation> UnFollowAsync(ApplicationUserRelation entity);
         Task<List<ApplicationUser>> GetFollowRequestsAsync(string id);
+        Task<List<ApplicationUser>> GetFollowingAsync(string id);
+        Task<bool> IsFollowing(ApplicationUserRelation entity);
     }
 }

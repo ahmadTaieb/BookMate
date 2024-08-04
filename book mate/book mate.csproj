@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Migrations\" />
     <Folder Include="wwwroot\images\books\" />
     <Folder Include="wwwroot\pdf\" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using BookMate.Entities.Enums;
+using ServiceContracts.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,9 @@ namespace ServiceContracts
         //Task AddBookToLibrary(string userId, Guid bookId,ReadingStatus status);
         Task AddBookToLibrary(string userId, Guid bookId, string? status);
 
-        Task GetReadBook(string userId);
+        Task<List<BookResponse?>> GetBooksByStatus(string userId,string status);
 
+        Task RemoveBookFromLibrary(string userId,Guid bookId);
 
     }
 }

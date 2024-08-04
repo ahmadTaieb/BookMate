@@ -6,11 +6,11 @@ using ServiceContracts.DTO;
 
 namespace BookMate.DataAccess.Repository
 {
-    public class ClubRepsitory : IClubRepository
+    public class ClubRepository : IClubRepository
     {
         private ApplicationDbContext _db;
 
-        public ClubRepsitory(ApplicationDbContext db)
+        public ClubRepository(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -26,7 +26,8 @@ namespace BookMate.DataAccess.Repository
         public async Task<bool> DeleteClub(string id)
         {
             var club = await _db.Clubs.FirstOrDefaultAsync(i => i.Id.ToString() == id);
-            _db?.Clubs.Remove(club);
+            _db.Clubs.Remove(club);
+            _db.SaveChanges();
             return true;
         }
 

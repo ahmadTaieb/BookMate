@@ -36,5 +36,7 @@ namespace BookMate.Entities
 
         public List<BookLibrary>? BookLibrary { get; set; } = new List<BookLibrary>();
 
+        public List<BookFavorite> BookFavorite { get; set; }= new List<BookFavorite>();
+
     }
 }

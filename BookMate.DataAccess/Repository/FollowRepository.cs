@@ -21,13 +21,21 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<ApplicationUserRelation> Add(ApplicationUserRelation entity)
         {
-            _db.ApplicationUserRelations.Add(entity);
+            var e = new ApplicationUserRelation
+            {
+                ApplicationUserParentId = entity.ApplicationUserParentId,
+                ApplicationUserChildId = entity.ApplicationUserChildId,
+                //ApplicationUserParent = _db.ApplicationUsers.FirstOrDefault(i => i.Id == entity.ApplicationUserParentId),
+                //ApplicationUserChild = _db.ApplicationUsers.FirstOrDefault(i => i.Id == entity.ApplicationUserChildId),
+            };
+            _db.ApplicationUserRelations.Add(e);
             return entity;
         }
 
-        public Task<ApplicationUserRelation> Delete(ApplicationUserRelation entity)
+        public async Task<bool> Delete(ApplicationUserRelation entity)
         {
-            throw new NotImplementedException();
+            _db.ApplicationUserRelations.Remove(entity);
+            return true;
         }
 
         public Task<List<ApplicationUserRelation>> GetAllFollowers(string id)
@@ -35,9 +43,13 @@ namespace BookMate.DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<ApplicationUserRelation>> GetAllFollowing(string id)
+        public List<ApplicationUser> GetAllFollowing(string id)
         {
-            throw new NotImplementedException();
+            return _db.ApplicationUserRelations
+            .Where(r => r.ApplicationUserParentId == id)
+            .Include(r => r.ApplicationUserChild)
+            .Select(r => r.ApplicationUserChild)
+            .ToList();
         }
 
         public Task<ApplicationUserRelation> Update(ApplicationUserRelation entity)
@@ -45,14 +57,19 @@ namespace BookMate.DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        public List<ApplicationUserRelation> GetAllFollowersRequests(string id)
+        public List<ApplicationUser> GetAllFollowersRequests(string id)
         {
-            var users = _db.ApplicationUsers
-                .Include(x => x.Followers)
-                .ThenInclude(y => y.ApplicationUserChild)
-                .FirstOrDefault(z => z.Id == id);
+            return _db.ApplicationUserRelations
+            .Where(r => r.ApplicationUserChildId == id)
+            .Include(r => r.ApplicationUserParent)
+            .Select(r => r.ApplicationUserParent)
+            .ToList();
+        }
 
-            return (List<ApplicationUserRelation>)users.Followers;
+        public ApplicationUserRelation Get(string parentId, string childId)
+        {
+            ApplicationUserRelation x = _db.ApplicationUserRelations.Where(i => i.ApplicationUserParentId == parentId).FirstOrDefault(j => j.ApplicationUserChildId == childId);
+            return x;
         }
     }
 }

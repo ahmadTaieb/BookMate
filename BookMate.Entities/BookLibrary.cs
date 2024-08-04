@@ -16,7 +16,7 @@ namespace BookMate.Entities
         [ForeignKey("Book")]
         public Guid BookId { get; set; }
 
-        public Book Book { get; set; }
+        public Book? Book { get; set; }
 
        public ReadingStatus? ReadingStatus { get; set; }
 
