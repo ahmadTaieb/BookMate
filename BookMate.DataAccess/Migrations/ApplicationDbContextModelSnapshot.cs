@@ -206,6 +206,43 @@ namespace BookMate.DataAccess.Migrations
                     b.ToTable("Books");
                 });
 
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2ca4e3c9-8a32-45bd-bd6a-5664c904b016"),
+                            Author = "Author1",
+                            NumberOfPages = 100,
+                            Title = "Test1"
+                        },
+                        new
+                        {
+                            Id = new Guid("85a0c6a3-9668-419d-afa2-673cf1d10f4c"),
+                            Author = "Author2",
+                            NumberOfPages = 200,
+                            Title = "Test2"
+                        },
+                        new
+                        {
+                            Id = new Guid("67fea617-95cf-4112-a841-2600ab6e123b"),
+                            Author = "Author3",
+                            NumberOfPages = 300,
+                            Title = "Test3"
+                        },
+                        new
+                        {
+                            Id = new Guid("90e7564b-0e00-428e-9624-cbb2f9bb53cb"),
+                            Author = "Author4",
+                            NumberOfPages = 400,
+                            Title = "Test4"
+                        },
+                        new
+                        {
+                            Id = new Guid("7d2fb72f-229a-46b4-9465-efe9b71fb6b8"),
+                            Author = "Author5",
+                            NumberOfPages = 500,
+                            Title = "Test5"
+                        });
+                });
             modelBuilder.Entity("BookMate.Entities.BookFavorite", b =>
                 {
                     b.Property<int>("Id")
