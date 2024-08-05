@@ -15,5 +15,6 @@ namespace ServiceContracts
         Task<Post> DeleteAsync(Guid postId);
         Task<Post> GetAsync(Guid postId);
         Task<List<Post>> GetAllAsync(Guid clubId);
+        Task<bool> isAuthor(string userId, Guid postId);
     }
 }

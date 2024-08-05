@@ -8,12 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookMate.DataAccess.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240730162810_add.cs
-    public partial class add : Migration
-========
-    public partial class f : Migration
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
->>>>>>>> 322e07477b124f2daa443da14792f10b0e88bff6:BookMate.DataAccess/Migrations/20240728224853_f.cs
+    public partial class addNotification : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -95,6 +90,34 @@ namespace BookMate.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.categoryID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -463,21 +486,6 @@ namespace BookMate.DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240730162810_add.cs
-                table: "Books",
-                columns: new[] { "Id", "Author", "AverageRating", "Description", "ImageUrl", "NumberOfPages", "PdfUrl", "PublishedYear", "RatingsCount", "ReadingCount", "Title", "VoiceUrl" },
-                values: new object[,]
-                {
-                    { new Guid("82fd6199-c533-4b95-a757-c9879e00b7e5"), "Author2", null, null, null, 200, null, null, null, null, "Test2", null },
-                    { new Guid("abf57ccf-7210-4b1e-92ec-d051a9c86fdf"), "Author3", null, null, null, 300, null, null, null, null, "Test3", null },
-                    { new Guid("bd69fa15-6a8e-4f97-84a5-0d6f885537a9"), "Author1", null, null, null, 100, null, null, null, null, "Test1", null },
-                    { new Guid("d515ee2e-5192-42fc-92ab-a425f1f705b5"), "Author4", null, null, null, 400, null, null, null, null, "Test4", null },
-                    { new Guid("e5852139-a274-4e4c-ac64-0de18a46ce29"), "Author5", null, null, null, 500, null, null, null, null, "Test5", null }
-                });
-
-            migrationBuilder.InsertData(
-========
->>>>>>>> 322e07477b124f2daa443da14792f10b0e88bff6:BookMate.DataAccess/Migrations/20240728224853_f.cs
                 table: "Categories",
                 columns: new[] { "categoryID", "categoryName" },
                 values: new object[,]
@@ -591,6 +599,11 @@ namespace BookMate.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Libraries_UserId",
+                table: "Libraries",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_ApplicationUserId",
                 table: "Posts",
                 column: "ApplicationUserId");
@@ -648,18 +661,13 @@ namespace BookMate.DataAccess.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:BookMate.DataAccess/Migrations/20240730162810_add.cs
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
                 name: "Reacts");
-========
-                name: "BookLibraries");
->>>>>>>> 9cd170cb38367f77cff8c621dcfc86e95ac56c67:BookMate.DataAccess/Migrations/20240724165500_fav.cs
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
-                name: "Reactes");
->>>>>>>> 322e07477b124f2daa443da14792f10b0e88bff6:BookMate.DataAccess/Migrations/20240728224853_f.cs
+                name: "Reports");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -675,12 +683,6 @@ namespace BookMate.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Libraries");
-
-            migrationBuilder.DropTable(
-                name: "Posts");
-
-            migrationBuilder.DropTable(
-                name: "Clubs");
 
             migrationBuilder.DropTable(
                 name: "Posts");

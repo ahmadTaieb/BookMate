@@ -125,14 +125,31 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
+            bool isAuthor = await _postService.isAuthor(user.Id, new Guid(id));
+            if (!isAuthor)
+            {
+                return new JsonResult(new { status = 400, message = "you are not the author" });
+            }
+
             var post = await _postService.UpdateAsync(new Guid(id), request);
             return new JsonResult(new {status = 200, data = post });
 
         }
+
         [Authorize]
         [HttpDelete("deletePost/{id}")]
         public async Task<IActionResult> deletePost([FromRoute] string id)
         {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            bool isAuthor =await _postService.isAuthor(user.Id,new Guid(id));
+            if(!isAuthor)
+            {
+                return new JsonResult(new {status = 400 , message = "you are not the author" });
+
+            }
+
             var ok = await _postService.DeleteAsync(new Guid(id));
             if(ok != null) 
                 return new JsonResult(new { status = 200,message = $"success deleted {ok}"});

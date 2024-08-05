@@ -79,6 +79,15 @@ namespace Services
             
         }
 
+        public async Task<bool> isAuthor(string userId, Guid postId)
+        {
+            Post post =await GetAsync(postId);
+            if(post.Id != postId)
+                return false;
+            return true;
+
+        }
+
         private async Task<string?> GetImageUrl(IFormFile? file)
         {
             if (file == null)

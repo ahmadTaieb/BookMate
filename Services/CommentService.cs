@@ -69,5 +69,14 @@ namespace Services
             _unitOfWork.saveAsync();
             return c;
         }
+
+        public async Task<bool> isAuthor(string userId, Guid commentId)
+        {
+            Comment comment = await GetAsync(commentId);
+            if (comment.Id != commentId)
+                return false;
+            return true;
+
+        }
     }
 }

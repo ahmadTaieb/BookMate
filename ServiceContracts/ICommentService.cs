@@ -15,5 +15,6 @@ namespace ServiceContracts
         Task<Comment> DeleteAsync(Guid commentId);
         Task<Comment> GetAsync(Guid commentId);
         Task<List<Comment>> GetAllAsync(Guid postId);
+        Task<bool> isAuthor(string userId, Guid commentId);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using ServiceContracts;
 using ServiceContracts.DTO;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace book_mate.Controllers
@@ -36,7 +37,23 @@ namespace book_mate.Controllers
         [HttpGet("getComment/{commentId}")]
         public async Task<IActionResult> getComment([FromRoute] string commentId)
         {
+            
+
             Comment comment =await _commentService.GetAsync(new Guid(commentId));
+
+            ApplicationUser user = await _userManager.FindByIdAsync(comment.ApplicationUserId);
+
+            CommentResponse response = new CommentResponse
+            {
+                Id = commentId,
+                Content = comment.Content,
+                ApplicationUserId = comment.ApplicationUserId,
+                ApplicationUserName = user.Name,
+                PostId = comment.PostId,
+                
+            };
+
+           
 
             return new JsonResult(new { status = 200, data = comment });
         }
@@ -44,8 +61,25 @@ namespace book_mate.Controllers
         [HttpGet("getComments/{postId}")]
         public async Task<IActionResult> getPosts([FromRoute] string postId)
         {
-            var comments = _commentService.GetAllAsync(new Guid(postId));
-            return new JsonResult(new { status = 200, data = comments.Result });
+            var comments =await _commentService.GetAllAsync(new Guid(postId));
+            List<CommentResponse> responses = new List<CommentResponse>();
+            foreach(var comment in comments)
+            {
+                ApplicationUser user = await _userManager.FindByIdAsync(comment.ApplicationUserId);
+
+                CommentResponse response = new CommentResponse
+                {
+                    Id = comment.Id.ToString(),
+                    Content = comment.Content,
+                    ApplicationUserId = comment.ApplicationUserId,
+                    ApplicationUserName = user.Name,
+                    PostId = comment.PostId,
+
+                };
+                responses.Add(response);
+            }
+
+            return new JsonResult(new { status = 200, data = responses });
         }
 
         [Authorize]
@@ -76,6 +110,14 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
+           
+            bool isAuthor = await _commentService.isAuthor(user.Id, new Guid(id));
+            if (!isAuthor)
+            {
+                return new JsonResult(new { status = 400, message = "you are not the author" });
+
+            }
+
             var comment = await _commentService.UpdateAsync(new Guid(id), new CommentAddRequest { Content = request ,ApplicationUserId = user.Id});
             return new JsonResult(new { status = 200, data = comment });
 
@@ -85,6 +127,16 @@ namespace book_mate.Controllers
         [HttpDelete("deleteComment/{id}")]
         public async Task<IActionResult> deleteComment([FromRoute] string id)
         {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            bool isAuthor = await _commentService.isAuthor(user.Id, new Guid(id));
+            if (!isAuthor)
+            {
+                return new JsonResult(new { status = 400, message = "you are not the author" });
+
+            }
+
             var ok = await _commentService.DeleteAsync(new Guid(id));
             if (ok != null)
                 return new JsonResult(new { status = 200, message = $"success deleted {ok}" });

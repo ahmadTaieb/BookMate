@@ -1,3 +1,4 @@
+using book_mate.Hubs;
 using BookMate.DataAccess.Data;
 using BookMate.DataAccess.IRepository;
 using BookMate.DataAccess.Repository;
@@ -15,6 +16,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddRazorPages();
 // Add services to the container.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -25,8 +28,9 @@ builder.Services.AddTransient<IFavoritesService, FavoritesService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IReactService, ReactService>();
 builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
-
+builder.Services.AddSignalR();
 
 
 builder.Services.AddControllersWithViews()
@@ -156,6 +160,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseStaticFiles(); // Enable static file serving
 
 
@@ -165,6 +170,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors("ReactApp");
+app.MapRazorPages();
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();
 

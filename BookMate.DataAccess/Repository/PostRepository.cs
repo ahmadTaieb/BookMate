@@ -34,7 +34,7 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<Post> Get(Guid id)
         {
-            return await _db.Posts.FirstOrDefaultAsync(p => p.Id == id);
+            return await _db.Posts.Include(x => x.ApplicationUser).FirstOrDefaultAsync(p => p.Id == id);
 
         }
 
@@ -56,5 +56,7 @@ namespace BookMate.DataAccess.Repository
             }
             return matchingPost;
         }
+
+        
     }
 }
