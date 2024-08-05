@@ -34,7 +34,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("CreateClub")]
-        public async Task<IActionResult> createClub([FromBody] ClubAddRequest club)
+        public async Task<IActionResult> createClub([FromForm] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
@@ -57,7 +57,7 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("UpdateClub/{clubId}")]
-        public async Task<IActionResult> UpdateClub([FromRoute]string clubId,[FromBody] ClubAddRequest club)
+        public async Task<IActionResult> UpdateClub([FromRoute]string clubId,[FromForm] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);

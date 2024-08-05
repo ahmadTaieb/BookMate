@@ -83,7 +83,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IBooksService,BooksService >();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IFavoritesService,FavoritesService >();
-
+builder.Services.AddScoped<IFeedBackService,FeedBackService> ();
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 

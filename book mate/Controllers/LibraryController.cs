@@ -56,7 +56,7 @@ public class LibraryController : ControllerBase
     }
 
     [HttpPost("RemoveBookFromLibrary")]
-    public async Task <IActionResult> RemoveBook([FromQuery] Guid bookId)
+    public async Task <IActionResult> RemoveBook([FromBody] Guid bookId)
     {
         try
         {
@@ -74,7 +74,7 @@ public class LibraryController : ControllerBase
 
 
             await _libraryService.RemoveBookFromLibrary(userId,bookId);
-            return Ok("Book Deleted Successfully");
+            return Ok("Book Removed from your Library Successfully");
         }
         catch (Exception ex)
         {
@@ -87,10 +87,12 @@ public class LibraryController : ControllerBase
 
 
 
-    [HttpGet("GetBooksByStatus")]
+    [HttpGet("/GetToReadBooks")]
 
-    public async Task<IActionResult> GetBooksByStatus([FromQuery] string status)
+    public async Task<IActionResult> GetToReadBooks()
     {
+
+        string status = "ToRead";
         try
         {
             // Extract the user ID from the token
@@ -116,6 +118,73 @@ public class LibraryController : ControllerBase
         }
 
     }
+
+
+
+    [HttpGet("/GetReadingBooks")]
+
+    public async Task<IActionResult> GetReadingBooks()
+    {
+
+        string status = "Reading";
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+            List<BookResponse?> responses = await _libraryService.GetBooksByStatus(userId, status);
+
+            return Ok(responses);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    [HttpGet("/GetReadBooks")]
+
+    public async Task<IActionResult> GetReadBooks()
+    {
+
+        string status = "Read";
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+            List<BookResponse?> responses = await _libraryService.GetBooksByStatus(userId, status);
+
+            return Ok(responses);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
 
 
 

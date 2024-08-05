@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,20 +43,30 @@ namespace Services
                     .Select(book => book.ToBookResponse())
                     .ToList();
             }
+
+            var favoriteId = _db.Favorites
+                .Where(fav => fav.UserId == userId)
+                .Select(fav => fav.Id)
+                .FirstOrDefault();
+
+
             return _db.Books
        .Include(book => book.Categories)
        .Include(book => book.BookLibrary)
+      
        .ThenInclude(bookLibrary => bookLibrary.Library)
+       .Include(book=>book.BookFavorite)
        .Select(book => new
        {
            Book = book,
            ReadingStatus = book.BookLibrary!
                .Where(bl => bl.Library.UserId == userId)
                .Select(bl => bl.ReadingStatus)
-               .FirstOrDefault()
+               .FirstOrDefault(),
+                IsFavorite = book.BookFavorite.Any(fav => fav.FavoriteId == favoriteId)
        })
        .AsEnumerable() // Switch to client-side evaluation for the custom projection.
-       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus))
+       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus,bookWithStatus.IsFavorite))
        .ToList();
 
 
@@ -70,13 +81,7 @@ namespace Services
                 return new List<BookResponse>();
             }
 
-            // Query the books that have all the specified categories
-            var books = await _db.Books
-                           .Include(book => book.Categories)
-                           .Include(book => book.BookLibrary)
-                           .ThenInclude(bookLibrary => bookLibrary.Library)
-                           .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
-                           .ToListAsync();
+          
 
 
             List<BookResponse?> bookResponses;
@@ -84,26 +89,53 @@ namespace Services
             if (userId == null)
             {
 
+                // Query the books that have all the specified categories
+                var books = await _db.Books
+                               .Include(book => book.Categories)
+                               .Include(book => book.BookLibrary)
+                               .ThenInclude(bookLibrary => bookLibrary.Library)
+                               .Include(book => book.BookFavorite)
+                               .Where(book => categoriesName.All(name => book.Categories.Any(category => category.categoryName == name)))
+                               .ToListAsync();
+
                 bookResponses = books.Select(book => book.ToBookResponse()).ToList();
+                return bookResponses;
 
             }
             else
             {
-                bookResponses = books.Select(book =>
-              {
-                  var readingStatus = book.BookLibrary
-                                          .Where(bl => bl.Library.UserId == userId)
-                                          .Select(bl => (ReadingStatus?)bl.ReadingStatus)
-                                          .FirstOrDefault();
-
-                  return book.ToBookResponseMobile(readingStatus);
-              }).ToList();
 
 
+                var favoriteId = _db.Favorites
+                .Where(fav => fav.UserId == userId)
+                .Select(fav => fav.Id)
+                .FirstOrDefault();
 
+
+                // Query the books that have all the specified categories
+                var books = _db.Books
+       .Include(book => book.Categories)
+       .Include(book => book.BookLibrary)
+
+       .ThenInclude(bookLibrary => bookLibrary.Library)
+       .Include(book => book.BookFavorite)
+       .Select(book => new
+       {
+           Book = book,
+           ReadingStatus = book.BookLibrary!
+               .Where(bl => bl.Library.UserId == userId)
+               .Select(bl => bl.ReadingStatus)
+               .FirstOrDefault(),
+           IsFavorite = book.BookFavorite.Any(fav => fav.FavoriteId == favoriteId)
+       })
+       .AsEnumerable() // Switch to client-side evaluation for the custom projection.
+       .Select(bookWithStatus => bookWithStatus.Book.ToBookResponseMobile(bookWithStatus.ReadingStatus, bookWithStatus.IsFavorite))
+       .ToList();
+
+               
+                return books;
             }
 
-            return bookResponses;
         }
         public BookResponse? GetBookByBookId(Guid? Id)
         {
