@@ -76,7 +76,8 @@ builder.Services.AddCors(options =>
         {
             builder.AllowAnyOrigin()
                    .AllowAnyHeader()
-                   .AllowAnyMethod();
+                   .AllowAnyMethod()
+                   .WithOrigins("http://ahmadtaieb-001-site1.ftempurl.com");
         });
 });
 
