@@ -40,7 +40,7 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
         }
         [AllowAnonymous]
-        [HttpPost("searchClub")]
+        [HttpPost("searchUser")]
         public async Task<IActionResult> SearchClubByName([FromBody] string search)
         {
             var AllUsers = _userService.GetAllUsersAsync();
