@@ -69,5 +69,16 @@ namespace book_mate.Controllers
             return Ok(books);
         }
 
+        [HttpGet]
+        [Route("/SearchBooks")]
+        public async Task<ActionResult<List<BookResponse?>>>? Search([FromQuery] string title)
+        {
+
+            var response = await _booksService.Search(title);
+
+            return Ok(response);
+
+        }
+
     }
 }
