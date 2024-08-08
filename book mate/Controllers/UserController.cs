@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
+using Services;
 using System.Security.Claims;
 
 namespace book_mate.Controllers
@@ -38,17 +39,15 @@ namespace book_mate.Controllers
 
             return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
         }
-
-        [Authorize]
-        [HttpGet("Follow/{id}")]
-        public async Task<IActionResult> Follow()  
+        [AllowAnonymous]
+        [HttpPost("searchClub")]
+        public async Task<IActionResult> SearchClubByName([FromBody] string search)
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email); 
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+            var AllUsers = _userService.GetAllUsersAsync();
+            var users = AllUsers.Result.Where(o => o.Name.ToLower().Contains(search.Trim().ToLower()));
 
-            
+            return new JsonResult(new { status = 200, message = "success", data = users });
 
-            return new JsonResult (new { status = "200" , message = "successfully followed!" });
         }
 
     }

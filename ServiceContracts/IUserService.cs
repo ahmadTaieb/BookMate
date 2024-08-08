@@ -21,6 +21,7 @@ namespace ServiceContracts
         Task<ApplicationUserUpdateRequest> UpdateUserAsync(ApplicationUser matchingUser, ApplicationUserUpdateRequest user);
         Task<ApplicationUser> DeleteUserAsync(ApplicationUser user);
         Task<List<ApplicationUser>> GetAllUsersAsync();
+        
 
 
 
