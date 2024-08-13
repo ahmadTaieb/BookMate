@@ -85,6 +85,7 @@ builder.Services.AddScoped<IBooksService,BooksService >();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IFavoritesService,FavoritesService >();
 builder.Services.AddScoped<IFeedBackService,FeedBackService> ();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 //Start Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 

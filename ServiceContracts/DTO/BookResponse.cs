@@ -31,6 +31,7 @@ namespace ServiceContracts.DTO
 
         public bool? IsFavorite { get; set; }
 
+
         public ReadingStatus? ReadingStatus { get; set; }
 
     }
