@@ -147,7 +147,8 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = 200, message = "success", data = _clubService.GetClub(id).Result });
         }
 
-        [HttpGet("searchClub")]
+        [HttpGet]
+        [Route("/searchClub")]
         public async Task<IActionResult> SearchClubByName([FromQuery] string search)
         {
             var AllClubs = _clubService.GetAllClubsAsync();

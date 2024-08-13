@@ -24,7 +24,7 @@ namespace book_mate.Controllers
         }
 
         [HttpPost]
-        [Route("AddFavoriteCategories")]
+        [Route("/AddFavoriteCategories")]
         public async Task<IActionResult> addFavoriteCategories([FromBody]List<string> categories)
         {
             try
@@ -55,7 +55,7 @@ namespace book_mate.Controllers
 
 
         [HttpGet]
-        [Route("RecommendationsBooks")]
+        [Route("/RecommendationsBooks")]
 
         public async Task<IActionResult> recommendationsBooks()
         {

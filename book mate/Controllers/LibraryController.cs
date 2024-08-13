@@ -28,7 +28,7 @@ public class LibraryController : ControllerBase
         _applicationDbContext = applicationDbContext;
     }
 
-    [HttpPost("AddToReadBook")]
+    [HttpPost("/AddToReadBook")]
     public async Task<IActionResult> AddToReadBook([FromBody] Guid bookId)
     {
 
@@ -57,7 +57,7 @@ public class LibraryController : ControllerBase
         }
     }
 
-    [HttpPost("AddReadingBook")]
+    [HttpPost("/AddReadingBook")]
     public async Task<IActionResult> AddReadingBook([FromBody] Guid bookId)
     {
 
@@ -87,7 +87,7 @@ public class LibraryController : ControllerBase
     }
 
 
-    [HttpPost("AddReadBook")]
+    [HttpPost("/AddReadBook")]
     public async Task<IActionResult> AddReadBook([FromBody] Guid bookId)
     {
 
@@ -118,7 +118,7 @@ public class LibraryController : ControllerBase
 
 
 
-    [HttpDelete("RemoveBookFromLibrary")]
+    [HttpDelete("/RemoveBookFromLibrary")]
     public async Task <IActionResult> RemoveBook([FromBody] Guid bookId)
     {
         try
