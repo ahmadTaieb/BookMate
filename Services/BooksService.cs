@@ -410,6 +410,12 @@ namespace Services
             return $"/voices/{filename}";
         }
 
+        public async Task AddReadingCount(int num, Guid bookId)
+        {
+            Book book=_db.Books.FirstOrDefault(b=>b.Id== bookId);
+            book.ReadingCount= num; 
+            _db.SaveChangesAsync();
 
+        }
     }
 }

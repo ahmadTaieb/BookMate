@@ -23,6 +23,9 @@ namespace ServiceContracts
         
         Task<List<BookResponse?>> Search(string title);
 
+        Task AddReadingCount(int num, Guid bookId);
+
+
 
 
     }
