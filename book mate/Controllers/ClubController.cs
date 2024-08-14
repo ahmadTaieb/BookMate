@@ -32,16 +32,10 @@ namespace book_mate.Controllers
         }
 
 
-        [Authorize]
-        [HttpPost("CreateClub")]
-        public async Task<IActionResult> createClub([FromForm] ClubAddRequest club)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            return new JsonResult(_clubService.AddClubAsync(user.Id, club).Result);
-                
-        }
         [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
