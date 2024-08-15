@@ -40,15 +40,23 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
         }
         [AllowAnonymous]
-        [HttpGet]
-        [Route("searchUser")]
-        public async Task<IActionResult> SearchClubByName([FromQuery] string UserName)
+        [HttpPost("searchUser")]
+        public async Task<IActionResult> SearchClubByName([FromBody] string search)
         {
             var AllUsers = _userService.GetAllUsersAsync();
             var users = AllUsers.Result.Where(o => o.Name.ToLower().Contains(UserName.Trim().ToLower()));
 
             return new JsonResult(new { status = 200, message = "success", data = users });
 
+        }
+        [HttpDelete("deleteUserFromAdmin")]
+        public async Task<IActionResult> deleteUser(string id)
+        {
+            ApplicationUser user =await _userService.GetUserAsync(id);
+
+            await _unitOfWork.ApplicationUser.Delete(user);
+            _unitOfWork.save();
+            return Ok();
         }
 
     }
