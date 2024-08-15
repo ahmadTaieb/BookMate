@@ -55,7 +55,40 @@ namespace Services
             return result;
         }
 
-     
+
+        public async Task<List<TopCategoriesResponse?>?> TopCategories()
+        {
+
+
+            int numberOfReading = 0;
+
+
+            List<string> categories = await _db.Categories.Select(c => c.categoryName).ToListAsync();
+
+            List<TopCategoriesResponse?> result = new List<TopCategoriesResponse?>();
+           
+
+            foreach (var category in categories)
+            {
+                int cnt = await _db.Books.Where(b => b.Categories.Any(bc => bc.categoryName == category))
+                    .Select(b => (int?)b.ReadingCount)
+                    .SumAsync() ?? 0;
+
+               
+
+                
+
+                var response = new TopCategoriesResponse(category, cnt);
+                // Console.WriteLine($"Category: {response.CategoryName}, Percent: {response.Percent}");
+                result.Add(response);
+
+            }
+            result=result.OrderByDescending(r => r.Count).ToList();
+
+            return result;
+        }
+
+
 
         public async Task<List<BookResponse?>?> TopReadBooks()
         {

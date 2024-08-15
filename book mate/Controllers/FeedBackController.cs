@@ -35,6 +35,19 @@ namespace book_mate.Controllers
 
         }
 
+        [HttpGet]
+        [Route("/TopCategories")]
+        public async Task<IActionResult> TopCategories()
+        {
+
+
+            List<TopCategoriesResponse?>? responses = await _feedBackService.TopCategories();
+            return Ok(responses);
+
+
+
+        }
+
 
         [HttpGet]
         [Route("/TopReadBooks")]

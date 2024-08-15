@@ -68,7 +68,13 @@ namespace Services
             // Ensure the book doesn't already exist in the favorites
             if (_db.BookFavorites.Any(bf => bf.FavoriteId == fav.Id && bf.BookId == bookId))
             {
-                throw new InvalidOperationException("Book is already in favorites.");
+                BookFavorite? book = _db.BookFavorites
+                .FirstOrDefault(x => x.FavoriteId == fav.Id && x.BookId == bookId);
+               
+                    _db.BookFavorites.Remove(book);
+                    await _db.SaveChangesAsync();
+                return;
+
             }
 
             BookFavorite bookFavorite = new BookFavorite
