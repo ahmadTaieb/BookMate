@@ -29,7 +29,7 @@ public class LibraryController : ControllerBase
     }
 
     [HttpPost("/AddToReadBook")]
-    public async Task<IActionResult> AddToReadBook([FromBody] Guid bookId)
+    public async Task<IActionResult> AddToReadBook([FromBody] AddBookToFavorite request)
     {
 
         string status = "ToRead";
@@ -48,7 +48,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.AddBookToLibrary(userId, bookId,status);
+            await _libraryService.AddBookToLibrary(userId, request.bookId,status);
             return Ok("Book Add to library Successfully");
         }
         catch (Exception ex)
@@ -58,7 +58,7 @@ public class LibraryController : ControllerBase
     }
 
     [HttpPost("/AddReadingBook")]
-    public async Task<IActionResult> AddReadingBook([FromBody] Guid bookId)
+    public async Task<IActionResult> AddReadingBook([FromBody] AddBookToFavorite request)
     {
 
         string status = "Reading";
@@ -77,7 +77,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.AddBookToLibrary(userId, bookId, status);
+            await _libraryService.AddBookToLibrary(userId,request.bookId, status);
             return Ok("Book Add to library Successfully");
         }
         catch (Exception ex)
@@ -88,7 +88,7 @@ public class LibraryController : ControllerBase
 
 
     [HttpPost("/AddReadBook")]
-    public async Task<IActionResult> AddReadBook([FromBody] Guid bookId)
+    public async Task<IActionResult> AddReadBook([FromBody] AddBookToFavorite request)
     {
 
         string status = "Read";
@@ -107,7 +107,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.AddBookToLibrary(userId, bookId, status);
+            await _libraryService.AddBookToLibrary(userId,request.bookId, status);
             return Ok("Book Add to library Successfully");
         }
         catch (Exception ex)

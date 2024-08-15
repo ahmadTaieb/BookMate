@@ -28,7 +28,7 @@ namespace book_mate.Controllers
 
         [HttpPost]
         [Route("/addBookToFav")]
-        public async Task<IActionResult> add([FromBody] Guid bookId)
+        public async Task<IActionResult> add([FromBody] AddBookToFavorite request)
         {
 
 
@@ -47,7 +47,7 @@ namespace book_mate.Controllers
 
 
 
-                await _favoritesService.AddBookToFav(userId,bookId);
+                await _favoritesService.AddBookToFav(userId,request.bookId);
                 return Ok("Book Add to Favorite Successfully");
             }
             catch (Exception ex)
