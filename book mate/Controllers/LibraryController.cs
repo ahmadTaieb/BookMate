@@ -119,7 +119,7 @@ public class LibraryController : ControllerBase
 
 
     [HttpDelete("/RemoveBookFromLibrary")]
-    public async Task <IActionResult> RemoveBook([FromBody] Guid bookId)
+    public async Task <IActionResult> RemoveBook([FromBody] AddBookToFavorite request)
     {
         try
         {
@@ -136,7 +136,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.RemoveBookFromLibrary(userId,bookId);
+            await _libraryService.RemoveBookFromLibrary(userId,request.bookId);
             return Ok("Book Removed from your Library Successfully");
         }
         catch (Exception ex)

@@ -93,7 +93,7 @@ namespace book_mate.Controllers
 
         [HttpDelete]
         [Route("/RemoveBookFromFavorite")]
-        public async Task<IActionResult> remove([FromBody] Guid bookId)
+        public async Task<IActionResult> remove([FromBody]AddBookToFavorite request)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace book_mate.Controllers
 
 
 
-                await _favoritesService.RemoveBookFromFav(userId, bookId);
+                await _favoritesService.RemoveBookFromFav(userId,request.bookId);
                 return Ok("Book Remove from favorite  Successfully");
             }
             catch (Exception ex)
