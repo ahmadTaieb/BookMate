@@ -40,7 +40,7 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
         }
         [AllowAnonymous]
-        [HttpPost("searchUser")]
+        [HttpGet("searchUser")]
         public async Task<IActionResult> SearchClubByName([FromBody] string search)
         {
             var AllUsers = _userService.GetAllUsersAsync();
@@ -48,6 +48,15 @@ namespace book_mate.Controllers
 
             return new JsonResult(new { status = 200, message = "success", data = users });
 
+        }
+        [HttpDelete("deleteUserFromAdmin")]
+        public async Task<IActionResult> deleteUser(string id)
+        {
+            ApplicationUser user =await _userService.GetUserAsync(id);
+
+            await _unitOfWork.ApplicationUser.Delete(user);
+            _unitOfWork.save();
+            return Ok();
         }
 
     }

@@ -23,7 +23,8 @@ namespace book_mate.Controllers
 
         private ILibraryService _libraryService;
         private IFavoritesService _favoritesService;
-        public AuthController(Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db, ILibraryService libraryService,IFavoritesService favoriteService)
+        private IEmailService _emailService;
+        public AuthController(IEmailService emailService ,Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager, IUserService userService, IUnitOfWork unitOfWork, ApplicationDbContext db, ILibraryService libraryService,IFavoritesService favoriteService)
         {
             _userManager = userManager;
             _userService = userService;
@@ -31,6 +32,7 @@ namespace book_mate.Controllers
             _db = db;
             _libraryService = libraryService;
             _favoritesService = favoriteService;
+            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -216,5 +218,81 @@ namespace book_mate.Controllers
             return new JsonResult(user);
 
         }
+
+        [HttpPost("request-reset-password")]
+        public async Task<IActionResult> RequestResetPassword([FromBody] ResetPasswordRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return new JsonResult(new { message = ModelState });
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return new JsonResult(new { message = "User not found." });
+
+            
+            var resetCode = new Random().Next(100000, 999999).ToString();
+
+            
+            user.PasswordResetCode = resetCode;
+            user.ResetCodeExpiration = DateTime.UtcNow.AddMinutes(15); 
+            
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            user.TokenReset = resetToken;
+            user.TokenResetExpiration = DateTime.UtcNow.AddMinutes(15);
+
+            await _userManager.UpdateAsync(user);
+            await _emailService.SendEmailAsync(user.Email, "Reset Password Code", $"Your password reset code is: {resetCode}");
+
+            return new JsonResult(new { token = resetToken , message = "OTP send to your email" });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+                new JsonResult(new { message = ModelState });
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                new JsonResult(new {  message = "user Not Found!" });
+
+
+            if (user.TokenReset != model.Token || user.TokenResetExpiration < DateTime.UtcNow)
+                return new JsonResult(new { message = "Invalid or expired token." });
+
+            if (user.PasswordResetCode != model.ResetCode || user.ResetCodeExpiration < DateTime.UtcNow)
+                return new JsonResult(new { message = "Invalid or expired OTP code." });
+
+
+            return new JsonResult(new { status = 200 , message = "success" });
+
+
+            
+        }
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> changePassword([FromBody] ChangePasswordDTO model) 
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return new JsonResult(new { message = "User not found." });
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (!result.Succeeded)
+                return new JsonResult(new { result.Errors });
+
+            
+            user.PasswordResetCode = null;
+            user.ResetCodeExpiration = null;
+            user.TokenReset = null;
+            user.TokenResetExpiration = null;
+            await _userManager.UpdateAsync(user);
+
+            return new JsonResult(new { status = 200, message = "success" });
+
+
+        }
+
+
     }
 }

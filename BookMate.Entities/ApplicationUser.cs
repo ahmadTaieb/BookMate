@@ -21,6 +21,10 @@ namespace BookMate.Entities
         //public List<RefreshToken>? RefreshTokens { get; set; }
         public string? ImageUrl { get; set; }
         public ICollection<Club>? Clubs { get; set; }
+        public string? PasswordResetCode { get; set; }
+        public DateTime? ResetCodeExpiration { get; set; }
+        public string? TokenReset { get; set; }
+        public DateTime? TokenResetExpiration { get; set; }
         public ICollection<ApplicationUserClub>? ClubsMember { get; set;} = new List<ApplicationUserClub>();
         public ICollection<ApplicationUserRelation>? Followers { get; set; } = new List<ApplicationUserRelation>();
         public ICollection<ApplicationUserRelation>? Following { get; set; } = new List<ApplicationUserRelation>();
