@@ -28,9 +28,11 @@ public class LibraryController : ControllerBase
         _applicationDbContext = applicationDbContext;
     }
 
-    [HttpPost("AddBookToLibrary")]
-    public async Task<IActionResult> AddBookToLibrary([FromBody] AddBookToLibrary book)
+    [HttpPost("/AddToReadBook")]
+    public async Task<IActionResult> AddToReadBook([FromBody] AddBookToFavorite request)
     {
+
+        string status = "ToRead";
         try
         {
             // Extract the user ID from the token
@@ -46,7 +48,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.AddBookToLibrary(userId, book.bookId,book.status);
+            await _libraryService.AddBookToLibrary(userId, request.bookId,status);
             return Ok("Book Add to library Successfully");
         }
         catch (Exception ex)
@@ -55,8 +57,69 @@ public class LibraryController : ControllerBase
         }
     }
 
-    [HttpPost("RemoveBookFromLibrary")]
-    public async Task <IActionResult> RemoveBook([FromBody] Guid bookId)
+    [HttpPost("/AddReadingBook")]
+    public async Task<IActionResult> AddReadingBook([FromBody] AddBookToFavorite request)
+    {
+
+        string status = "Reading";
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+
+
+
+            await _libraryService.AddBookToLibrary(userId,request.bookId, status);
+            return Ok("Book Add to library Successfully");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    [HttpPost("/AddReadBook")]
+    public async Task<IActionResult> AddReadBook([FromBody] AddBookToFavorite request)
+    {
+
+        string status = "Read";
+        try
+        {
+            // Extract the user ID from the token
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            string? userId = _applicationDbContext.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is not available in the token.");
+            }
+
+
+
+
+            await _libraryService.AddBookToLibrary(userId,request.bookId, status);
+            return Ok("Book Add to library Successfully");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+
+    [HttpDelete("/RemoveBookFromLibrary")]
+    public async Task <IActionResult> RemoveBook([FromBody] AddBookToFavorite request)
     {
         try
         {
@@ -73,7 +136,7 @@ public class LibraryController : ControllerBase
 
 
 
-            await _libraryService.RemoveBookFromLibrary(userId,bookId);
+            await _libraryService.RemoveBookFromLibrary(userId,request.bookId);
             return Ok("Book Removed from your Library Successfully");
         }
         catch (Exception ex)

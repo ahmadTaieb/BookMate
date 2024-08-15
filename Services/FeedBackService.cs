@@ -27,11 +27,18 @@ namespace Services
         {
 
 
-            int numberOfBooks = await _db.Books.CountAsync();
+            int numberOfBooks = 0;
+
 
             List<string> categories = await _db.Categories.Select(c => c.categoryName).ToListAsync();
 
             List<CategoryPercentResponse?> result = new List<CategoryPercentResponse?>();
+            foreach(var category in categories)
+            {
+                int cnt = await _db.Books.Where(b => b.Categories.Any(bc => bc.categoryName == category)).CountAsync();
+                numberOfBooks += cnt;
+
+            }
 
             foreach (var category in categories)
             {

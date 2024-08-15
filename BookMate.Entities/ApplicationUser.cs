@@ -20,6 +20,8 @@ namespace BookMate.Entities
         public DateTime? RegisteredAt { get; set; }
         //public List<RefreshToken>? RefreshTokens { get; set; }
         public string? ImageUrl { get; set; }
+
+        public List<string?>? FavoriteCategories { get; set; }
         public ICollection<Club>? Clubs { get; set; }
         public string? PasswordResetCode { get; set; }
         public DateTime? ResetCodeExpiration { get; set; }

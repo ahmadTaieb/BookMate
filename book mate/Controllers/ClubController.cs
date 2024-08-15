@@ -31,7 +31,6 @@ namespace book_mate.Controllers
 
         }
 
-
         [Authorize]
         [HttpPost("CreateClub")]
         public async Task<IActionResult> createClub([FromForm] ClubAddRequest club)
@@ -40,8 +39,11 @@ namespace book_mate.Controllers
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
             return new JsonResult(_clubService.AddClubAsync(user.Id, club).Result);
-                
+
         }
+
+
+
         [Authorize]
         [HttpGet("AdminClubs")]
         public async Task<IActionResult> getAdminClubs()
@@ -147,11 +149,12 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = 200, message = "success", data = _clubService.GetClub(id).Result });
         }
 
-        [HttpPost("searchClub")]
-        public async Task<IActionResult> SearchClubByName([FromBody] string search)
+        [HttpGet]
+        [Route("/searchClub")]
+        public async Task<IActionResult> SearchClubByName([FromQuery] string ClubName)
         {
             var AllClubs = _clubService.GetAllClubsAsync();
-            var clubs = AllClubs.Result.Where(o => o.Name.ToLower().Contains(search.Trim().ToLower()));
+            var clubs = AllClubs.Result.Where(o => o.Name.ToLower().Contains(ClubName.Trim().ToLower()));
 
             return new JsonResult(new { status = 200, message = "success", data = clubs});
 

@@ -213,9 +213,19 @@ namespace Services
                 // Update book properties
                 book.Title = editedBook.Title;
                 book.Author = editedBook.Author;
-                book.ImageUrl = await GetImageUrl(file: editedBook.ImageFile);
-                book.PdfUrl = await GetPdfUrl(file: editedBook.PdfFile);
-                book.VoiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
+
+                if (editedBook.ImageFile != null)
+                {
+                    book.ImageUrl = await GetImageUrl(file: editedBook.ImageFile);
+                }
+                if (editedBook.PdfFile != null)
+                {
+                    book.PdfUrl = await GetPdfUrl(file: editedBook.PdfFile);
+                }
+                if (editedBook.VoiceFile != null)
+                {
+                    book.VoiceUrl = await GetVoiceUrl(file: editedBook.VoiceFile);
+                }
                 book.Description = editedBook.Description;
                 book.NumberOfPages = editedBook.NumberOfPages;
                 book.PublishedYear = editedBook.PublishedYear;
@@ -400,6 +410,12 @@ namespace Services
             return $"/voices/{filename}";
         }
 
+        public async Task AddReadingCount(int num, Guid bookId)
+        {
+            Book book=_db.Books.FirstOrDefault(b=>b.Id== bookId);
+            book.ReadingCount= num; 
+            _db.SaveChangesAsync();
 
+        }
     }
 }
