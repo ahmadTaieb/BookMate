@@ -51,7 +51,7 @@ namespace book_mate.Controllers
             {
                 return new JsonResult(new { status = 400, message = "you are not member in this club" });
             }
-            if(await _reactService.CheckIfReact(postId.ToString() , user.Id))
+            if(await _reactService.CheckIfReact(user.Id, postId.ToString()))
             {
                 return new JsonResult(new { status = 400, message = "react before" });
             }

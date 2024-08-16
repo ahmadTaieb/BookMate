@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
     <RootNamespace>book_mate</RootNamespace>
+    <UserSecretsId>FE2D284A-35D2-4250-A096-0C0E96C6BC95</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

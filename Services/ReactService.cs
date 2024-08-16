@@ -29,12 +29,13 @@ namespace Services
 
         public async Task<bool> CheckIfReact(string userId, string postId)
         {
-            List<React> reacts = await GetAllAsync(new Guid(postId));
-            
-            foreach (var react in reacts)
+            List<ApplicationUser> users =await _unitOfWork.React.GetAllUsersReact(new Guid(postId));
+            foreach (var user in users)
             {
-                if (react.ApplicationUserId == userId)
+                if (user.Id == userId)
+                {
                     return true;
+                }
             }
             return false;
 

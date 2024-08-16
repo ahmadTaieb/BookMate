@@ -53,7 +53,7 @@ namespace book_mate.Controllers
             });
             
             await _notificationService.CreateNotificationForReportAsync(report);
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", report.Id, user.Name);
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", report.PostId, user.Name);
 
             return new JsonResult (new {status = 200 , data = report});
 

@@ -281,16 +281,26 @@ namespace book_mate.Controllers
             if (!result.Succeeded)
                 return new JsonResult(new { result.Errors });
 
-            
+
             user.PasswordResetCode = null;
             user.ResetCodeExpiration = null;
             user.TokenReset = null;
             user.TokenResetExpiration = null;
             await _userManager.UpdateAsync(user);
 
-            return new JsonResult(new { status = 200, message = "success" });
+            TokenRequest x = new TokenRequest
+            {
+                Email = model.Email,
+                Password = model.Password,
+            };
+            var r = await _userService.GetTokenAsync(x);
 
+            if (!r.IsAuthenticated)
+                return new JsonResult(new { status = 400, message = r.Message });
 
+            
+
+            return new JsonResult(new { status = 200, message = "success", token = r.Token , id = user.Id });
         }
 
 
