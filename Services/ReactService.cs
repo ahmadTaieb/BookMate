@@ -27,16 +27,17 @@ namespace Services
             _commentService = commentService;
         }
 
-        public async Task<React> CheckIfReact(string userId, string postId)
+        public async Task<bool> CheckIfReact(string userId, string postId)
         {
-            List<React> reacts = await GetAllAsync(new Guid(postId));
-            
-            foreach (var react in reacts)
+            List<ApplicationUser> users =await _unitOfWork.React.GetAllUsersReact(new Guid(postId));
+            foreach (var user in users)
             {
-                if (react.ApplicationUserId == userId)
-                    return react;
+                if (user.Id == userId)
+                {
+                    return true;
+                }
             }
-            return null;
+            return false;
 
         }
 

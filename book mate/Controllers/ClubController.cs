@@ -159,17 +159,6 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = 200, message = "success", data = clubs});
 
         }
-        [Authorize]
-        [HttpGet("checkIfMember/{id}")]
-        public async Task<bool> checkIfMember([FromRoute]string id)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
-
-            bool ok = await _clubService.CheckIfMember( user.Id,id);
-
-            return ok;
-        }
 
     }
 }
