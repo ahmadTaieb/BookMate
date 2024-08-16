@@ -26,6 +26,20 @@ namespace Services
             _postService = postService;
             _commentService = commentService;
         }
+
+        public async Task<bool> CheckIfReact(string userId, string postId)
+        {
+            List<React> reacts = await GetAllAsync(new Guid(postId));
+            
+            foreach (var react in reacts)
+            {
+                if (react.ApplicationUserId == userId)
+                    return true;
+            }
+            return false;
+
+        }
+
         public async Task<React> CreateAsync(ReactAddRequest reactAddRequest)
         {
             React react = new React

@@ -37,17 +37,23 @@ namespace book_mate.Controllers
 
         [Authorize]
         [HttpPost("react/{postId}")]
-        public async Task<IActionResult> react([FromRoute]Guid postId, [FromBody] int number)
+        public async Task<IActionResult> react([FromRoute]Guid postId, [FromBody] ReactRequest model)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
             Post post =await _postService.GetAsync(postId);
 
+            int number = (int)model.Reaction;
+
             bool isMember = await _clubService.CheckIfMember(user.Id, post.ClubId.ToString());
             if (!isMember)
             {
                 return new JsonResult(new { status = 400, message = "you are not member in this club" });
+            }
+            if(await _reactService.CheckIfReact(postId.ToString() , user.Id))
+            {
+                return new JsonResult(new { status = 400, message = "react before" });
             }
 
             Reaction reaction = new Reaction();
@@ -82,6 +88,11 @@ namespace book_mate.Controllers
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            if (!await _reactService.CheckIfReact(postId.ToString(), user.Id))
+            {
+                return new JsonResult(new { status = 400, message = "not react before" });
+            }
 
             React react = await _reactService.GetAsync(user.Id, postId);
             React r = await _reactService.DeleteAsync(react.Id);
