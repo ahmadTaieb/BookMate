@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using System.Security.Claims;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace book_mate.Controllers
 {
@@ -161,14 +162,14 @@ namespace book_mate.Controllers
         }
         [Authorize]
         [HttpGet("checkIfMember/{id}")]
-        public async Task<bool> checkIfMember([FromRoute]string id)
+        public async Task<IActionResult> checkIfMember([FromRoute]string id)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
             bool ok = await _clubService.CheckIfMember( user.Id,id);
 
-            return ok;
+            return new JsonResult(new { status = 200, ok = ok ? (int)1 :(int)0 }); ;
         }
 
     }
