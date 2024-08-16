@@ -56,7 +56,11 @@ namespace book_mate.Controllers
 
             await _unitOfWork.ApplicationUser.Delete(user);
             _unitOfWork.save();
-            return Ok();
+            return new JsonResult(new
+            {
+                status = 200,
+                message = "success"
+            });
         }
 
     }

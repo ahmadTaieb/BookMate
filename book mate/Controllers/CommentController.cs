@@ -100,7 +100,16 @@ namespace book_mate.Controllers
             c.ApplicationUserId = user.Id;
             var comment = await _commentService.CreateAsync(c);
 
-            return new JsonResult(new { status = 200, data = comment });
+            CommentResponse response = new CommentResponse
+            {
+                Id = comment.Id.ToString(),
+                Content = comment.Content,
+                ApplicationUserId = comment.ApplicationUserId,
+                ApplicationUserName = user.Name,
+                PostId = comment.PostId,
+            };
+
+            return new JsonResult(new { status = 200, data = response });
         }
 
         [Authorize]
