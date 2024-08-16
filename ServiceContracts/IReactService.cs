@@ -17,7 +17,7 @@ namespace ServiceContracts
         Task<List<React>> GetAllAsync(Guid postId);
         Task<List<ReactResponse>> GetAllResponseAsync(Guid postId);
         Task<int[]> GetCountAsync(Guid postId);
-        Task<bool> CheckIfReact(string userId, string postId);
+        Task<React> CheckIfReact(string userId, string postId);
 
     }
 }

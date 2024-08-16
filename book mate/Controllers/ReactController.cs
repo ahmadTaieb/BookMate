@@ -46,24 +46,14 @@ namespace book_mate.Controllers
 
             int number = (int)model.Reaction;
 
-            bool isMember = await _clubService.CheckIfMember(user.Id, post.ClubId.ToString());
-            if (!isMember)
-            {
-                return new JsonResult(new { status = 400, message = "you are not member in this club" });
-            }
-            if(await _reactService.CheckIfReact(user.Id, postId.ToString()))
-            {
-                return new JsonResult(new { status = 400, message = "react before" });
-            }
-
             Reaction reaction = new Reaction();
             if (number == 0)
                 reaction = Reaction.Like;
             else if (number == 1)
                 reaction = Reaction.Love;
-            else if(number == 2)
+            else if (number == 2)
                 reaction = Reaction.Laugh;
-            else 
+            else
                 reaction = Reaction.Sad;
             ReactAddRequest reactAddRequest = new ReactAddRequest
             {
@@ -72,11 +62,29 @@ namespace book_mate.Controllers
                 PostId = postId,
             };
 
-            React react = await _reactService.CreateAsync(reactAddRequest);
-            if(react != null)
+            bool isMember = await _clubService.CheckIfMember(user.Id, post.ClubId.ToString());
+            if (!isMember)
             {
-                return new JsonResult(new {status = 200 , data =  react });
+                return new JsonResult(new { status = 400, message = "you are not member in this club" });
             }
+            React r = await _reactService.CheckIfReact(user.Id, postId.ToString());
+            if ( r != null)
+            {
+                React react = await _reactService.UpdateAsync(r,reactAddRequest);
+                return new JsonResult(new { status = 400, message = "updated successfully" , data = react });
+            }
+            else
+            {
+                React react = await _reactService.CreateAsync(reactAddRequest);
+                if (react != null)
+                {
+                    return new JsonResult(new { status = 200, message = "created successfully", data = react });
+                }
+            }
+
+            
+
+            
             return new JsonResult(new { status = 400, data = "failed" });
 
         }
@@ -89,12 +97,14 @@ namespace book_mate.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(userEmail);
 
-            if (!await _reactService.CheckIfReact(postId.ToString(), user.Id))
+            React react = await _reactService.CheckIfReact( user.Id,postId.ToString());
+
+            if (react == null)
             {
                 return new JsonResult(new { status = 400, message = "not react before" });
             }
 
-            React react = await _reactService.GetAsync(user.Id, postId);
+           
             React r = await _reactService.DeleteAsync(react.Id);
            
             return new JsonResult(new { status = 200, data = react });
