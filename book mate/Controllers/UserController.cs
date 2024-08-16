@@ -50,7 +50,7 @@ namespace book_mate.Controllers
 
         }
         [HttpDelete("deleteUserFromAdmin")]
-        public async Task<IActionResult> deleteUser(string id)
+        public async Task<IActionResult> deleteUser([FromBody]string id)
         {
             ApplicationUser user =await _userService.GetUserAsync(id);
 
