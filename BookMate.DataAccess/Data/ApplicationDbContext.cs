@@ -58,7 +58,7 @@ namespace BookMate.DataAccess.Data
             { categoryID = 6, categoryName = "Philosophy" });
             builder.Entity<Category>().HasData(new Category()
             { categoryID = 7, categoryName = "Science" });
-           
+
 
 
 
@@ -150,20 +150,53 @@ namespace BookMate.DataAccess.Data
             //    .IsRequired()
             //    .HasForeignKey(c => c.ClubId);
 
-            builder.Entity<ApplicationUser>()
-                .HasMany(x => x.ClubsMember)
-                .WithOne(x => x.ApplicationUser)
-                .OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.HasMany(e => e.ClubsMember)
+                      .WithOne(e => e.ApplicationUser)
+                      .HasForeignKey(e => e.ApplicationUserId)
+                      .OnDelete(DeleteBehavior.Cascade); // Cascade might be okay here
 
-            builder.Entity<Club>()
-                .HasMany(x => x.ApplicationUsersMember)
-                .WithOne(x => x.Club)
-                .OnDelete(DeleteBehavior.SetNull);
+                entity.HasMany(e => e.Clubs)
+                      .WithOne(c => c.ApplicationUser)
+                      .HasForeignKey(c => c.ApplicationUserId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict to avoid cycles
+            });
 
-            builder.Entity<Club>()
-                .HasOne(x => x.ApplicationUser)
-                .WithMany(x => x.Clubs)
-                .OnDelete(DeleteBehavior.SetNull);
+            // Configure the Club entity
+            builder.Entity<Club>(entity =>
+            {
+                entity.HasMany(c => c.ApplicationUsersMember)
+                      .WithOne(cu => cu.Club)
+                      .HasForeignKey(cu => cu.ClubId)
+                      .OnDelete(DeleteBehavior.Cascade); // Cascade might be okay here
+
+                entity.HasOne(c => c.ApplicationUser)
+                      .WithMany(u => u.Clubs)
+                      .HasForeignKey(c => c.ApplicationUserId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict to avoid cycles
+            });
+
+            // Configure the ApplicationUserClub entity
+            builder.Entity<ApplicationUserClub>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.ApplicationUser)
+                      .WithMany(u => u.ClubsMember)
+                      .HasForeignKey(e => e.ApplicationUserId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict to avoid cycles
+
+                entity.HasOne(e => e.Club)
+                      .WithMany(c => c.ApplicationUsersMember)
+                      .HasForeignKey(e => e.ClubId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict to avoid cycles
+            });
+
+            //builder.Entity<Club>()
+            //    .HasOne(x => x.ApplicationUser)
+            //    .WithMany(x => x.Clubs)
+            //    .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUserRelation>()
                 .HasKey(x => new { x.ApplicationUserParentId, x.ApplicationUserChildId });
