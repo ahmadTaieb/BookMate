@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("http://ahmadtaieb-001-site1.ftempurl.com/notificationHub").build();
 
 //Disable the send button until connection is established.
 document.getElementById("sendButton").disabled = true;

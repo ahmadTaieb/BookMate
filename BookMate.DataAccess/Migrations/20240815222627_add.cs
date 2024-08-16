@@ -37,6 +37,7 @@ namespace BookMate.DataAccess.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FavoriteCategories = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PasswordResetCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetCodeExpiration = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TokenReset = table.Column<string>(type: "nvarchar(max)", nullable: true),
