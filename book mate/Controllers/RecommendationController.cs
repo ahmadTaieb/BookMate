@@ -1,4 +1,5 @@
 ﻿using BookMate.DataAccess.Data;
+using BookMate.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,7 @@ namespace book_mate.Controllers
 
                 await _recommendationService.AddFavoriteCategories(categories, userId);
 
+              
                 return Ok("categories added successfully");
             }
             catch (Exception ex){
@@ -52,6 +54,46 @@ namespace book_mate.Controllers
 
 
         }
+
+
+        [HttpGet]
+        [Route("/getFavoriteCategories")]
+        public async Task<IActionResult> GetFavoriteCategories()
+        {
+            try
+            {
+                // Extract the user ID from the token
+                var email = User.FindFirstValue(ClaimTypes.Email);
+
+                string? userId = _db.Users.FirstOrDefault(u => u.Email == email)?.Id;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID is not available in the token.");
+                }
+
+             //   Console.WriteLine(userId);
+                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var favorits = user.FavoriteCategories?.ToList() ?? new List<string>();
+
+                return Ok(favorits);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+
+            }
+
+
+        }
+
 
 
         [HttpGet]

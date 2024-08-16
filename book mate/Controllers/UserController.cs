@@ -40,8 +40,8 @@ namespace book_mate.Controllers
             return new JsonResult(new { status = "200", message = "successfully", data = user.Result });
         }
         [AllowAnonymous]
-        [HttpPost("searchUser")]
-        public async Task<IActionResult> SearchClubByName([FromBody] string search)
+        [HttpGet("searchUser")]
+        public async Task<IActionResult> SearchClubByName([FromQuery] string UserName)
         {
             var AllUsers = _userService.GetAllUsersAsync();
             var users = AllUsers.Result.Where(o => o.Name.ToLower().Contains(search.Trim().ToLower()));

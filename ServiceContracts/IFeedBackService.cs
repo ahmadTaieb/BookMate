@@ -10,10 +10,11 @@ namespace ServiceContracts
     public interface IFeedBackService
     {
          Task<List<CategoryPercentResponse?>?> CategoriesPercent();
-
+        Task<List<TopCategoriesResponse?>?> TopCategories();
         Task<List<BookResponse?>?> TopReadBooks();
 
         Task<List<ApplicationUserResponse?>?> TopReader();
+
 
     }
 }
