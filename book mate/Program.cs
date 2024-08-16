@@ -128,12 +128,15 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
     };
 }
-            );
+);
 
 
 //End Identity
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
+
+builder.Configuration.AddUserSecrets<Program>();
 
 
 
@@ -156,6 +159,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -173,6 +177,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors("ReactApp");
+app.UseCors("AllowAll");
 app.MapRazorPages();
 app.MapHub<NotificationHub>("/notificationHub");
 
@@ -180,5 +185,5 @@ app.Run();
 
 
 // Apply CORS policy
-app.UseCors("AllowAll");
+
 

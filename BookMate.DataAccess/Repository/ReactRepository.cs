@@ -48,7 +48,7 @@ namespace BookMate.DataAccess.Repository
         public async Task<List<React>> GetAll(Guid postId)
         {
 
-            List<React> reacts = _db.Reacts.Where(x => x.PostId == postId).ToList();
+            var reacts = _db.Reacts.Where(x => x.PostId.ToString() == postId.ToString()).ToList();
             return reacts;
         }
         public async Task<List<ApplicationUser>> GetAllUsersReact(Guid postId)
