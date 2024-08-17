@@ -28,6 +28,14 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<bool> Delete(Post post)
         {
+            var comments = _db.Comments.Where(comment => comment.PostId == post.Id).ToList();
+            _db.Comments.RemoveRange(comments);
+            _db.SaveChanges();
+
+            var reacts = _db.Reacts.Where(r => r.PostId == post.Id).ToList();
+            _db.Reacts.RemoveRange(reacts);
+            _db.SaveChanges();
+
             _db.Posts.Remove(post);
             return true;
         }

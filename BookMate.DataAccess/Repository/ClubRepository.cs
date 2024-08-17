@@ -25,9 +25,19 @@ namespace BookMate.DataAccess.Repository
 
         public async Task<bool> DeleteClub(string id)
         {
+            var posts = _db.Posts.Where(x => x.ClubId.ToString() == id).ToList();
+            _db.Posts.RemoveRange(posts);
+            _db.SaveChanges();
+
+            var relation = _db.ApplicationUserClubs.Where(x => x.ClubId.ToString() == id ).ToList();
+            _db.ApplicationUserClubs.RemoveRange(relation);
+            _db.SaveChanges();
+
             var club = await _db.Clubs.FirstOrDefaultAsync(i => i.Id.ToString() == id);
             _db.Clubs.Remove(club);
             _db.SaveChanges();
+
+
             return true;
         }
 
@@ -67,7 +77,7 @@ namespace BookMate.DataAccess.Repository
             }
             matchingClub.Name = club.Name ?? matchingClub.Name;
             matchingClub.Description = club.Description ?? matchingClub.Description;
-            matchingClub.ApplicationUserId = club.ApplicationUserId ?? matchingClub.ApplicationUserId;
+            //matchingClub.ApplicationUserId = club.ApplicationUserId ?? matchingClub.ApplicationUserId;
             matchingClub.ImageUrl = club.ImageUrl ?? matchingClub.ImageUrl;
             matchingClub.Hidden = club.Hidden ?? matchingClub.Hidden;
             //if (club.ApplicationUser != null)

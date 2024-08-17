@@ -73,7 +73,7 @@ namespace Services
         {
             club.ImageUrl = await GetImageUrl(file: club.ImageFile);
             Club c = await _unitOfWork.Club.UpdateClub(id, club);
-            _unitOfWork.saveAsync();
+            _unitOfWork.save();
             return c;
         }
 

@@ -34,6 +34,22 @@ namespace BookMate.DataAccess.Repository
             var relation1 = _db.ApplicationUserRelations.Where(x => x.ApplicationUserParentId == user.Id);
             var relation2 = _db.ApplicationUserRelations.Where(x => x.ApplicationUserChildId == user.Id);
 
+            var clubs = _db.Clubs.Where(x => x.ApplicationUserId == user.Id);
+
+            var posts = _db.Posts.Where(x => x.ApplicationUserId == user.Id);
+
+            var reacts = _db.Reacts.Where(x => x.ApplicationUserId == user.Id);
+            var rel = _db.ApplicationUserClubs.Where(x => x.ApplicationUserId  == user.Id);
+            var comments = _db.Comments.Where(x => x.ApplicationUserId == user.Id);
+            var reports = _db.Reports.Where(x => x.ApplicationUserId == user.Id);
+            //0caf94be-81b1-4d56-8492-33c1abf31f5c
+
+            _db.Reports.RemoveRange(reports);
+            _db.Comments.RemoveRange(comments);
+            _db.ApplicationUserClubs.RemoveRange(rel);
+            _db.Reacts.RemoveRange(reacts);
+            _db.Clubs.RemoveRange(clubs);
+            _db.Posts.RemoveRange(posts);
             _db.ApplicationUserRelations.RemoveRange(relation1);
             _db.ApplicationUserRelations.RemoveRange(relation2);
             _db.ApplicationUsers.Remove(user);
