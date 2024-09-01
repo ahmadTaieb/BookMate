@@ -195,7 +195,7 @@ namespace book_mate.Controllers
         [Route("/AddReadingCount")]
         public async Task<IActionResult> addReadingCount([FromQuery]int num,Guid bookId)
         {
-
+            
             _booksService.AddReadingCount(num, bookId);
             return Ok("done");
                
